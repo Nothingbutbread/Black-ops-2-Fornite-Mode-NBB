@@ -19,13 +19,13 @@ SpawnLamma(origin) {
 	trig setCursorHint("HINT_NOICON", trig);
 	trig setHintString("Hold [{+usereload}] to open the ^6Lamma");
 	if (level.debugger) {
-		level.debuggerhost setorigin(origin + (0,0,100));
+		//level.debuggerhost setorigin(origin + (0,0,100));
 	}
 	while(true) {
 		trig waittill("trigger", player);
 		if (player useButtonPressed() && isAlive(player) && !player.menuopen) {
 			for(x = 0; x < 5; x++) {
-				player addAmmo(x, 1000);
+				player addAmmo(x, 300);
 			}
 			player.forthealth = 100;
 			player.fortshield = 100;
@@ -44,48 +44,10 @@ SpawnLamma(origin) {
 SpawnSupplyDrop(sorigin, eorigin, dur) {
 	level endon("game_ended");
 	level.activespeicallootdrops++;
-	ammo0 = GetRandomAmmoAmmout(0);
-	ammo1 = GetRandomAmmoAmmout(1);
-	ammo2 = GetRandomAmmoAmmout(2);
-	ammo3 = GetRandomAmmoAmmout(3);
-	ammo4 = GetRandomAmmoAmmout(4);
-	ammoobj0 = []; 
-	ammoobj0[0] = "knife_mp"; 
-	ammoobj0[1] = ammoTypeToString(0, ammo0); 
-	ammoobj0[2] = 0 + ""; 
-	ammoobj0[3] = 0 + ""; 
-	ammoobj0[4] = "f";
-	ammoobj1 = []; 
-	ammoobj1[0] = "knife_mp"; 
-	ammoobj1[1] = ammoTypeToString(1, ammo1); 
-	ammoobj1[2] = 0 + ""; 
-	ammoobj1[3] = 1 + ""; 
-	ammoobj1[4] = "f";
-	ammoobj2 = []; 
-	ammoobj2[0] = "knife_mp"; 
-	ammoobj2[1] = ammoTypeToString(2, ammo2); 
-	ammoobj2[2] = 0 + ""; 
-	ammoobj2[3] = 2 + ""; 
-	ammoobj2[4] = "f";
-	ammoobj3 = []; 
-	ammoobj3[0] = "knife_mp"; 
-	ammoobj3[1] = ammoTypeToString(3, ammo3); 
-	ammoobj3[2] = 0 + ""; 
-	ammoobj3[3] = 3 + ""; 
-	ammoobj3[4] = "f";
-	ammoobj4 = []; 
-	ammoobj4[0] = "knife_mp"; 
-	ammoobj4[1] = ammoTypeToString(4, ammo4); 
-	ammoobj4[2] = 0 + ""; 
-	ammoobj4[3] = 4 + ""; 
-	ammoobj4[4] = "f";
-	
 	item = [];
-	item[0] = ammoobj0;
-	item[1] = ammoobj1;
-	item[2] = ammoobj2;
-	item[3] = ammoobj3;
-	item[4] = ammoobj4;
+	for(x = 0; x < 5; x++) {
+		item[x] = createAmmoItem(x, GetRandomAmmoAmmout(x));
+	}
 	item[5] = GenerateChestLoot(true);
 	
 	refpoint = spawn("script_origin", sorigin);
@@ -103,12 +65,12 @@ SpawnSupplyDrop(sorigin, eorigin, dur) {
 	trig setCursorHint("HINT_NOICON", trig);
 	trig setHintString("Hold [{+usereload}] to open the Supply Drop");
 	if (level.debugger) {
-		level.debuggerhost setorigin(eorigin + (0,0,100));
+		//level.debuggerhost setorigin(eorigin + (0,0,100));
 	}
 	while(true) {
 		trig waittill("trigger", player);
 		if (player useButtonPressed() && isAlive(player) && !player.menuopen) {
-			player thread OpenChestGUI(item, false);
+			player thread OpenChestGUI(item, 1);
 			trig triggerOff();
 			refpoint delete();
 			m delete();
@@ -127,29 +89,14 @@ SpawnChest(origin, angle)
 	level endon("game_ended");
 	level.activechests++;
 	if (!isDefined(angle)) { angle = (0,0,0); }
-	totalitems = RandomIntRange(1, 4);
+	item = [];
 	ammotype1 = RandomIntRange(0, 5);
 	ammotype2 = RandomIntRange(0, 5);
-	ammo1 = GetRandomAmmoAmmout(ammotype1);
-	ammo2 = GetRandomAmmoAmmout(ammotype2);
-	ammoobj1 = []; 
-	ammoobj1[0] = "knife_mp"; 
-	ammoobj1[1] = ammoTypeToString(ammotype1, ammo1); 
-	ammoobj1[2] = 0 + ""; 
-	ammoobj1[3] = ammotype1 + ""; 
-	ammoobj1[4] = "f";
-	ammoobj2 = []; 
-	ammoobj2[0] = "knife_mp"; 
-	ammoobj2[1] = ammoTypeToString(ammotype2, ammo2); 
-	ammoobj2[2] = 0 + ""; 
-	ammoobj2[3] = ammotype2 + ""; 
-	ammoobj2[4] = "f";
-	item = [];
-	item[0] = ammoobj1;
-	item[1] = ammoobj2;
-	
-	for(x = 0; x < totalitems; x++) {
-		item[x + 2] = level GenerateChestLoot();
+	item[0] = createAmmoItem(ammotype1, GetRandomAmmoAmmout(ammotype1));
+	item[1] = createAmmoItem(ammotype2, GetRandomAmmoAmmout(ammotype2));
+	totalitems = RandomIntRange(3, 6);
+	for(x = 2; x < totalitems; x++) {
+		item[x] = level GenerateChestLoot(false);
 	}
 	m = spawnEntity("t6_wpn_supply_drop_trap", origin, angle);
 	trig = spawn("trigger_radius", m.origin, 1, 60, 60);
@@ -158,7 +105,7 @@ SpawnChest(origin, angle)
 	while(true) {
 		trig waittill("trigger", player);
 		if (player useButtonPressed() && isAlive(player) && !player.menuopen) {
-			player thread OpenChestGUI(item, false);
+			player thread OpenChestGUI(item, 0);
 			trig triggerOff();
 			m delete();
 			break;
@@ -177,21 +124,15 @@ SpawnAmmoCrate(origin, angle)
 	if (!isDefined(angle)) { angle = (0,0,0); }
 	ammotype1 = RandomIntRange(0, 5);
 	ammotype2 = RandomIntRange(0, 5);
-	ammotype3 = RandomIntRange(0, 5);
-	ammo1 = GetRandomAmmoAmmout(ammotype1);
-	ammo2 = GetRandomAmmoAmmout(ammotype2);
-	ammo3 = GetRandomAmmoAmmout(ammotype3);
-	
 	m = spawnEntity("t6_wpn_supply_drop_trap", origin, angle);
-	trig = spawn("trigger_radius", m.origin, 1, 60, 60);
+	trig = spawn("trigger_radius", origin, 1, 60, 60);
 	trig setCursorHint("HINT_NOICON", trig);
 	trig setHintString("Hold [{+usereload}] to loot ammo drop");
 	while(true) {
 		trig waittill("trigger", player);
 		if (player useButtonPressed() && isAlive(player) && !player.menuopen) {
-			player addAmmo(ammotype1, ammo1);
-			player addAmmo(ammotype2, ammo2);
-			player addAmmo(ammotype3, ammo3);
+			player addAmmo(ammotype1, GetRandomAmmoAmmout(ammotype1));
+			player addAmmo(ammotype2, GetRandomAmmoAmmout(ammotype2));
 			trig triggerOff();
 			m delete();
 			break;
@@ -201,25 +142,42 @@ SpawnAmmoCrate(origin, angle)
 	level.activeammodrops--;
 	trig delete();
 }
-SpawnItemDrop(origin)
-{
+SpawnItemDrop(origin) {
 	level endon("game_ended");
-	weap = GenerateLoot();
+	item = GenerateChestLoot(false);
 	e = spawnEntity(getWeaponModel("an94_mp"), origin + (0,0,40), (0,0,0));
-	disname = getDisplayName(weap[0]);
-	isweapon = isAWeapon(weap[0]);
-	ammotype = getAmmoType(weap[0]);
 	e thread spinWeaponDrop();
-	if (isweapon) {
-		if (weap[0] == "frag_grenade_mp" || weap[0] == "sticky_grenade_mp" || weap[0] == "satchel_charge_mp") {
-			level thread DeploySpiningItemDrop(weap[0], disname, e, getDefaultItemSpawnCount(weap[0]), int(weap[1]), -1, true);
-		} else {
-			level thread DeploySpiningItemDrop(weap[0], disname, e, 999, int(weap[1]), ammotype, true);
+	level.activespiningitems++;
+	isnoteqip = isNotEquipment(item.weapon);
+	trig = spawn("trigger_radius", e.origin, 1, 60, 60);
+	trig setCursorHint("HINT_NOICON", trig);
+	if (item.isweapon && isnoteqip) {
+		trig setHintString("Hold [{+usereload}] to pick up " + getFullDisplayName(item) + "\n^1Will delete currently held item if inventory is full!\n^7Hold [{+gostand}] to only take the Ammo.");
+	} else {
+		trig setHintString("Hold [{+usereload}] to pick up " + getFullDisplayName(item) + "\n^1Will delete currently held item if inventory is full!");
+	}
+	while(true) {
+		trig waittill("trigger", player);
+		if (player useButtonPressed() && isAlive(player) && !player.menuopen) {
+			player thread addItemToInventory(player.lastusedinvslotindex, item);
+			if (item.isweapon && isnoteqip) {
+				player addAmmo(getAmmoType(item.weapon), GetRandomAmmoAmmout(item.ammotype));
+			}
+			trig triggerOff();
+			e delete();
+			break;
+		} else if (player useButtonPressed() && isAlive(player) && player.menuopen) {
+			player iprintlnbold("^1Your inventory must be closed to use this!");
+		} else if (player jumpbuttonpressed() && isAlive(player) && item.isweapon && isnoteqip) {
+			player addAmmo(getAmmoType(item.weapon), GetRandomAmmoAmmout(item.ammotype));
+			trig triggerOff();
+			e delete();
+			break;
 		}
+		wait .05;
 	}
-	else {
-		level thread DeploySpiningItemDrop(weap[0], weap[0], e, getDefaultItemSpawnCount(weap[0]), int(weap[1]), 0, false);
-	}
+	level.activespiningitems--;
+	trig delete();
 }
 SpawnPlayerDeathDrop() 
 {
@@ -685,6 +643,7 @@ DoNotBuildZone(cor1,cor2)
 	    
 	}
 }
+
 
 
 
