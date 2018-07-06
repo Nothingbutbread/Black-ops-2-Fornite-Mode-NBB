@@ -6,16 +6,18 @@ createInventory() {
 	}
 	return retval;
 }
+// Creates an instance of an item data, used in the inventory and for creating items
 createInventorySlotStruct() {
 	inv = spawnstruct();
 	inv.weapon = "knife_held_mp";
 	inv.clip = 0; //Guns: Whats in the mag, Items and Grenades: Ammout that is had.
 	inv.rarity = 0;
 	inv.ammotype = 0; //Guns: Type of ammo that the gun takes, Items and Grenades: Ignored, when an item/grenade set to -1.
-	inv.isweapon = true;
-	inv.slotfilled = false; //When used as an item struct, this states if the item is ammo or not.
+	inv.isweapon = true; //Indecates if the weapon name is a real weapon that can be spawned via cmds.
+	inv.slotfilled = false; //Indecates an active item / inventory slot.
 	return inv;
 }
+// Returns a full copy of the inputed struct.
 deepCopyInvStruct(struct) {
 	retval = self createInventorySlotStruct();
 	retval.weapon = struct.weapon;
@@ -58,13 +60,17 @@ addItemToInventory(index, item) {
 	if (self.lastusedinvslotindex == index && self.inv[index].weapon == self.activeweapon) {
 		replace = true;
 	}
-	if (self.inv[index].weapon == item.weapon) {
-		if (!self.inv[index].isweapon) {
-			self.inv[index].clip += item.clip;
-			return olditem;
-		} else if (self.inv[index].weapon == "frag_grenade_mp" || self.inv[index].weapon == "sticky_grenade_mp" || self.inv[index].weapon == "satchel_charge_mp") {
-			self.inv[index].clip += item.clip;
-			return olditem;
+	// Merges items if non-gun items are inputed and can be merged on the base of count.
+	mergeindex = self whereDupe(item);
+	if (mergeindex >= 0) {
+		if (self.inv[mergeindex].weapon == item.weapon) {
+			if (!self.inv[mergeindex].isweapon) {
+				self.inv[mergeindex].clip += item.clip;
+				return olditem;
+			} else if (self.inv[mergeindex].weapon == "frag_grenade_mp" || self.inv[mergeindex].weapon == "sticky_grenade_mp" || self.inv[mergeindex].weapon == "satchel_charge_mp") {
+				self.inv[mergeindex].clip += item.clip;
+				return olditem;
+			}
 		}
 	}
 	
@@ -88,8 +94,17 @@ addItemToInventory(index, item) {
 	self iprintln("AITI Retval: " + getFullDisplayName(olditem));
 	return olditem;
 }
+// Takes an item struct, returns the first index where it is found in the inventory.
+// If the item isn't found, returns -1.
+whereDupe(struct) {
+	for(x = 0; x < 5; x++) {
+		if (self.inv[x].slotfilled && self.inv[x].weapon == struct.weapon) {
+			return x;
+		}
+	}
+	return -1;
+}
 SetandChangeInventoryToDefaultWeapon(index) {
-	//self DeleteItemInInventory(index);
 	self.inv[index] = self createInventorySlotStruct();
 	self.activeweapon = "knife_held_mp";
 	self.activerarity = 0;
@@ -158,19 +173,11 @@ SetLoadout(index) {
 		self.ammotypes[self.inv[index].ammotype] = 0;
 		self setWeaponAmmoStock(self.inv[index].weapon, ammo);
 	}
-	//self iprintln("^1PRINTING----------");
-	//self iprintln("^1DEBUG: ^7" + self getFullDisplayName(self.inv[index]));
 }
 // Adjusts the players loadout from inventory index.
 AdjustLoadout(index) {
 	self notify("new_item_at_" + index);
 	if (index < 0 || index > 4) { self iprintln("^1Error: AdjustLoadout invalid index"); return; }
-	// 0 = Weapon, 1 = Clip, 2 = Rarity, 3 = Type
-	if (self.inv[index].weapon == "") { self iprintln("^1Error: Tried to change to a null weapon!\n^1Reset it!");
-		wait .3;
-		self thread SetandChangeInventoryToDefaultWeapon(index);
-		return;
-	}
 	
 	// Good to go, all prelimarly checks completed!
 	if (self.lastusedinvslotindex >= 0) {
