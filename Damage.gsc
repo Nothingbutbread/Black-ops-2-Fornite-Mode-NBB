@@ -38,7 +38,7 @@ DamageMonitor()
 	}
 }
 ApplyStormDammage() {
-	self iprintln("^1You took 5 dammage from the storm!");
+	self iprintln("^1Took 5 dammage from the storm!");
 	self.forthealth -= 5;
 	self playlocalsound("mpl_wager_humiliate");
 	if (self.forthealth <= 0) {
@@ -46,7 +46,8 @@ ApplyStormDammage() {
 		iprintln("The storm claimed " + self.name + "!");
 	}
 }
-appHit(damage, attacker, weapon) {
+appHit(damage, attacker, weapon)
+{
 	self iprintln("^5You took " + damage + " from " + attacker.name + " bymeans of " + weapon);
 	if (self.fortshield > 0) {
 		r = damage - self.fortshield;
@@ -67,7 +68,8 @@ appHit(damage, attacker, weapon) {
 		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weapon);
 	}
 }
-dammageMap(weap) {
+dammageMap(weap)
+{
 	// Burst rifle
 	if (weap == "sig556_mp" || weap == "sig556_mp+stalker") {
 		return 27;
@@ -126,7 +128,7 @@ dammageMap(weap) {
 	}
 	// Minigun
 	else if (weap == "minigun_wager_mp") {
-		return 10; // Due to rate of fire and accuracy differnces, Minigun has been nerfed
+		return 11; // Due to rate of fire and accuracy differnces, Minigun has been nerfed
 	}
 	// LMG
 	else if (weap == "lsat_mp+steadyaim") {
@@ -146,7 +148,7 @@ dammageMap(weap) {
 	}
 	// Remote Explosives
 	else if (weap == "satchel_charge_mp") {
-		return 95;
+		return 90;
 	}
 	// Melee
 	else if (weap == "knife_mp" || weap == "knife_held_mp") {
@@ -185,7 +187,6 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
-
 
 
 

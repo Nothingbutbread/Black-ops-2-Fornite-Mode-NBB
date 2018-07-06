@@ -2,8 +2,6 @@ getDefaultItemSpawnCount(item)
 {
 	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice") {
 		return 1;
-	} else if (item == "satchel_charge_mp") {
-		return 4;
 	} else if (item == "Bandage") {
 		return 5;
 	}
@@ -23,11 +21,13 @@ GrenadeInventoryUpdator(weap, index) {
 			return;
 		}
 		// Update Ammo
-		self.inv[index].clip--;
-		if (self.inv[index].clip < 1) {
+		ammo = int(self.inv[index][1]);
+		ammo--;
+		self.inv[index][1] = "" + ammo;
+		if (ammo < 1) {
 			self thread SetandChangeInventoryToDefaultWeapon(index);
 		}
-		self iprintln("We have " + self.inv[index].clip + " of this grenade left");
+		self iprintln("We have " + ammo + " of this grenade left");
 	}
 }
 itemProgressBar() {
@@ -53,7 +53,7 @@ CreateProgressBar(x, y, alpha, bgcolor, barcolor) {
 	hudele.alpha = alpha;
 	return hudele;
 }
-Bandageitem(index) {
+Bandageitem(index, amount) {
 	self endon("disconnect");
 	self endon("death");
 	self endon("new_item_at_" + index);
@@ -99,13 +99,15 @@ Bandageitem(index) {
 					self.forthealth = 75;
 				}
 				// Update Ammo
-				self.inv[index].clip--;
-				if (self.inv[index].clip < 1) {
+				ammo = int(self.inv[index][1]);
+				ammo--;
+				self.inv[index][1] = "" + ammo;
+				if (ammo < 1) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
 				}
-				self iprintln("We have " + self.inv[index].clip + " bandages left");
+				self iprintln("We have " + ammo + " bandages left");
 				time = 0;
 				self.fortHUDS[16] updateBar(0);
 			}
@@ -113,7 +115,7 @@ Bandageitem(index) {
 		wait .05;
 	}
 }
-Medkititem(index) {
+Medkititem(index, amount) {
 	self endon("disconnect");
 	self endon("death");
 	self endon("new_item_at_" + index);
@@ -151,20 +153,23 @@ Medkititem(index) {
 		}
 		if (time >= 200) {
 			self.forthealth = 100;
-			self.inv[index].clip--;
-			if (self.inv[index].clip < 1) {
+			// Update Ammo
+			ammo = int(self.inv[index][1]);
+			ammo--;
+			self.inv[index][1] = "" + ammo;
+			if (ammo < 1) {
 				self fadeOutProgressBar();
 				self thread SetandChangeInventoryToDefaultWeapon(index);
 				self fadeOutItemToolTip();
 			}
-			self iprintln("We have " + self.inv[index].clip + " medkits left");
+			self iprintln("We have " + ammo + " medkits left");
 			time = 0;
 			self.fortHUDS[16] updateBar(0);
 		}
 		wait .05;
 	}
 }
-SmallShielditem(index) {
+SmallShielditem(index, amount) {
 	self endon("disconnect");
 	self endon("death");
 	self endon("new_item_at_" + index);
@@ -210,13 +215,15 @@ SmallShielditem(index) {
 					self.fortshield = 50;
 				}
 				// Update Ammo
-				self.inv[index].clip--;
-				if (self.inv[index].clip < 1) {
+				ammo = int(self.inv[index][1]);
+				ammo--;
+				self.inv[index][1] = "" + ammo;
+				if (ammo < 1) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
 				}
-				self iprintln("We have " + self.inv[index].clip + " small shields left");
+				self iprintln("We have " + ammo + " small shields left");
 				time = 0;
 				self.fortHUDS[16] updateBar(0);
 			}
@@ -224,7 +231,7 @@ SmallShielditem(index) {
 		wait .05;
 	}
 }
-LargeShielditem(index) {
+LargeShielditem(index, amount) {
 	self endon("disconnect");
 	self endon("death");
 	self endon("new_item_at_" + index);
@@ -270,13 +277,15 @@ LargeShielditem(index) {
 					self.fortshield = 100;
 				}
 				// Update Ammo
-				self.inv[index].clip--;
-				if (self.inv[index].clip < 1) {
+				ammo = int(self.inv[index][1]);
+				ammo--;
+				self.inv[index][1] = "" + ammo;
+				if (ammo < 1) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
 				}
-				self iprintln("We have " + self.inv[index].clip + " large shields left");
+				self iprintln("We have " + ammo + " large shields left");
 				time = 0;
 				self.fortHUDS[16] updateBar(0);
 			}
@@ -284,7 +293,7 @@ LargeShielditem(index) {
 		wait .05;
 	}
 }
-ChugJugItem(index) {
+ChugJugItem(index, amount) {
 	self endon("disconnect");
 	self endon("death");
 	self endon("new_item_at_" + index);
@@ -328,13 +337,15 @@ ChugJugItem(index) {
 				self.fortshield = 100;
 				self.forthealth = 100;
 				// Update Ammo
-				self.inv[index].clip--;
-				if (self.inv[index].clip < 1) {
+				ammo = int(self.inv[index][1]);
+				ammo--;
+				self.inv[index][1] = "" + ammo;
+				if (ammo < 1) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
 				}
-				self iprintln("We have " + self.inv[index].clip + " Chug Jugs left");
+				self iprintln("We have " + ammo + " Chug Jugs left");
 				time = 0;
 				self.fortHUDS[16] updateBar(0);
 			}
@@ -342,7 +353,7 @@ ChugJugItem(index) {
 		wait .05;
 	}
 }
-SlurpJuiceItem(index) {
+SlurpJuiceItem(index, amount) {
 	self endon("disconnect");
 	self endon("death");
 	self endon("new_item_at_" + index);
@@ -385,13 +396,15 @@ SlurpJuiceItem(index) {
 			} else {
 				self thread SlurpJuice_Effect();
 				// Update Ammo
-				self.inv[index].clip--;
-				if (self.inv[index].clip < 1) {
+				ammo = int(self.inv[index][1]);
+				ammo--;
+				self.inv[index][1] = "" + ammo;
+				if (ammo < 1) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
 				}
-				self iprintln("We have " + self.inv[index].clip + " Slurp Juices left");
+				self iprintln("We have " + ammo + " Slurp Juices left");
 				time = 0;
 				self.fortHUDS[16] updateBar(0);
 			}
@@ -415,7 +428,6 @@ SlurpJuice_Effect() {
 		wait 1;
 	}
 }
-
 
 
 

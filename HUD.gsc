@@ -49,7 +49,7 @@ CreatePlayerHUDS()
 ConstantHUDUpdate() {
 	self endon("disconnect");
 	while(true) {
-		self.healthHUDText = "^5Shield: " + self.fortshield + "\n^1Health: " + self.forthealth;
+		self.healthHUDText = "^1Health: " + self.forthealth + "\n^5Shield: " + self.fortshield;
 		self.fortHUDS[13] setSafeText(self.healthHUDText);
 		wait .1;
 	}
@@ -86,10 +86,10 @@ fadeOutItemToolTip() {
 	self.fortHUDS[15] setSafeText(self.ItemUseText);
 	self.fortHUDS[15].color = (1,1,1);
 }
-updateInvHudShader(index, item)
+updateInvHudShader(index, rarity, item)
 {
-	self.fortHUDS[index].color = teirIDToColor(item.rarity);
-	self.fortHUDS[index + 5] setshader(getItemShader(item.weapon), 40, 40);
+	self.fortHUDS[index].color = teirIDToColor(rarity);
+	self.fortHUDS[index + 5] setshader(getItemShader(item), 40, 40);
 }
 updateHUDRemoveItemFromInv(index)
 {
@@ -197,31 +197,27 @@ OpenInventoryGUIBind()
 		wait .05;
 	}
 }
-OpenChestGUI(data, type)
+OpenChestGUI(data, playerdrop)
 {
-	// type 0 = Chest, type 1 = Supply Drop, type 2 = Player drop
 	self endon("disconnect");
 	self.menuopen = true;
+	self.fortHUDS[14].alpha = .9;
 	self.curmenu = 1;
 	self.fortHUDS[10].alpha = 1;
 	self.fortHUDS[11].alpha = .8;
 	self.fortHUDS[12].alpha = 1;
-	self.fortHUDS[14].alpha = .9;
-	//self thread DEBUG_PRINTITEMS(data);
 	self.menutext = "Chest:";
-	if (type == 0) {
-		self iprintln("^2Opened the chest!");
-	} else if (type == 1) {
-		self.menutext = "Supply Drop:";
-		self iprintln("^2Opened the supply drop!");
-	} else if (type == 2) {
+	if (playerdrop) {
 		self.menutext = "Player Inventory:";
 		self iprintln("^2Opened the player inventory!");
+	} else {
+		self iprintln("^2Opened the chest!");
 	}
-	self.menutext += getDisStrItemInv(data);
+	for(x = 0; x < data.size; x++) {
+		self.menutext += "\n" + data[x][1];
+	}
 	self.fortHUDS[12] setSafeText(self.menutext);
 	self updateControlsInfo("[{+actionslot 3}] / [{+actionslot 4}] Open Inventory Menu\n[{+actionslot 1}] / [{+actionslot 2}] Move Selector\n[{+usereload}] Swap item to Inventory\n[{+melee}] Close Container");
-	// Wait here so the first object isn't instantly grabbed.
 	wait .5;
 	while(self.menuopen) {
 		if (self actionslotfourbuttonpressed() && self.curmenu == 0 && self.selectorpos < 4) { //Right
@@ -233,18 +229,16 @@ OpenChestGUI(data, type)
 			self.fortHUDS[14] moveOverTime(.05);
 			self.fortHUDS[14].x -= 45;
 		} else if (self meleebuttonpressed()) {
-			if (type == 0) {
-				self iprintln("^1Closed the chest!");
-			} else if (type == 1) {
-				self iprintln("^1Closed the supply drop!");
-			} else if (type == 2) {
+			if (playerdrop) {
 				self iprintln("^1Closed the player inventory!");
+			} else {
+				self iprintln("^1Closed the chest!");
 			}
+			self.fortHUDS[14].alpha = 0;
 			self.curmenu = 0;
 			self.fortHUDS[10].alpha = 0;
 			self.fortHUDS[11].alpha = 0;
 			self.fortHUDS[12].alpha = 0;
-			self.fortHUDS[14].alpha = 0;
 			self.menuopen = false;
 			self updateControlsInfo("[{+actionslot 1}] Open Menu");
 			return;
@@ -266,43 +260,72 @@ OpenChestGUI(data, type)
 		// Build Menu controls
 		else if (self actionslotonebuttonpressed() && self.curmenu == 1 && self.menuselectorpos > 0) {
 			self.menuselectorpos--;
-			self.fortHUDS[11] moveOverTime(.05);
+			self.fortHUDS[14] moveOverTime(.05);
 			self.fortHUDS[11].y -= 24;
 		} else if (self actionslottwobuttonpressed() && self.curmenu == 1 && self.menuselectorpos < 5) {
 			self.menuselectorpos++;
-			self.fortHUDS[11] moveOverTime(.05);
+			self.fortHUDS[14] moveOverTime(.05);
 			self.fortHUDS[11].y += 24;
 		} else if (self usebuttonpressed() && self.curmenu == 1) {
-			if (data[self.menuselectorpos].slotfilled) {
-				data[self.menuselectorpos] = self addItemToInventory(self.selectorpos, data[self.menuselectorpos]);
-				if (type == 0) {
-					self.menutext = "Chest:";
-				} else if (type == 1) {
-					self.menutext = "Supply Drop:";
-				} else if (type == 2) {
+			olditem = [];
+			if (data[self.menuselectorpos][1] != "") {
+				if (data[self.menuselectorpos][4] == "t") {
+					olditem = self addItemToInventory(self.selectorpos, data[self.menuselectorpos][0], int(data[self.menuselectorpos][3]), int(data[self.menuselectorpos][2]), getAmmoType(data[self.menuselectorpos][0]), true);
+				} else {
+					d = get_num(data[self.menuselectorpos][1]);
+					if (d[1] && d[0]) {
+						self addAmmo(int(data[self.menuselectorpos][3]), int(d[2]));
+					} else {
+						olditem = self thread addItemToInventory(self.selectorpos, removeColorCode(data[self.menuselectorpos][1]), int(data[self.menuselectorpos][3]), int(data[self.menuselectorpos][2]), 0, false);
+					}
+				}
+				//
+				isfull = true;
+				for(h = 0; h < 5; h++) {
+					if (IsEmpty(h)) {
+						isfull = false;
+						break;
+					}
+				}/*
+				if (isfull) {
+					self iprintln("oi.size = " + olditem.size + "  isfull = true");
+				} else {
+					self iprintln("oi.size = " + olditem.size + "  isfull = false");
+				}
+				*/
+				if (olditem.size == 0 || !isfull) {
+					data[self.menuselectorpos][1] = "";
+				} else {
+					data[self.menuselectorpos][0] = olditem[0];
+					data[self.menuselectorpos][1] = "" + teirIDToStringColor(int(olditem[2])) + "" + getDisplayName(olditem[0]);
+					data[self.menuselectorpos][2] = olditem[2];
+					data[self.menuselectorpos][3] = olditem[1];
+					data[self.menuselectorpos][4] = olditem[4];
+				}
+				if (playerdrop) {
 					self.menutext = "Player Inventory:";
+				} else {
+					self.menutext = "Chest:";
 				}
 				closemenu = true;
 				for(x = 0; x < data.size; x++) {
-					self.menutext += "\n" + getFullDisplayName(data[x]);
-					if (data[x].slotfilled) {
+					self.menutext += "\n" + data[x][1];
+					if (data[x][1] != "") {
 						closemenu = false;
 					}
 				}
 				self.fortHUDS[12] setSafeText(self.menutext);
 				if (closemenu) {
-					if (type == 0) {
-						self iprintln("^1Closed the chest!");
-					} else if (type == 1) {
-						self iprintln("^1Closed the supply drop!");
-					} else if (type == 2) {
+					if (playerdrop) {
 						self iprintln("^1Closed the player inventory!");
+					} else {
+						self iprintln("^1Closed the chest!");
 					}
+					self.fortHUDS[14].alpha = 0;
 					self.curmenu = 0;
 					self.fortHUDS[10].alpha = 0;
 					self.fortHUDS[11].alpha = 0;
 					self.fortHUDS[12].alpha = 0;
-					self.fortHUDS[14].alpha = 0;
 					self.menuopen = false;
 					self updateControlsInfo("[{+actionslot 1}] Open Menu");
 					return;
@@ -353,11 +376,11 @@ keyBinds()
 			if (self.useinventorymod != 0) {
 				self thread OpenInventoryGUIBind();
 				self iprintln("^1Closed the inventory!");
+				self.fortHUDS[14].alpha = 0;
 				self.curmenu = 0;
 				self.fortHUDS[10].alpha = 0;
 				self.fortHUDS[11].alpha = 0;
 				self.fortHUDS[12].alpha = 0;
-				self.fortHUDS[14].alpha = 0;
 				self updateControlsInfo("[{+actionslot 1}] Open Menu");
 				return;
 			}
@@ -390,11 +413,11 @@ keyBinds()
 		} else if (self meleebuttonpressed()) {
 			self thread OpenInventoryGUIBind();
 			self iprintln("^1Closed the inventory!");
+			self.fortHUDS[14].alpha = 0;
 			self.curmenu = 0;
 			self.fortHUDS[10].alpha = 0;
 			self.fortHUDS[11].alpha = 0;
 			self.fortHUDS[12].alpha = 0;
-			self.fortHUDS[14].alpha = 0;
 			self updateControlsInfo("[{+actionslot 1}] Open Menu");
 			return;
 		}
@@ -480,7 +503,6 @@ HUD_GTR(size, x)
 	colorgreen += move;	
 	return (colorgreen, colorred,0);
 }
-
 
 
 

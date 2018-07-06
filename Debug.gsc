@@ -12,26 +12,37 @@ GunFunctionsTest()
 		wait 1;
 	}
 }
+	// Types: 0 = Auto/Bust AR's, 1 = SemiAuto weapons (Snipers and FAL/SMR)
+	// 2 = SMG, 3 = LMG/Death machine, 4 = Shotgun, 5 = Explosives (Launchers and Warmachines)
+	// 6 = Pistols (not inculuding the executioner)
 GiveTestInventory()
 {
 	for(x = 0; x < self.ammotypes.size; x++) {
-		self.ammotypes[x] += 60;
+		self.ammotypes[x] += 1000;
 	}
-	i1 = createInventorySlotStruct();
-	i1.weapon = "mp7_mp+silencer";
-	i1.clip = 16;
-	i1.rarity = 2;
-	i1.ammotype = 0;
-	i1.isweapon = true;
-	self addItemToInventory(0, i1);
-	
-	i2 = createInventorySlotStruct();
-	i2.weapon = "Chug Jug";
-	i2.clip = 1;
-	i2.rarity = 4;
-	i2.ammotype = -1;
-	i2.isweapon = false;
-	self addItemToInventory(1, i2);
+	// addItemToInventory(index, weap, mag, rarity, ammotype, isweapon)
+	addItemToInventory(1, "m32_wager_mp", 6, 4, 5, true);
+	addItemToInventory(2, "dsr50_mp+dualclip", 0, 2, 1, true);
+	addItemToInventory(3, "smaw_mp", 1, 2, 5, true);
+	addItemToInventory(4, "fiveseven_mp", 14, 3, 6, true);
+}
+Test_GetShader()
+{
+	for(x = 0; x < 5; x++) {
+		self iprintln("Testing Getshader() in " + x);
+		wait 2;
+	}
+	self iprintln("In: srm1216_mp : Out: " + getItemShader("srm1216_mp"));
+	wait 1;
+	self iprintln("In: dsr50_mp+dualclip : Out: " + getItemShader("dsr50_mp+dualclip"));
+	wait 1;
+	self iprintln("In: as50_mp+extclip : Out: " + getItemShader("as50_mp+extclip"));
+	wait 1;
+	self iprintln("In: ballista_mp : Out: " + getItemShader("ballista_mp"));
+	wait 1;
+	self iprintln("In: minigun_wager_mp : Out: " + getItemShader("minigun_wager_mp"));
+	wait 1;
+	self iprintln("In: lsat_mp+steadyaim : Out: " + getItemShader("lsat_mp+steadyaim"));
 }
 printOrigin()
 {
@@ -87,6 +98,35 @@ Noclip() {
 	self unlink();
     obj delete();
 }
+/*
+DeadMan_Spectate()
+{
+	self endon("disconnect");
+	self hide();
+	self SetClientUIVisibilityFlag("g_compassShowEnemies", 1);
+	self iprintln("^1You're dead, Hold ADS to move around freely above the map!");
+	obj = spawn("script_origin", self.origin);
+	obj.angles = self.angles;
+	self PlayerLinkTo(obj, undefined);
+	while(true) 
+	{
+		if (self adsbuttonpressed()) 
+		{ 
+			obj moveTo(playerAnglesToForward(self, 50), 0.1); 
+		}
+		if (self.origin[2] < level.deadmansskybarrier)
+		{
+			obj moveTo((level.finalspawnpoint[0], level.finalspawnpoint[1], level.deadmansskybarrier + 100), 0.1); 
+			// 
+			self iprintln("^1You can not go there!");
+			wait .1;
+		}
+		wait .1; 
+	}
+	self unlink();
+    obj delete();
+}
+*/
 DisToGroundChest() {
 	self endon("death");
 	while(true) {
@@ -111,11 +151,11 @@ VarPrinter() {
 		wait 2;
 	}
 }
-DEBUG_PRINTITEMS(data) {
-	for(x = 0; x < data.size; x++) {
-		self iprintlnbold("Found index: ^5" + x + " !");
-		self iprintln(self getFullDisplayName(data[x]));
-		wait 1;
-	}
-}
+
+
+
+
+
+
+
 

@@ -23,32 +23,6 @@ teirIDToStringColor(id)
 	else if (id == 3) { return "^6"; }
 	return "^1";
 }
-getFullDisplayName(item) {
-	if (!item.slotfilled) {
-		return "";
-	} else if (item.weapon == "Ammo") {
-		return "" + ammoTypeToString(item.ammotype, item.clip);
-	} else {
-		return "" + teirIDToStringColor(item.rarity) + "" + getDisplayName(item.weapon);
-	}
-}
-getDisStrItemInv(items) {
-	retval = "";
-	for(x = 0; x < items.size; x++) {
-		retval += "\n" + getFullDisplayName(items[x]) + "";
-	}
-	return retval;
-}
-createAmmoItem(type, amout) {
-	retval = createInventorySlotStruct();
-	retval.weapon = "Ammo";
-	retval.clip = amout;
-	retval.rarity = 0;
-	retval.ammotype = type;
-	retval.isweapon = false;
-	retval.slotfilled = true; //This is an ammo type in this instance
-	return retval;
-}
 removeColorCode(str) {
 	if (str.size < 3) { return str; }
 	if (str[0] == "^") {
@@ -59,77 +33,6 @@ removeColorCode(str) {
 		return retval;
 	}
 	return retval;
-}
-// Takes a size value and two intergers for the range.
-// Returns an array of values that fall in the range and are unique.
-RandIntArrayNoDupe(size, min, max)
-{
-	nums = [];
-	if ((max - min) < size) { return nums; } // When the size is larger than the range, the function breaks.
-	while(nums.size < size)
-	{
-		n = RandomIntRange(min, max);
-		x = 0;
-		while(x < nums.size)
-		{
-			if (nums[x] == n)
-			{ 
-				n++;
-				if (n >= max) { n = min; }
-				x = 0;
-			}
-			else { x++; }
-		}
-		nums[nums.size] = n;
-	}
-	return nums;
-}
-isAWeapon(weap)
-{
-	w = getRawWeapon(weap);
-	if (w.size < 3) { return false; }
-	start = w.size - 3;
-	test = "";
-	test += w[start];
-	test += w[start + 1];
-	test += w[start + 2];
-	if (test == "_mp") { return true; }
-	return false;
-}
-isAGun(weap) {
-	if (isAWeapon(weap)) {
-		if (weap == "frag_grenade_mp" || weap == "sticky_grenade_mp" || weap == "satchel_charge_mp") {
-			return false;
-		}
-		return true;
-	}
-	return false;
-}
-isNotEquipment(weap) {
-	if (weap == "frag_grenade_mp" || weap == "sticky_grenade_mp" || weap == "satchel_charge_mp") {
-		return false;
-	}
-	return true;
-}
-GetRandomAmmoAmmout(type) {
-	// Type: 0 Small bullets  (SMGs, SemiAuto Pistols, Minigun)
-	// Type: 1 Medium bullets (ARs, LMG, Revolovers/Hand Cannon) 
-	// Type: 2 Large bullets (Snipers, Semiauto riffle)
-	// Type: 3 Shotgun shells (Shotguns)
-	// Type: 4 Explosive Shells (RPG/War Machine) 
-	ammo = 2;
-	if (type == 0) {
-		ammo = RandomIntRange(20, 80);
-	} else if (type == 1) {
-		ammo = RandomIntRange(15, 40);
-	} else if (type == 2) {
-		ammo = RandomIntRange(6, 20);
-	} else if (type == 3) {
-		ammo = RandomIntRange(6, 30);
-	} else if (type == 4) {
-		ammo = RandomIntRange(2, 6);
-	}
-	return ammo;
 }
 getItemShader(weap)
 {
@@ -232,6 +135,168 @@ getItemShader(weap)
 		return "perk_warrior";
 	}
 	return "menu_mp_weapons_ballistic_knife";
+}
+SetandChangeInventoryToDefaultWeapon(index) {
+	//self iprintln("Attempted to Delete item at index: " + index);
+	self DeleteItemInInventory(index);
+	self.activeweapon = "knife_held_mp";
+	self.activerarity = 0;
+	self.activetype = 0;
+	self.amholdinggun = true;
+	self AdjustLoadout(index);
+	self updateInvHudShader(index, 0, "knife_held_mp");
+	//self iprintln(self.fortHUDS[index].color);
+}
+DeleteItemInInventory(index) {
+	self.inv[index][0] = "knife_held_mp";
+	self.inv[index][1] = "0";
+	self.inv[index][2] = "0";
+	self.inv[index][3] = "0";
+	self.inv[index][4] = "t";
+}
+IsEmpty(index) {
+	if (self.inv[index][0] != "knife_held_mp" || self.inv[index][1] != "0" || self.inv[index][2] != "0" || self.inv[index][3] != "0" || self.inv[index][4] != "t"){ 
+		return false;
+	}
+	return true;
+}
+SetLoadout(id) 
+{
+	self notify("new_item_at_" + id);
+	self TakeAllWeapons();
+   	self ClearPerks();
+   	self fadeOutItemToolTip();
+   	//self.fortHUDS[16] destroyElem();
+   	self fadeOutProgressBar();
+   	self SetActionSlot(1, "");
+	self SetActionSlot(2, "");
+	self SetActionSlot(3, "");
+	self SetActionSlot(4, "");
+	self setperk("specialty_unlimitedsprint");
+	self setperk("specialty_fastweaponswitch");
+	self setperk("specialty_fallheight");
+	//self setclientthirdperson(1);
+	self.lastusedinvslotindex = id;
+	self.activeweapon = self.inv[id][0];
+	self.activerarity = int(self.inv[id][2]);
+	self.activetype = int(self.inv[id][3]);
+	if (self.activeweapon == "frag_grenade_mp" || self.activeweapon == "sticky_grenade_mp" || self.activeweapon == "satchel_charge_mp") {
+		//self iprintln("Tried to add a grenade: " + self.activeweapon);
+		self.amholdinggun = false;
+		self giveWeapon("knife_held_mp",0,true(teirIDtoCamo(4),0,0,0,0));
+		self thread GrenadeInventoryUpdator(self.activeweapon, id);
+		
+	} else if (self.inv[id][4] == "t") {
+		//self iprintln("Weapon ran!");
+		self.amholdinggun = true;
+		if (isSingleShot(self.activeweapon)) {
+			self thread WeaponMod_SingleShot(self.activeweapon, id);
+		} /*
+		else if (isScropedNotSniper(self.activeweapon)) {
+			self thread WeaponMod_Scoped(self.activeweapon, id);
+		} */
+		self giveWeapon(self.activeweapon,0,true(teirIDtoCamo(int(self.inv[id][2])),0,0,0,0));
+	} else {
+		//self iprintln("Item ran!");
+		self.amholdinggun = false;
+		self giveWeapon("knife_held_mp");
+		self thread ActivateItem(id);
+	}
+	self giveWeapon("knife_mp");
+	self SwitchToWeapon(self.activeweapon);
+	if (!self.amholdinggun) {
+		return;
+	}
+	// Setting ammo 
+	self giveMaxAmmo(self.activeweapon);
+	maxstock = self getweaponammostock(self.activeweapon);
+
+	self setWeaponAmmoClip(self.activeweapon, int(self.inv[id][1]));
+	ammo = self.ammotypes[int(self.inv[id][3])];
+	if (ammo > maxstock)
+	{
+		self.ammotypes[int(self.inv[id][3])] -= maxstock;
+		self setWeaponAmmoStock(self.activeweapon, maxstock);
+	}
+	else 
+	{ 
+		self.ammotypes[int(self.inv[id][3])] = 0;
+		self setWeaponAmmoStock(self.inv[id][0], ammo);
+	}
+}
+// Adjusts the players loadout from inventory index.
+AdjustLoadout(id)
+{
+	self notify("new_item_at_" + id);
+	if (id < 0 || id > 4) { self iprintln("^1Error: AdjustLoadout invalid index"); return; }
+	// 0 = Weapon, 1 = Clip, 2 = Rarity, 3 = Type
+	if (self.inv[id][0] == "") { self iprintln("^1Error: Tried to change to a null weapon!\n^1Reset it!");
+		wait .5;
+		self thread SetandChangeInventoryToDefaultWeapon(id);
+		return;
+	}
+	
+	// Good to go, all prelimarly checks completed!
+	if (self.lastusedinvslotindex >= 0)
+	{
+		if (self.inv[id][4] == "t" && self.amholdinggun) {
+			self.ammotypes[self.activetype] += self getweaponammostock(self.activeweapon);
+			self.inv[self.lastusedinvslotindex][0] = self.activeweapon;
+			self.inv[self.lastusedinvslotindex][1] = "" + self getweaponammoclip(self.activeweapon);
+			self.inv[self.lastusedinvslotindex][2] = "" + self.activerarity;
+			self.inv[self.lastusedinvslotindex][3] = "" + self.activetype;
+		} else { // We are not dealing with guns here ... grenades and items ...
+			self.inv[self.lastusedinvslotindex][0] = self.activeweapon;
+			self.inv[self.lastusedinvslotindex][2] = "" + self.activerarity;
+		}
+	}
+	SetLoadout(id);
+}
+
+// Takes a size value and two intergers for the range.
+// Returns an array of values that fall in the range and are unique.
+RandIntArrayNoDupe(size, min, max)
+{
+	nums = [];
+	if ((max - min) < size) { return nums; } // When the size is larger than the range, the function breaks.
+	while(nums.size < size)
+	{
+		n = RandomIntRange(min, max);
+		x = 0;
+		while(x < nums.size)
+		{
+			if (nums[x] == n)
+			{ 
+				n++;
+				if (n >= max) { n = min; }
+				x = 0;
+			}
+			else { x++; }
+		}
+		nums[nums.size] = n;
+	}
+	return nums;
+}
+isAWeapon(weap)
+{
+	w = getRawWeapon(weap);
+	if (w.size < 3) { return false; }
+	start = w.size - 3;
+	test = "";
+	test += w[start];
+	test += w[start + 1];
+	test += w[start + 2];
+	if (test == "_mp") { return true; }
+	return false;
+}
+isAGun(weap) {
+	if (isAWeapon(weap)) {
+		if (weap == "frag_grenade_mp" || weap == "sticky_grenade_mp" || weap == "satchel_charge_mp") {
+			return false;
+		}
+		return true;
+	}
+	return false;
 }
 getDisplayName(weap)
 {
@@ -403,7 +468,11 @@ getAmmoType(weap)
 	else if (weap == "m32_wager_mp") {
 		return 4;
 	}
-	return -1;
+	// Grenade / Clinger / Remote Explosives
+	else if (weap == "frag_grenade_mp" || weap == "sticky_grenade_mp" || weap == "satchel_charge_mp") {
+		return -1;
+	}
+	return 2;
 }
 PrecacheAll()
 {
@@ -448,15 +517,15 @@ addAmmo(type, ammout)
 	}
 	self.ammotypes[type] += ammout;
 	if (type == 0){
-		self iprintln("^2Added ^7" + ammout + " ^2small bullets!");
+		self iprintln("Added " + ammout + " small bullets!");
 	} else if (type == 1) {
-		self iprintln("^2Added ^7" + ammout + " ^2medium bullets!");
+		self iprintln("Added " + ammout + " medium bullets!");
 	} else if (type == 2) {
-		self iprintln("^2Added ^7" + ammout + " ^2large bullets!");
+		self iprintln("Added " + ammout + " large bullets!");
 	} else if (type == 3) {
-		self iprintln("^2Added ^7" + ammout + " ^2shotgun shells!");
+		self iprintln("Added " + ammout + " shotgun shells!");
 	} else if (type == 4) {
-		self iprintln("^2Added ^7" + ammout + " ^2explosive ammo!");
+		self iprintln("Added " + ammout + " explosive ammo!");
 	}
 }
 ammoTypeToString(type, ammout)
@@ -466,6 +535,7 @@ ammoTypeToString(type, ammout)
 	// Type: 2 Large bullets (Snipers, Semiauto riffle)
 	// Type: 3 Shotgun shells (Shotguns)
 	// Type: 4 Explosive Shells (RPG/War Machine) 
+	// 7 = Grenade, 8 = Semtex, 9 = C4
 	if (type == 0){
 		return ammout + " small bullets!";
 	} else if (type == 1) {
@@ -549,7 +619,6 @@ ToggleClassicInvControls() {
 DisTraceShot(in) {
 	return bulletTrace(self getEye(), self getEye()+vectorScale(anglesToForward(self getPlayerAngles()), in), false, self)["position"];
 }
-
 
 
 
