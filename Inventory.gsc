@@ -73,16 +73,18 @@ addItemToInventory(index, item) {
 			}
 		}
 	}
-	
+	// If the inventory is full and we need to send back an item. Get a deep copy of it.
 	if (full) {
 		olditem = self deepCopyInvStruct(self.inv[index]);
+		// If we are replacing what we are holding, must merge its stock ammo back into our reserve.
 		if (replace) {
 			self.ammotypes[self.activetype] += self getweaponammostock(self.activeweapon);
 		}
 	}
-	
+	// Set the item.
 	self.inv[index] = item;
 	self.inv[index].slotfilled = true;
+	// Update our loadout if we need to replace what we are holding.
 	if (replace) { 
 		self SetLoadout(index); 
 	}
@@ -90,7 +92,6 @@ addItemToInventory(index, item) {
 	self updateInvHudShader(index, item);
 	
 	// Return old item
-	// DEBUG
 	self iprintln("AITI Retval: " + getFullDisplayName(olditem));
 	return olditem;
 }
@@ -178,7 +179,6 @@ SetLoadout(index) {
 AdjustLoadout(index) {
 	self notify("new_item_at_" + index);
 	if (index < 0 || index > 4) { self iprintln("^1Error: AdjustLoadout invalid index"); return; }
-	
 	// Good to go, all prelimarly checks completed!
 	if (self.lastusedinvslotindex >= 0) {
 		if (self.inv[index].isweapon && self.amholdinggun) {
@@ -187,7 +187,11 @@ AdjustLoadout(index) {
 			self.inv[self.lastusedinvslotindex].clip = self getweaponammoclip(self.activeweapon);
 			self.inv[self.lastusedinvslotindex].rarity = self.activerarity;
 			self.inv[self.lastusedinvslotindex].ammotype = self.activetype;
-		} else { // We are not dealing with guns here ... grenades and items ...
+		} else if (self.inv[self.lastusedinvslotindex].isweapon && self.amholdinggun) { 
+			self.ammotypes[self.activetype] += self getweaponammostock(self.activeweapon);
+			self.inv[self.lastusedinvslotindex].weapon = self.activeweapon;
+			self.inv[self.lastusedinvslotindex].rarity = self.activerarity;
+		} else {
 			self.inv[self.lastusedinvslotindex].weapon = self.activeweapon;
 			self.inv[self.lastusedinvslotindex].rarity = self.activerarity;
 		}
