@@ -317,6 +317,7 @@ MoveBattleBus() {
 	foreach(player in level.players) {
 		player.canbuild = true;
 	}
+	level thread printIntro();
 	wait 10;
 	setDvar("bg_gravity", "800");
 }

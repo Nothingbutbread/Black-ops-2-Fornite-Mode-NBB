@@ -41,7 +41,7 @@ addItemToInventory(index, item) {
 	}
 	// If its ammo, add it but don't adjust the inventory at all.
 	if (item.weapon == "Ammo") { 
-		self iprintln("AITI: Added Ammo!");
+		//self iprintln("AITI: Added Ammo!");
 		self addAmmo(item.ammotype, item.clip);
 		return olditem;
 	}
@@ -92,7 +92,7 @@ addItemToInventory(index, item) {
 	self updateInvHudShader(index, item);
 	
 	// Return old item
-	self iprintln("AITI Retval: " + getFullDisplayName(olditem));
+	//self iprintln("AITI Retval: " + getFullDisplayName(olditem));
 	return olditem;
 }
 // Takes an item struct, returns the first index where it is found in the inventory.

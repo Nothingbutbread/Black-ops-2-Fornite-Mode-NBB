@@ -27,9 +27,12 @@ init()
 	level.stormstartingradius = 25000;
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
-	level.debugger = true;
+	// You Can Change these:
+	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
+	level.versionID = "^11.1.0 Public Beta";
+	// Do not change anything else ...
 	level.mapcustomentitylimit = 440;
 	level.entitiesperplayer = 30;
 	level.gamestatestr = "Players Alive: Unknown\nStorm Width: 25000";
@@ -107,6 +110,20 @@ onDisconnect() {
 	self DeleteAllCustomEntities();
 	self.inthisgame = false;
 }
+printIntro() {
+	iprintln("^2This is ^5Fortnite Battle Royal ^3V" + level.versionID);
+	wait 2;
+	iprintln("^2Developed by: ^6Nothingbutbread");
+	wait 1;
+	iprintln("^3If you enjoy this gamemode, Subscribe to the developer on ^1Youtube");
+	iprintln("^5https://www.youtube.com/channel/UCkoRr0Ye4If_Wc24KQBgloQ");
+	wait 3;
+	iprintln("^3Thank you, and have a awesome match!");
+	iprintln("^5Features such as teaming, new weapons and mapedits coming in the next update!");
+	wait 4;
+	iprintln("^1Note to host: ^3If this download was obtained via an adfly link");
+	iprintln("^3Please report the person who provided it to ^6Nothingbutbread");
+}
 gameManager()
 {
 	level endon("game_ended");
@@ -115,7 +132,8 @@ gameManager()
 	if (level.debugger) {
 		//level thread DammageTestBotSpawn();
 		level thread LootSpawnerGeneator();
-		level.entitiesperplayer = 30;
+		level.entitiesperplayer = 40;
+		level thread printIntro();
 		return;
 	}
 	for(x = 20; x > 0; x--) {

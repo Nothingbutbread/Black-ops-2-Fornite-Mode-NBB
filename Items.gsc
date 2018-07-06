@@ -172,7 +172,7 @@ SmallShielditem(index) {
 	if (self.fortshield >= 50) {
 		self fadeInItemToolTip("Your shield is above 50 percent!");
 	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use shield");
+		self fadeInItemToolTip("Hold [{+usereload}] to use Shield");
 	}
 	wait .5;
 	while(index == self.lastusedinvslotindex) {

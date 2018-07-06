@@ -70,10 +70,10 @@ GenerateChestLoot(onlylegn) {
 	retval = createInventorySlotStruct();
 	retval.rarity = 0; // 50% of common
 	item = PickCommonItem();
-	if (luck >= 96 || level.solidgold || onlylegn) { retval.rarity = 4; item = PickLegendaryItem(); } // 5% for Legendary
-	else if (luck >= 88) { retval.rarity = 3; item = PickEpicItem(); } // 10% for Epic
-	else if (luck >= 76) { retval.rarity = 2; item = PickRareItem(); } // 15% for Rare
-	else if (luck >= 58) { retval.rarity = 1; item = PickUncommonItem(); } // 20% for Uncommon
+	if (luck >= 98 || level.solidgold || onlylegn) { retval.rarity = 4; item = PickLegendaryItem(); } // 5% for Legendary
+	else if (luck >= 90) { retval.rarity = 3; item = PickEpicItem(); } // 10% for Epic
+	else if (luck >= 89) { retval.rarity = 2; item = PickRareItem(); } // 15% for Rare
+	else if (luck >= 54) { retval.rarity = 1; item = PickUncommonItem(); } // 20% for Uncommon
 	retval.weapon = item;
 	retval.isweapon = isAWeapon(item);
 	retval.slotfilled = true;
