@@ -69,9 +69,9 @@ Standoff()
 	level.belowmapdeathbarrier = -3000;
 	level.battlebusendorigin = (-11290,-7950,6000);
 	level.battlebustimetotarget = 15;
-	level.stormcenterpoint = (-169,-160,10);
-	level.stormstartingradius = 25000;
-	level.mapcustomentitylimit = 426;
+	level.stormcenterpoint = (-169,-160,50);
+	level.stormstartingradius = 20000;
+	level.mapcustomentitylimit = 426; // Note to mapediters, The higher you set this, the more objects players can have at once, If you set it too high you will get an entity overflow.
 	level thread spawnObject("collision_clip_wall_256x256x10", (594,-1615, -5), (0,0,90)); // Patches an exploitable hole in the map.
 	/*
 	if (level.debugger) {
@@ -212,7 +212,7 @@ Standoff()
 	level thread Forge_Teleport((-1137,867,0), (-1488,888,0));
 	level thread Forge_Teleport((817,1976,10), (803,2205,3));
 	level thread Forge_Teleport((1537,-316,0), (1916,-357,42));
-	level thread DoNotBuildZone((2010,2200,-10), (-2080,-2900,400));
+	level thread DoNotBuildZone((2010,2200,-1000), (-2080,-2900,500));
 	level thread Forge_CreateBattleBus((-3605,16736,6000));
 }
 Nuketown()
@@ -313,6 +313,7 @@ Detour()
 
 Uplink()
 { }
+
 
 
 

@@ -81,7 +81,7 @@ onPlayerSpawned()
         	self.status = 3;
         	//self thread VarPrinter();
         	//self GiveTestInventory();
-        	self thread printOrigin();
+        	//self thread printOrigin();
         }
         self AdjustLoadout(0);
         self EnableInvulnerability();
@@ -186,26 +186,13 @@ gameManager()
 }
 init_player_vars()
 {
-	// 5 slots each with a weapon
-	// 0 = Weapon, 1 = Clip, 2 = Rarity, 3 = index of type of ammo, 4 = isweapon
-	self.inv = [];
-	for(x = 0; x < 5; x++) { 
-		self.inv[x][0] = "knife_held_mp";
-		self.inv[x][1] = "0";
-		self.inv[x][2] = "0";
-		self.inv[x][3] = "0";
-		self.inv[x][4] = "t";
-	}
-	// Reserve ammo of each type.
-	// Types: 0 = Auto/Bust AR's, 1 = SemiAuto weapons (Snipers and FAL/SMR)
-	// 2 = SMG, 3 = LMG/Death machine, 4 = Shotgun, 5 = Explosives (Launchers and Warmachines)
-	// 6 = Pistols (not inculuding the executioner) 
+	self.inv = self createInventory();
 	self.ammotypes = [];
 	for(x = 0; x < 5; x++) { 
 		self.ammotypes[x] = 0; 
 	}
 	
-	self.lastusedinvslotindex = -1;
+	self.lastusedinvslotindex = 0;
 	self.activeweapon = "knife_held_mp";
 	self.activerarity = 0;
 	self.activetype = 0;
@@ -231,43 +218,3 @@ init_player_vars()
 	self.canbuild = false;
 	self.lastplacedramp = false;
 }
-GetRandomAmmoAmmout(type) {
-	// Type: 0 Small bullets  (SMGs, SemiAuto Pistols, Minigun)
-	// Type: 1 Medium bullets (ARs, LMG, Revolovers/Hand Cannon) 
-	// Type: 2 Large bullets (Snipers, Semiauto riffle)
-	// Type: 3 Shotgun shells (Shotguns)
-	// Type: 4 Explosive Shells (RPG/War Machine) 
-	ammo = 2;
-	if (type == 0) {
-		ammo = RandomIntRange(20, 80);
-	} else if (type == 1) {
-		ammo = RandomIntRange(15, 40);
-	} else if (type == 2) {
-		ammo = RandomIntRange(6, 20);
-	} else if (type == 3) {
-		ammo = RandomIntRange(6, 30);
-	} else if (type == 4) {
-		ammo = RandomIntRange(2, 6);
-	}
-	return ammo;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,5 @@
 createInventory() {
 	// 5 slots each with a weapon
-	// 0 = Weapon, 1 = Clip, 2 = Rarity, 3 = index of type of ammo, 4 = isweapon
 	retval = [];
 	for(x = 0; x < 5; x++) {
 		retval[x] = createInventorySlotStruct();
@@ -10,91 +9,200 @@ createInventory() {
 createInventorySlotStruct() {
 	inv = spawnstruct();
 	inv.weapon = "knife_held_mp";
-	inv.clip = 0;
+	inv.clip = 0; //Guns: Whats in the mag, Items and Grenades: Ammout that is had.
 	inv.rarity = 0;
-	inv.ammotype = 0;
+	inv.ammotype = 0; //Guns: Type of ammo that the gun takes, Items and Grenades: Ignored, when an item/grenade set to -1.
 	inv.isweapon = true;
-	inv.slotfilled = false;
+	inv.slotfilled = false; //When used as an item struct, this states if the item is ammo or not.
 	return inv;
 }
-addItemToInventory(index, weap, mag, rarity, ammotype, isweapon)
-{
-	
+deepCopyInvStruct(struct) {
+	retval = self createInventorySlotStruct();
+	retval.weapon = struct.weapon;
+	retval.clip = struct.clip; 
+	retval.rarity = struct.rarity;
+	retval.ammotype = struct.ammotype; 
+	retval.isweapon = struct.isweapon;
+	retval.slotfilled = struct.slotfilled;
+	return retval;
+}
+// Adds an item to a players inventory.
+// The index is in int between and including 0 - 4. This location is forced if the inventory is full.
+// item is an item struct, the item to be added. 
+// It returns either an empty item struct or the item that was replaced.
+addItemToInventory(index, item) {
+	olditem = self createInventorySlotStruct();
+	// Error Check
+	if (!item.slotfilled) {
+		self iprintln("^1ERROR: ^3Failed AITI item.slotfilled check. Tried to add an empty item!");
+		return olditem;
+	}
+	// If its ammo, add it but don't adjust the inventory at all.
+	if (item.weapon == "Ammo") { 
+		self iprintln("AITI: Added Ammo!");
+		self addAmmo(item.ammotype, item.clip);
+		return olditem;
+	}
+	// Now I need to figure out exactly the item will go in the inventory.
 	replace = false;
-	add = false;
-	olditem = [];
-	// Is the player is holding the weapon that is being replaced?
-	if (self.lastusedinvslotindex == index && self.inv[index][0] == self.activeweapon) {
+	full = true;
+	for(a = 0; a < 5; a++) {
+		if (!self.inv[a].slotfilled) {
+			index = a;
+			full = false;
+			break;
+		}
+	}
+	
+	// Determines if we should auto-change the current item out of the players hand or not.
+	if (self.lastusedinvslotindex == index && self.inv[index].weapon == self.activeweapon) {
 		replace = true;
 	}
-	if (!IsEmpty(index)) {
-		olditem = self.inv[index];
+	if (self.inv[index].weapon == item.weapon) {
+		if (!self.inv[index].isweapon) {
+			self.inv[index].clip += item.clip;
+			return olditem;
+		} else if (self.inv[index].weapon == "frag_grenade_mp" || self.inv[index].weapon == "sticky_grenade_mp" || self.inv[index].weapon == "satchel_charge_mp") {
+			self.inv[index].clip += item.clip;
+			return olditem;
+		}
+	}
+	
+	if (full) {
+		olditem = self deepCopyInvStruct(self.inv[index]);
 		if (replace) {
 			self.ammotypes[self.activetype] += self getweaponammostock(self.activeweapon);
 		}
 	}
-	for(x = 0; x < 5; x++) {
-		if (IsEmpty(x)) {
-			index = x;
-			break;
-		}
-	}
-	// Guns
-	// 0 = Weapon, 1 = Clip, 2 = Rarity, 3 = index of type of ammo, 4 = isweapon
-	// Items
-	// 0 = itemname, 1 = ammout of it, 2 = Rarity, 3 (set to 0), 4 = (set to false)
-	//self iprintln("Index: " + index + " Weapon: " + weap);
-	if (self.inv[index][0] == weap) {
-		if (self.inv[index][4] == "f") {
-			add = true;
-		} else if (self.inv[index][0] == "frag_grenade_mp" || self.inv[index][0] == "sticky_grenade_mp" || self.inv[index][0] == "satchel_charge_mp") {
-			add = true;
-		}
-	}
-	if (add) {
-		ammo = int(self.inv[index][1]);
-		ammo += int(mag);
-		self.inv[index][1] = "" + ammo;
-	} else {
-		self.inv[index][0] = weap;
-		self.inv[index][1] = "" + mag;
-		self.inv[index][2] = "" + rarity;
-		self.inv[index][3] = "" + ammotype;
-	}
-	if (isweapon) { 
-		self.inv[index][4] = "t";
-	} else { 
-		self.inv[index][4] = "f";
-	}
+	
+	self.inv[index] = item;
+	self.inv[index].slotfilled = true;
 	if (replace) { 
-		SetLoadout(index); 
+		self SetLoadout(index); 
 	}
 	// Inventory updated, lets do the HUD now
-	self updateInvHudShader(index, int(rarity), weap);
+	self updateInvHudShader(index, item);
 	
 	// Return old item
+	// DEBUG
+	self iprintln("AITI Retval: " + getFullDisplayName(olditem));
 	return olditem;
 }
+SetandChangeInventoryToDefaultWeapon(index) {
+	//self DeleteItemInInventory(index);
+	self.inv[index] = self createInventorySlotStruct();
+	self.activeweapon = "knife_held_mp";
+	self.activerarity = 0;
+	self.activetype = 0;
+	self.amholdinggun = true;
+	self AdjustLoadout(index);
+	self updateInvHudShader(index, self.inv[index]);
+}
+DeleteItemInInventory(index) {
+	self.inv[index] = self createInventorySlotStruct();
+}
+IsEmpty(index) {
+	return self.inv[index].slotfilled;
+}
+SetLoadout(index) {
+	self notify("new_item_at_" + index);
+	self TakeAllWeapons();
+   	self ClearPerks();
+   	self fadeOutItemToolTip();
+   	self fadeOutProgressBar();
+   	self SetActionSlot(1, "");
+	self SetActionSlot(2, "");
+	self SetActionSlot(3, "");
+	self SetActionSlot(4, "");
+	self setperk("specialty_unlimitedsprint");
+	self setperk("specialty_fastweaponswitch");
+	self setperk("specialty_fallheight");
+	self.lastusedinvslotindex = index;
+	self.activeweapon = self.inv[index].weapon;
+	self.activerarity = self.inv[index].rarity;
+	if (self.activeweapon == "frag_grenade_mp" || self.activeweapon == "sticky_grenade_mp" || self.activeweapon == "satchel_charge_mp") {
+		self.amholdinggun = false;
+		self giveWeapon("knife_held_mp",0,true(teirIDtoCamo(4),0,0,0,0));
+		self thread GrenadeInventoryUpdator(self.activeweapon, index);
+		
+	} else if (self.inv[index].isweapon) {
+		self.amholdinggun = true;
+		self.activetype = self.inv[index].ammotype;
+		if (isSingleShot(self.activeweapon)) {
+			self thread WeaponMod_SingleShot(self.activeweapon, index);
+		} /*
+		else if (isScropedNotSniper(self.activeweapon)) {
+			self thread WeaponMod_Scoped(self.activeweapon, index);
+		} */
+		self giveWeapon(self.activeweapon,0,true(teirIDtoCamo(self.inv[index].rarity),0,0,0,0));
+	} else {
+		self.amholdinggun = false;
+		self giveWeapon("knife_held_mp",0,true(teirIDtoCamo(4),0,0,0,0));
+		self thread ActivateItem(index);
+	}
+	self giveWeapon("knife_mp");
+	self SwitchToWeapon(self.activeweapon);
+	if (!self.amholdinggun) {
+		return;
+	}
+	// Setting ammo 
+	self giveMaxAmmo(self.activeweapon);
+	maxstock = self getweaponammostock(self.activeweapon);
+
+	self setWeaponAmmoClip(self.activeweapon, self.inv[index].clip);
+	ammo = self.ammotypes[self.inv[index].ammotype];
+	if (ammo > maxstock) {
+		self.ammotypes[self.inv[index].ammotype] -= maxstock;
+		self setWeaponAmmoStock(self.activeweapon, maxstock);
+	} else { 
+		self.ammotypes[self.inv[index].ammotype] = 0;
+		self setWeaponAmmoStock(self.inv[index].weapon, ammo);
+	}
+	//self iprintln("^1PRINTING----------");
+	//self iprintln("^1DEBUG: ^7" + self getFullDisplayName(self.inv[index]));
+}
+// Adjusts the players loadout from inventory index.
+AdjustLoadout(index) {
+	self notify("new_item_at_" + index);
+	if (index < 0 || index > 4) { self iprintln("^1Error: AdjustLoadout invalid index"); return; }
+	// 0 = Weapon, 1 = Clip, 2 = Rarity, 3 = Type
+	if (self.inv[index].weapon == "") { self iprintln("^1Error: Tried to change to a null weapon!\n^1Reset it!");
+		wait .3;
+		self thread SetandChangeInventoryToDefaultWeapon(index);
+		return;
+	}
+	
+	// Good to go, all prelimarly checks completed!
+	if (self.lastusedinvslotindex >= 0) {
+		if (self.inv[index].isweapon && self.amholdinggun) {
+			self.ammotypes[self.activetype] += self getweaponammostock(self.activeweapon);
+			self.inv[self.lastusedinvslotindex].weapon = self.activeweapon;
+			self.inv[self.lastusedinvslotindex].clip = self getweaponammoclip(self.activeweapon);
+			self.inv[self.lastusedinvslotindex].rarity = self.activerarity;
+			self.inv[self.lastusedinvslotindex].ammotype = self.activetype;
+		} else { // We are not dealing with guns here ... grenades and items ...
+			self.inv[self.lastusedinvslotindex].weapon = self.activeweapon;
+			self.inv[self.lastusedinvslotindex].rarity = self.activerarity;
+		}
+	}
+	self SetLoadout(index);
+}
+	
 ActivateItem(index) {
-	if (self.inv[index][0] == "Bandage") {
-		self thread Bandageitem(index, int(self.inv[index][3]));
-		//self thread itemProgressBar();
-	}
-	else if (self.inv[index][0] == "Medkit") {
-		self thread Medkititem(index, int(self.inv[index][3]));
-	}
-	else if (self.inv[index][0] == "Small Shield") { 
-		self thread SmallShielditem(index, int(self.inv[index][3]));
-	}
-	else if (self.inv[index][0] == "Large Shield") {
-		self thread LargeShielditem(index, int(self.inv[index][3]));
-	}
-	else if (self.inv[index][0] == "Chug Jug") {
-		self thread ChugJugItem(index, int(self.inv[index][3]));
-	}
-	else if (self.inv[index][0] == "Slurp Juice") {
-		self thread SlurpJuiceItem(index, int(self.inv[index][3]));
+	if (self.inv[index].weapon == "Bandage") {
+		self thread Bandageitem(index);
+	} else if (self.inv[index].weapon == "Medkit") {
+		self thread Medkititem(index);
+	} else if (self.inv[index].weapon == "Small Shield") { 
+		self thread SmallShielditem(index);
+	} else if (self.inv[index].weapon == "Large Shield") {
+		self thread LargeShielditem(index);
+	} else if (self.inv[index].weapon == "Chug Jug") {
+		self thread ChugJugItem(index);
+	} else if (self.inv[index].weapon == "Slurp Juice") {
+		self thread SlurpJuiceItem(index);
 	}
 }
+
 
 

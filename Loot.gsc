@@ -51,60 +51,43 @@ LootSpawnerGeneator() {
 GenerateLoot()
 {
 	luck = RandomIntRange(0, 100);
-	rarity = 0; // 50% of common
-	item = PickCommonItem();
-	if (luck >= 96) { rarity = 4; item = PickLegemdaryItem(); } // 5% for Legendary
-	else if (luck >= 88) { rarity = 3; item = PickEpicItem(); } // 10% for Epic
-	else if (luck >= 76) { rarity = 2; item = PickRareItem(); } // 15% for Rare
-	else if (luck >= 58) { rarity = 1; item = PickUncommonItem(); } // 20% for Uncommon
-	// 
-	//item = PickDebugItem();
-	//
-	if (level.solidgold) {
-		rarity = 4; item = PickLegemdaryItem();
-	}
-	retval = []; retval[0] = item; retval[1] = "" + rarity;
+	retval = createInventorySlotStruct();
+	retval.rarity = 0; // 50% of common
+	retval.weapon = PickCommonItem();
+	if (luck >= 96 || level.solidgold) { retval.rarity = 4; retval.weapon = PickLegendaryItem(); } // 5% for Legendary
+	else if (luck >= 88) { retval.rarity = 3; retval.weapon = PickEpicItem(); } // 10% for Epic
+	else if (luck >= 76) { retval.rarity = 2; retval.weapon = PickRareItem(); } // 15% for Rare
+	else if (luck >= 58) { retval.rarity = 1; retval.weapon = PickUncommonItem(); } // 20% for Uncommon
+	retval.isweapon = isAWeapon(retval.weapon);
+	retval.ammotype = getAmmoType(retval.weapon);
 	return retval;
 }
-GenerateChestLoot(onlylegn)
-{
+GenerateChestLoot(onlylegn) {
 	if (!isDefined(onlylegn)) {
 		onlylegn = false;
 	}
 	luck = RandomIntRange(0, 100);
-	rarity = 0; // 50% of common
+	retval = createInventorySlotStruct();
+	retval.rarity = 0; // 50% of common
 	item = PickCommonItem();
-	if (luck >= 96) { rarity = 4; item = PickLegemdaryItem(); } // 5% for Legendary
-	else if (luck >= 88) { rarity = 3; item = PickEpicItem(); } // 10% for Epic
-	else if (luck >= 76) { rarity = 2; item = PickRareItem(); } // 15% for Rare
-	else if (luck >= 58) { rarity = 1; item = PickUncommonItem(); } // 20% for Uncommon
-	//
-	//item = PickDebugItem();
-	if (level.solidgold || onlylegn) {
-		rarity = 4; item = PickLegemdaryItem();
-	}
-	retval = []; retval[0] = ""; retval[1] = ""; retval[2] = ""; retval[3] = ""; retval[4] = "";
-	
-	model = getRawWeapon(item);
-	isweap = isAWeapon(model);
-	retval[2] = "" + rarity;
-	retval[1] = "" + teirIDToStringColor(rarity) + "" + getDisplayName(item);
-	if (isweap) {
-		retval[0] = item;
-		retval[3] = "999"; //Full mag
-		retval[4] = "t";
+	if (luck >= 96 || level.solidgold || onlylegn) { retval.rarity = 4; item = PickLegendaryItem(); } // 5% for Legendary
+	else if (luck >= 88) { retval.rarity = 3; item = PickEpicItem(); } // 10% for Epic
+	else if (luck >= 76) { retval.rarity = 2; item = PickRareItem(); } // 15% for Rare
+	else if (luck >= 58) { retval.rarity = 1; item = PickUncommonItem(); } // 20% for Uncommon
+	retval.weapon = item;
+	retval.isweapon = isAWeapon(item);
+	retval.slotfilled = true;
+	if (retval.isweapon) {
+		retval.clip = 999;
+		retval.ammotype = getAmmoType(item);
 	} else {
-		retval[0] = "knife_held_mp";
-		retval[3] = "" + getDefaultItemSpawnCount(model);
-		retval[4] = "f";
+		retval.clip = getDefaultItemSpawnCount(item);
+		retval.ammotype = -1;
 	}
-	if (model == "frag_grenade_mp" || model == "sticky_grenade_mp" || model == "satchel_charge_mp") {
-		retval[3] = "" + getDefaultItemSpawnCount(model);
+	if (item == "frag_grenade_mp" || item == "sticky_grenade_mp" || item == "satchel_charge_mp") {
+		retval.clip = getDefaultItemSpawnCount(item);
 	}
 	return retval;
-}
-PickDebugItem() {
-	return "sa58_mp+acog";
 }
 PickCommonItem()
 {
@@ -178,7 +161,7 @@ PickEpicItem()
 	else if (c == 12) { return "smaw_mp"; }
 	else if (c == 13) { return "Slurp Juice"; }
 }
-PickLegemdaryItem()
+PickLegendaryItem()
 {
 	c = RandomIntRange(0, 16); // Only weapons for now
 	if (c == 0) { return "scar_mp"; }
@@ -199,6 +182,7 @@ PickLegemdaryItem()
 	else if (c == 14) { return "fnp45_mp+dualclip"; }
 	else if (c == 15) { return "sa58_mp+acog"; }
 }
+
 
 
 
