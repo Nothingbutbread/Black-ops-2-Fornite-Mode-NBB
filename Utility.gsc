@@ -137,6 +137,14 @@ getItemShader(weap)
 	if (weap == "sig556_mp" || weap == "sig556_mp+stalker") {
 		return "menu_mp_weapons_sig556";
 	}
+	// Drum Gun
+	else if (weap == "pdw57_mp+fastads") {
+		return "menu_mp_weapons_ar57";
+	}
+	// Thermal AR
+	else if (weap == "svu_mp+is") {
+		return "menu_mp_weapons_svu";
+	}
 	// Auto rifle
 	else if (weap == "scar_mp" || weap == "scar_mp+extclip") {
 		return "menu_mp_weapons_scar";
@@ -238,6 +246,12 @@ getDisplayName(weap)
 	if (weap == "sig556_mp") {
 		return "Burst Assult Rifle";
 	}
+	else if (weap == "pdw57_mp+fastads") {
+		return "Drum Gun";
+	}
+	else if (weap == "svu_mp+is") {
+		return "Thermal Scoped Assult Riffle";
+	}
 	else if (weap == "sig556_mp+stalker") {
 		return "Famas";
 	}
@@ -246,7 +260,7 @@ getDisplayName(weap)
 		return "Automatic Assult Rifle";
 	}
 	else if (weap == "scar_mp+extclip") {
-		return "ScarH";
+		return "Scar-H";
 	}
 	// Scoped rifle
 	else if (weap == "sa58_mp+acog") {
@@ -339,6 +353,12 @@ getAmmoType(weap)
 	if (weap == "sig556_mp" || weap == "sig556_mp+stalker") {
 		return 1;
 	}
+	else if (weap == "pdw57_mp+fastads") {
+		return 1;
+	}
+	else if (weap == "svu_mp+is") {
+		return 1;
+	}
 	// Auto rifle
 	else if (weap == "scar_mp" || weap == "scar_mp+extclip") {
 		return 1;
@@ -407,7 +427,7 @@ getAmmoType(weap)
 }
 PrecacheAll()
 {
-	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,insas,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,ballistic_knife",",");
+	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,insas,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,ar57,svu",",");
 	foreach(shader in shaders) { Precacheshader("menu_mp_weapons_" + shader); }
 	Precacheshader("hud_icon_minigun");
 	Precacheshader("hud_grenadeicon");
@@ -537,22 +557,18 @@ DisTraceShot(in) {
 	return bulletTrace(self getEye(), self getEye()+vectorScale(anglesToForward(self getPlayerAngles()), in), false, self)["position"];
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+fetchClantag(n) {
+	if (n[0] == "[") {
+		i = "[";
+		for(a=1;a<7;a++) {
+			if (n[a] != "]") {
+				i += n[a];
+			} else {
+				i += "]";
+				return i;
+			}
+		}
+	} else {
+		return "";
+	}
+}

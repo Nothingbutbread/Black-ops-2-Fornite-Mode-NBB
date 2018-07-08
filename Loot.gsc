@@ -108,7 +108,7 @@ PickCommonItem()
 }
 PickUncommonItem()
 {
-	c = RandomIntRange(0, 12); // Only weapons for now
+	c = RandomIntRange(0, 14); // Only weapons for now
 	if (c == 0) { return "scar_mp"; }
 	else if (c == 1) { return "sig556_mp"; }
 	else if (c == 2) { return "mp7_mp+silencer"; }
@@ -121,11 +121,13 @@ PickUncommonItem()
 	else if (c == 9) { return "sticky_grenade_mp"; }
 	else if (c == 10) { return "Medkit"; }
 	else if (c == 11) { return "Small Shield"; }
+	else if (c == 12) { return "pdw57_mp+fastads"; }
+	else if (c == 13) { return "pdw57_mp+fastads"; }
 	//Medkit
 }
 PickRareItem()
 {
-	c = RandomIntRange(0, 16); // Only weapons for now
+	c = RandomIntRange(0, 18); // Only weapons for now
 	if (c == 0) { return "scar_mp"; }
 	else if (c == 1) { return "sig556_mp"; }
 	else if (c == 2) { return "mp7_mp+silencer"; }
@@ -142,6 +144,8 @@ PickRareItem()
 	else if (c == 13) { return "m32_wager_mp"; }
 	else if (c == 14) { return "satchel_charge_mp"; }
 	else if (c == 15) { return "Large Shield"; }
+	else if (c == 16) { return "pdw57_mp+fastads"; }
+	else if (c == 17) { return "pdw57_mp+fastads"; }
 }
 PickEpicItem()
 {
@@ -182,6 +186,7 @@ PickLegendaryItem()
 	else if (c == 14) { return "fnp45_mp+dualclip"; }
 	else if (c == 15) { return "sa58_mp+acog"; }
 }
+
 
 
 

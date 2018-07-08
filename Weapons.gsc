@@ -22,10 +22,10 @@ DefineWeapondataarray()
 	level.AttachmentArray[7] = "reflex"; //Reflex Sight
 	level.AttachmentArray[8] = "rf"; //Rapid Fire
 	level.AttachmentArray[9] = "tacknife"; //Tactical Knife
-	level.AttachmentArray[10] = "stalker"; //Stock
+	level.AttachmentArray[10] = "stalker"; //Stock 
 	level.AttachmentArray[11] = "silencer"; //Suppressor
 	level.AttachmentArray[12] = "extclip"; //Extended Clip
-	level.AttachmentArray[13] = "fmj"; //FMJ
+	level.AttachmentArray[13] = "fmj"; //FMJ 
 	level.AttachmentArray[14] = "steadyaim"; //Laser
 	level.AttachmentArray[15] = "acog"; //ACOG
 	level.AttachmentArray[16] = "dualclip"; //Fast Mag
@@ -179,6 +179,7 @@ WeaponMod_RefreshStock() {
 		wait .1;
 	}
 }
+
 
 
 

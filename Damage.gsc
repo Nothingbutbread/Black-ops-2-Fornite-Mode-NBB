@@ -47,7 +47,10 @@ ApplyStormDammage() {
 	}
 }
 appHit(damage, attacker, weapon) {
-	self iprintln("^5You took " + damage + " from " + attacker.name + " bymeans of " + weapon);
+	if (level.allowteams && !self shouldDealDamage(attacker)) {
+		return;
+	}
+	self iprintln("^1You took ^3" + damage + " ^1from ^5" + attacker.name + " ^1bymeans of ^5" + weapon);
 	if (self.fortshield > 0) {
 		r = damage - self.fortshield;
 		if (r <= 0) {
@@ -63,7 +66,10 @@ appHit(damage, attacker, weapon) {
 		self.forthealth -= damage;
 		attacker iprintln("^2" + self.name + " took a net damage of " + damage);
 	}
-	if (self.forthealth <= 0) { 
+	if (level.allowteams && !self.downed && self.forthealth <= 0) {
+		iprintln(self.name + " was knocked out by " + attacker.name + " bymeans of " + weapon);
+		self thread OnPlayerDowned(attacker);
+	} else if (self.forthealth <= 0) { 
 		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weapon);
 	}
 }
@@ -71,6 +77,14 @@ dammageMap(weap) {
 	// Burst rifle
 	if (weap == "sig556_mp" || weap == "sig556_mp+stalker") {
 		return 27;
+	}
+	// Drum Gun / Tommy Gun
+	else if (weap == "pdw57_mp+fastads") {
+		return 23;
+	}
+	else if (weap == "svu_mp+is") {
+		return 31;
+		// 36 / 37 {Epic / Legendary}
 	}
 	// Auto rifle
 	else if (weap == "scar_mp" || weap == "scar_mp+extclip") {
@@ -185,6 +199,7 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
+
 
 
 

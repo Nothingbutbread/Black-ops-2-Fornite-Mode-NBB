@@ -168,16 +168,15 @@ overflowfix()
 	}
 }
 
-setSafeText(text)
-{
-    if (!isInArray(level.strings, text))
-    {
+setSafeText(text) {
+    if (!isInArray(level.strings, text)) {
         level.strings[level.strings.size] = text;
         self setText(text);
         level notify("textset");
     }
-    else
+    else {
         self setText(text);
+    }
 }
 
 OpenInventoryGUIBind()
@@ -185,10 +184,10 @@ OpenInventoryGUIBind()
 	self endon("disconnect");
 	self.menuopen = false;
 	while(true) {
-		if (self actionslotonebuttonpressed() && !self.menuopen && self.status > 2) {
+		if (self actionslotonebuttonpressed() && !self.menuopen && self.status > 2 && !self.downed) {
 			self thread keyBinds();
 			return;
-		} else if (self changeseatbuttonpressed() && !self.menuopen && self.status > 2) {
+		} else if (self changeseatbuttonpressed() && !self.menuopen && self.status > 2 && !self.downed) {
 			for(x = 0; x < 5; x++) {
 				self.selectorpos++;
 				if (self.selectorpos > 4) {
@@ -506,6 +505,7 @@ HUD_GTR(size, x)
 	colorgreen += move;	
 	return (colorgreen, colorred,0);
 }
+
 
 
 

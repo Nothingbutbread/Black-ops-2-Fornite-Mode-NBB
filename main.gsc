@@ -28,9 +28,11 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.debugger = false;
+	level.debugger = true;
 	level.solidgold = false;
 	level.blitz = false;
+	level.allowteams = false;
+	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
 	level.versionID = "^11.1.0 Public Beta";
 	// Do not change anything else ...
 	level.mapcustomentitylimit = 440;
@@ -136,7 +138,8 @@ gameManager()
 		level thread printIntro();
 		return;
 	}
-	for(x = 20; x > 0; x--) {
+	level thread prepForTeamBasedFortnite();
+	for(x = 20; x > 5; x--) {
 		iprintln("Fortnite Battle Royal Starting in " + x + " seconds!");
 		foreach(player in level.players) { 
 			if (IsAlive(player)) { 
@@ -145,6 +148,7 @@ gameManager()
 		}
 		wait 1;
 	}
+	wait 5;
 	iprintln("^6All aboard the battle bus!");
 	wait 1;
 	level thread TeleportToBattleBus();
@@ -228,11 +232,19 @@ init_player_vars()
 	self.canteleport = true;
 	self.spawnorigin = (0,0,0);
 	self.unstuckability = true;
-	self.useinventorymod = 1;
 	
 	self.buildentites = [];
 	self.activebuildindex = 0;
 	self.hastodeleteentities = false;
 	self.canbuild = false;
 	self.lastplacedramp = false;
+	
+	//V1.2 Update
+	self.teamtag = "";
+	self.downed = false;
+	self.closestally = self;
+	if (level.allowteams) {
+		self init_Teams_Client();
+	}
 }
+
