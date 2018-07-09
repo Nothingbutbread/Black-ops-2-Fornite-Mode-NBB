@@ -24,7 +24,7 @@ init()
 	level.activespiningitems = 0;
 	level.activespeicallootdrops = 0;
 	level.stormcenterpoint = (0,0,0);
-	level.stormstartingradius = 25000;
+	level.stormstartingradius = 20000;
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
@@ -243,6 +243,7 @@ init_player_vars()
 	self.teamtag = "";
 	self.downed = false;
 	self.closestally = self;
+	self.isbeingrevived = false;
 	if (level.allowteams) {
 		self init_Teams_Client();
 	}

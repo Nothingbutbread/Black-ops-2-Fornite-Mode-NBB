@@ -2,32 +2,42 @@
 init_Teams_Client() {
 	tag = self fetchClantag(self.name);
 	if (tag.size >= 4) {
+		self.teamtag = "";
 		self.teamtag += tag[1];
 		self.teamtag += tag[2];
 	}
 }
-OnPlayerDowned(attacker) {
+OnPlayerRevived() {
+	self.forthealth = 30;
+	self.downed = false;
+	self updateControlsInfo("[{+actionslot 1}] Open Menu");
+	self enableWeapons();
+	self setStance("stand");
+	self setMoveSpeedScale(1);
+	self notify("no_longer_down");
+}
+OnPlayerDowned(attacker, weapon) {
 	self endon("death");
 	self endon("disconnect");
+	self endon("no_longer_down");
 	self.fortshield = 0;
 	self.forthealth = 100;
 	self.downed = true;
 	self disableWeapons();
 	self updateControlsInfo("You must be revived to\nuse your inventory!");
 	self setStance("prone");
-	self setMoveSpeedScale(0.3);
+	self setMoveSpeedScale(0.5);
 	self closeInventory(true);
-		
-	tick = 0;
-	while(self.forthealth > 0) {
+	
+	while(self.forthealth > 0 && self hasTeamatesAlive()) {
 		self setStance("prone");
-		if (tick >= 7) {
+		if (!self.isbeingrevived) {
 			self.forthealth--;
-			tick = 0;
 		}
-		tick++;
-		wait .1;
+		wait .35;
 	}
+	self.downed = false;
+	self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weapon);
 }
 CarryOutReviving() {
 	self endon("disconnect");
@@ -35,6 +45,9 @@ CarryOutReviving() {
 	while(true) {
 		if (isDefined(self.closestally)) {
 			if (Distance(self.closestally.origin, self.origin) < 60 && self.closestally.downed && self.inv[self.lastusedinvslotindex].isweapon && !startedreviving && !self.menuopen) {
+				if (self.closestally.isbeingrevived) {
+					continue;
+				}
 				self fadeInItemToolTip("Hold [{+usereload}] to use revive " + self.closestally.name);
 				if (self usebuttonpressed()) {
 					self.ItemUseText = "Hold [{+usereload}] to use revive " + self.closestally.name;
@@ -47,18 +60,22 @@ CarryOutReviving() {
 						self.fortHUDS[16] updateBar(time / 40);
 						self.fortHUDS[16].bar.color = HUD_RTG(40, time);
 						time++;
+						self.closestally.isbeingrevived = true;
 						wait .25;
 					}
 					if (time >= 39) {
 						self.closestally thread OnPlayerRevived();
 						self fadeOutItemToolTip();
 						self fadeOutProgressBar();
+						self.closestally.isbeingrevived = false;
 						self iprintlnbold("Revive successful!");
 					} else {
+						self.closestally.isbeingrevived = false;
 						self fadeOutProgressBar();
 					}
 				}
 			} else {
+				self.closestally.isbeingrevived = false;
 				self fadeOutItemToolTip();
 			}
 		}
@@ -88,19 +105,22 @@ NearestTeammate() {
 		wait 1.25;
 	}
 }
-OnPlayerRevived() {
-	self.forthealth = 30;
-	self.downed = false;
-	self updateControlsInfo("[{+actionslot 1}] Open Menu");
-	self enableWeapons();
-	self setStance("stand");
-	self setMoveSpeedScale(1);
-}
 shouldDealDamage(attacker) {
 	if (attacker != self && attacker.teamtag == self.teamtag) {
 		return false;
 	}
 	return true;
+}
+personalPrintTeamMates() {
+	if (self.teamtag != "") {
+		for(x = 0; x < level.teamsmap[self.teamtag].size; x++) {
+			if (level.teamsmap[self.teamtag][x] != self) {
+				self iprintln("^5" + level.teamsmap[self.teamtag][x].name + " ^7is on your team!");
+			}
+		}
+	} else {
+		self iprintln("^1No one is on your team!");
+	}
 }
 hasTeamatesAlive() {
 	if (!isDefined(level.teamsmap[self.teamtag])) {
@@ -136,17 +156,6 @@ formTheTeams() {
 		}
 	}
 }
-personalPrintTeamMates() {
-	if (self.teamtag != "") {
-		for(x = 0; x < level.teamsmap[self.teamtag].size; x++) {
-			if (level.teams[self.teamtag][x] != self) {
-				self iprintln("^5" + level.teams[self.teamtag][x].name + " ^7is on your team!");
-			}
-		}
-	} else {
-		self iprintln("^1No one is on your team!");
-	}
-}
 printAllTeams() {
 	index = 1;
 	foreach(team in level.teamsmap) {
@@ -161,7 +170,7 @@ prepForTeamBasedFortnite() {
 		level.maxperteam = 1;
 		return;
 	}
-	if (level.maxperteam < 2) {
+	if (level.maxperteam < 2 || level.maxperteam > 18) {
 		level.maxperteam = 2;
 	}
 	// Vars checked and cleaned.

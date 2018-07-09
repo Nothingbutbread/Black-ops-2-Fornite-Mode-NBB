@@ -144,7 +144,7 @@ SpawnAmmoCrate(origin, angle)
 }
 SpawnItemDrop(origin) {
 	level endon("game_ended");
-	item = GenerateChestLoot(false);
+	item = GenerateSpiningDropLoot();
 	e = spawnEntity(getWeaponModel("an94_mp"), origin + (0,0,40), (0,0,0));
 	e thread spinWeaponDrop();
 	level.activespiningitems++;
@@ -341,6 +341,8 @@ FlyToMap() {
 	self updateControlsInfo("[{+actionslot 1}] Open Menu");
 	self enableWeapons();
 	self.status = 3;
+	wait 10;
+	self thread kickAFKPlayers();
 }
 DetachWhenReady(time) {
 	self endon("disconnect");

@@ -33,7 +33,7 @@ DamageMonitor()
 		    }
 	    }
 	    if (self.forthealth <= 0) {
-        	self suicide();
+        	self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weaponname);
         }
 	}
 }
@@ -68,7 +68,7 @@ appHit(damage, attacker, weapon) {
 	}
 	if (level.allowteams && !self.downed && self.forthealth <= 0) {
 		iprintln(self.name + " was knocked out by " + attacker.name + " bymeans of " + weapon);
-		self thread OnPlayerDowned(attacker);
+		self thread OnPlayerDowned(attacker, weapon);
 	} else if (self.forthealth <= 0) { 
 		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weapon);
 	}
@@ -82,7 +82,7 @@ dammageMap(weap) {
 	else if (weap == "pdw57_mp+fastads") {
 		return 23;
 	}
-	else if (weap == "svu_mp+is") {
+	else if (weap == "svu_mp+ir") {
 		return 31;
 		// 36 / 37 {Epic / Legendary}
 	}

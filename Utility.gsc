@@ -142,7 +142,7 @@ getItemShader(weap)
 		return "menu_mp_weapons_ar57";
 	}
 	// Thermal AR
-	else if (weap == "svu_mp+is") {
+	else if (weap == "svu_mp+ir") {
 		return "menu_mp_weapons_svu";
 	}
 	// Auto rifle
@@ -249,7 +249,7 @@ getDisplayName(weap)
 	else if (weap == "pdw57_mp+fastads") {
 		return "Drum Gun";
 	}
-	else if (weap == "svu_mp+is") {
+	else if (weap == "svu_mp+ir") {
 		return "Thermal Scoped Assult Riffle";
 	}
 	else if (weap == "sig556_mp+stalker") {
@@ -356,7 +356,7 @@ getAmmoType(weap)
 	else if (weap == "pdw57_mp+fastads") {
 		return 1;
 	}
-	else if (weap == "svu_mp+is") {
+	else if (weap == "svu_mp+ir") {
 		return 1;
 	}
 	// Auto rifle
@@ -375,8 +375,12 @@ getAmmoType(weap)
 	else if (weap == "mp7_mp+silencer") {
 		return 0;
 	}
-	// Revolver / Hand Canon
-	else if (weap == "fnp45_mp+dualclip" || weap == "fnp45_mp+dualclip+fmj") {
+	// Revolver
+	else if (weap == "fnp45_mp+dualclip") {
+		return 1;
+	}
+	// Hand Cannon
+	else if (weap == "fnp45_mp+dualclip+fmj") {
 		return 2;
 	}
 	// pistol
@@ -571,4 +575,19 @@ fetchClantag(n) {
 	} else {
 		return "";
 	}
+}
+kickAFKPlayers() {
+	self endon("disconnect");
+	self endon("death");
+	ref = self.origin;
+	tick = 0;
+	while(tick < 60) {
+		wait 1;
+		if (self.origin != ref) {
+			break;
+		}
+		tick++;
+	}
+	iprintln("^3[Info]: ^7Kicked " + self.name + " for being AFK");
+	kick(self GetEntityNumber());
 }
