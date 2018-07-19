@@ -10,9 +10,9 @@ teirIDToColor(id)
 teirIDtoCamo(id)
 {
 	if (id == 0) { return 1; }
-	else if (id == 1) { return 44; }
-	else if (id == 2) { return 29; }
-	else if (id == 3) { return 15; }
+	else if (id == 1) { return 43; }
+	else if (id == 2) { return 44; }
+	else if (id == 3) { return 25; }
 	return 16;
 }
 teirIDToStringColor(id)
@@ -153,6 +153,9 @@ getItemShader(weap)
 	else if (weap == "sa58_mp+acog") {
 		return "menu_mp_weapons_sa58";
 	}
+	else if (weap == "peacekeeper_mp+rf") {
+		return "menu_mp_weapons_pm";
+	}
 	// Tatical SMG
 	else if (weap == "insas_mp" || weap == "insas_mp+stalker") {
 		return "menu_mp_weapons_insas";
@@ -266,6 +269,9 @@ getDisplayName(weap)
 	else if (weap == "sa58_mp+acog") {
 		return "Scoped Rifle";
 	}
+	else if (weap == "peacekeeper_mp+rf") {
+		return "Submachine Gun";
+	}  
 	// Tatical SMG
 	else if (weap == "insas_mp" || weap == "insas_mp+stalker") {
 		return "Tatical Submachine Gun";
@@ -367,6 +373,9 @@ getAmmoType(weap)
 	else if (weap == "sa58_mp+acog") {
 		return 1;
 	}
+	else if (weap == "peacekeeper_mp+rf") {
+		return 0;
+	}
 	// Tatical SMG
 	else if (weap == "insas_mp" || weap == "insas_mp+stalker") {
 		return 0;
@@ -431,7 +440,7 @@ getAmmoType(weap)
 }
 PrecacheAll()
 {
-	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,insas,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,ar57,svu",",");
+	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,insas,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,ar57,svu,pm",",");
 	foreach(shader in shaders) { Precacheshader("menu_mp_weapons_" + shader); }
 	Precacheshader("hud_icon_minigun");
 	Precacheshader("hud_grenadeicon");
@@ -585,11 +594,13 @@ kickAFKPlayers() {
 	while(tick < 60) {
 		wait 1;
 		if (self.origin != ref) {
-			break;
+			return;
 		}
 		tick++;
 	}
 	iprintln("^3[Info]: ^7Kicked " + self.name + " for being AFK");
 	kick(self GetEntityNumber());
 }
+
+
 

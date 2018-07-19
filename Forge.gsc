@@ -48,7 +48,7 @@ SpawnSupplyDrop(sorigin, eorigin, dur) {
 	for(x = 0; x < 5; x++) {
 		item[x] = createAmmoItem(x, GetRandomAmmoAmmout(x));
 	}
-	item[5] = GenerateChestLoot(true);
+	item[5] = GenerateSupplyDropLoot();
 	
 	refpoint = spawn("script_origin", sorigin);
 	
@@ -702,3 +702,5 @@ Forge_Elevator(model, origin, uorigin, angle, movetime, groundtime) {
 		wait groundtime;
 	}
 }
+
+

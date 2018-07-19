@@ -187,6 +187,7 @@ printAllTeams() {
 	}
 }
 prepForTeamBasedFortnite() {
+	level endon("game_ended");
 	if (!level.allowteams) {
 		level.maxperteam = 1;
 		return;
@@ -198,15 +199,20 @@ prepForTeamBasedFortnite() {
 	wait 15; // Wait to final 5 seconds of countdown, then prepare teams.
 	iprintln("^3[Info]: ^7Preparing teams!");
 	level formTheTeams();
+	wait 1;
+	foreach(player in level.players) {
+		player thread personalPrintTeamMates();
+	}
 	wait 15;
 	// Now we check every 2 seconds to see if we have a winning team.
 	// This should be completed after the loot locations have finished being generated.
 	while(true) {
 		aliveteams = 0;
 		foreach(team in level.teamsmap) {
-			foreach(player in team) {
-				if (isDefined(player)) {
-					if (player.inthisgame && !player.downed) {
+			for(x = 0; x < team.size; x++) {
+				play = team[x];
+				if (isDefined(play)) {
+					if (play.inthisgame && !play.downed) {
 						aliveteams++;
 						break;
 					}
@@ -231,7 +237,8 @@ prepForTeamBasedFortnite() {
 					break;
 				}
 			}
-			level thread maps/mp/gametypes/_globallogic::endgame("tie", "^2Team ^3" + winningteam + " ^6victory royal!");
+			//level thread maps/mp/gametypes/_globallogic::endgame("tie", "^2Team ^3" + winningteam + " ^6victory royal!");
+			iprintln("^5Wining team: ^1" + winningteam);
 		}
 		wait 2;
 	}
@@ -242,4 +249,6 @@ prepForTeamBasedFortnite() {
 	level.allowteams = false;
 	level.maxperteam
 */
+
+
 

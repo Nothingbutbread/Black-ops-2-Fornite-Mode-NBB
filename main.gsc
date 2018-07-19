@@ -31,7 +31,7 @@ init()
 	level.debugger = true;
 	level.solidgold = false;
 	level.blitz = false;
-	level.allowteams = false;
+	level.allowteams = true;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
 	level.versionID = "^11.1.2 Public Beta";
 	// Do not change anything else ...
@@ -148,9 +148,6 @@ gameManager()
 				player AdjustLoadout(0);
 			}
 		}
-		if (level.debugger) {
-			break;
-		}
 		wait 1;
 	}
 	wait 5;
@@ -190,6 +187,9 @@ gameManager()
 						player suicide();
 						iprintln(player.name + " fell out of the map!");
 					}
+				}
+				if (player.forthealth <= 0) {
+					player suicide();
 				}
 			}
 		}
@@ -256,5 +256,7 @@ init_player_vars()
 		self init_Teams_Client();
 	}
 }
+
+
 
 

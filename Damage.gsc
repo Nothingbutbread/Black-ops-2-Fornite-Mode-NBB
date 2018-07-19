@@ -94,6 +94,9 @@ dammageMap(weap) {
 	else if (weap == "sa58_mp+acog") {
 		return 21;
 	}
+	else if (weap == "peacekeeper_mp+rf") {
+		return 18;
+	}
 	// Tatical SMG
 	else if (weap == "insas_mp" || weap == "insas_mp+stalker") {
 		return 15;
@@ -199,6 +202,8 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
+
+
 
 
 
