@@ -33,7 +33,7 @@ init()
 	level.blitz = false;
 	level.allowteams = false;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
-	level.versionID = "^11.1.0 Public Beta";
+	level.versionID = "^11.1.2 Public Beta";
 	// Do not change anything else ...
 	level.mapcustomentitylimit = 440;
 	level.entitiesperplayer = 30;
@@ -83,7 +83,7 @@ onPlayerSpawned()
         self FreezeControls(false);
         self.inthisgame = true;
         if (level.debugger) {
-        	self.status = 3;
+        	//self.status = 3;
         	//self thread VarPrinter();
         	//self GiveTestInventory();
         	//self thread printOrigin();
@@ -103,6 +103,7 @@ onDeath() {
 	self waittill("death");
 	self DeleteAllCustomEntities();
 	//self thread SpawnPlayerDeathDrop();
+	self thread DeathandDisconnectCheckTeamDownedPlayers();
 	self.inthisgame = false;
 }
 onDisconnect() {
@@ -110,6 +111,7 @@ onDisconnect() {
 	self endon("spawned_player");
 	self waittill("disconnect");
 	self DeleteAllCustomEntities();
+	self thread DeathandDisconnectCheckTeamDownedPlayers();
 	self.inthisgame = false;
 }
 printIntro() {
@@ -133,10 +135,10 @@ gameManager()
 	level thread init_MapEdit();
 	if (level.debugger) {
 		//level thread DammageTestBotSpawn();
-		level thread LootSpawnerGeneator();
-		level.entitiesperplayer = 40;
-		level thread printIntro();
-		return;
+		//level thread LootSpawnerGeneator();
+		//level.entitiesperplayer = 200;
+		//level thread printIntro();
+		//return;
 	}
 	level thread prepForTeamBasedFortnite();
 	for(x = 20; x > 5; x--) {
@@ -145,6 +147,9 @@ gameManager()
 			if (IsAlive(player)) { 
 				player AdjustLoadout(0);
 			}
+		}
+		if (level.debugger) {
+			break;
 		}
 		wait 1;
 	}
@@ -163,6 +168,9 @@ gameManager()
 	level.entitiesperplayer = int(level.mapcustomentitylimit / initcount);
 	wait 6;
 	level thread LootSpawnerGeneator();
+	if (level.debugger) {
+		return;
+	}
 	warnrad = level.stormstartingradius - 600;
 	while(true) {
 		level.playersalive = 0;
@@ -248,4 +256,5 @@ init_player_vars()
 		self init_Teams_Client();
 	}
 }
+
 

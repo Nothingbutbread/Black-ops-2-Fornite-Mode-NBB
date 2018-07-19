@@ -358,7 +358,7 @@ DetachWhenReady(time) {
 		if (self usebuttonpressed() && time == 0) {
 			self.ItemUseText = "Hold [{+usereload}] to Jump off the Battle Bus";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
-			self.fortHUDS[16].bar.color = HUD_RTG(10, time);
+			self.fortHUDS[16].bar.color = HUD_RTG(8, time);
 			self fadeInProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time++;
@@ -687,24 +687,18 @@ DoNotBuildZone(cor1,cor2)
 	    
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+deletePreExistingEntites() {
+	 array = [];
+	 array = getentarray();
+	 array_delete(array);
+}
+Forge_Elevator(model, origin, uorigin, angle, movetime, groundtime) {
+	level endon("game_ended");
+	obj = spawnEntity(model, origin, angle);
+	while(true) {
+		obj MoveTo(uorigin, movetime);
+		wait groundtime;
+		obj MoveTo(origin, movetime);
+		wait groundtime;
+	}
+}

@@ -7,6 +7,19 @@ init_Teams_Client() {
 		self.teamtag += tag[2];
 	}
 }
+DeathandDisconnectCheckTeamDownedPlayers() {
+	if (level.allowteams && self.teamtag != "") {
+		if (!self hasTeamatesAlive()) {
+			for(x = 0; x < level.teamsmap[self.teamtag]; x++) {
+				if (isDefined(level.teamsmap[self.teamtag][x])) {
+					if (level.teamsmap[self.teamtag].inthisgame) {
+						level.teamsmap[self.teamtag].forthealth = 0;
+					}
+				}
+			}
+		}
+	}
+}
 OnPlayerRevived() {
 	self.forthealth = 30;
 	self.downed = false;
@@ -28,8 +41,16 @@ OnPlayerDowned(attacker, weapon) {
 	self setStance("prone");
 	self setMoveSpeedScale(0.5);
 	self closeInventory(true);
-	
-	while(self.forthealth > 0 && self hasTeamatesAlive()) {
+	if (!self hasTeamatesAlive()) {
+		for(x = 0; x < level.teamsmap[self.teamtag]; x++) {
+			if (isDefined(level.teamsmap[self.teamtag][x])) {
+				if (level.teamsmap[self.teamtag].inthisgame) {
+					level.teamsmap[self.teamtag].forthealth = 0;
+				}
+			}
+		}
+	}
+	while(self.forthealth > 0) {
 		self setStance("prone");
 		if (!self.isbeingrevived) {
 			self.forthealth--;
@@ -128,7 +149,7 @@ hasTeamatesAlive() {
 	}
 	for(x = 0; x < level.teamsmap[self.teamtag]; x++) {
 		if (isDefined(level.teamsmap[self.teamtag][x])) {
-			if (level.teamsmap[self.teamtag].inthisgame && !level.teamsmap[self.teamtag].downed) {
+			if (level.teamsmap[self.teamtag].inthisgame && !level.teamsmap[self.teamtag].downed && level.teamsmap[self.teamtag] != self) {
 				return true;
 			}
 		}
@@ -221,3 +242,4 @@ prepForTeamBasedFortnite() {
 	level.allowteams = false;
 	level.maxperteam
 */
+

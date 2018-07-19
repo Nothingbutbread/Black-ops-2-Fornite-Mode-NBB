@@ -454,6 +454,7 @@ PrecacheAll()
 	PrecacheModel("collision_clip_wall_128x128x10");
 	PrecacheModel("collision_clip_wall_256x256x10");
 	PrecacheModel("collision_clip_wall_512x512x10");
+	PrecacheModel("p6_dockside_container_lrg_red");
 }
 boolToString(bool)
 {
@@ -591,3 +592,4 @@ kickAFKPlayers() {
 	iprintln("^3[Info]: ^7Kicked " + self.name + " for being AFK");
 	kick(self GetEntityNumber());
 }
+

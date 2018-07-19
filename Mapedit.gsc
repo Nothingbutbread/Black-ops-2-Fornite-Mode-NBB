@@ -257,6 +257,173 @@ Aftermath()
 
 Cargo()
 { 
+	level deletePreExistingEntites();
+	level.stormcenterpoint = (-58,1401,-100);
+	level.belowmapdeathbarrier = -140;
+	level.battlebusendorigin = (4356,-5434,3700);
+	level.battlebustimetotarget = 15;
+	level.stormstartingradius = 20000;
+	level.mapcustomentitylimit = 400; // Note to mapediters, The higher you set this, the more objects players can have at once, If you set it too high you will get an entity overflow.
+	level thread Forge_Teleport((-2496,4145,-67), (-949,3471,-67));
+	level thread Forge_CreateBattleBus((-11639,8083,3700));
+	level thread DoNotBuildZone((2312,3761,-1000), (-1577,-350,250));
+	// Area added in Turned V2.1
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-1600,-200), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-1940,-200), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-2280,-200), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-2620,-200), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-2960,-200), (0,0,0));
+	
+	level spawnObject("p6_dockside_container_lrg_red", (-540,-2620,-60), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-540,-2960,-60), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-280,-2620,-60), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-280,-2960,-60), (0,0,0));
+	
+	
+	// Elevator
+	level spawnObject("p6_dockside_container_lrg_red", (-540,-3300,-60), (0,0,0));
+	
+	level thread Forge_Elevator("p6_dockside_container_lrg_red", (-410,-3300,-200), (-410,-3300,-60), (0,0,0), 2, 4);
+	level thread Forge_Elevator("p6_dockside_container_lrg_red", (-410,-1940,80), (-410,-1940,220), (0,0,0), 2, 4);
+	
+	level thread Forge_Elevator("p6_dockside_container_lrg_red", (-540,-2280,-60), (-540,-2280,80), (0,0,0), 2, 4);
+	level thread Forge_Elevator("p6_dockside_container_lrg_red", (-280,-2280,-60), (-280,-2280,80), (0,0,0), 2, 4);
+	
+	level spawnObject("p6_dockside_container_lrg_red", (-670,-2280,80), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-2280,80), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-150,-2280,80), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-1600,220), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-1260,220), (0,0,0));
+	
+	
+	level spawnObject("p6_dockside_container_lrg_red", (-280,-3300,-60), (0,0,0));
+	
+	level spawnObject("p6_dockside_container_lrg_red", (-540,-3650,-60), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-3650,-60), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-280,-3650,-60), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-670,-3650,-60), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-150,-3650,-60), (0,0,0));
+	
+	level spawnObject("p6_dockside_container_lrg_red", (-540,-4000,-60), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-410,-4000,-60), (0,0,0));
+	level spawnObject("p6_dockside_container_lrg_red", (-280,-4000,-60), (0,0,0));
+	
+	ACL((945,1224,62));
+	ACL((847,1675,62));
+	ACL((1160,1017,-57));
+	ACL((1093,1705,-97));
+	ACL((1090,2796,-67));
+	ACL((1434,3292,-67));
+	ACL((499,3313,-68));
+	ACL((9,3240,35));
+	ACL((118,4407,-67));
+	ACL((338,5058,-67));
+	ACL((1338,3932,-67));
+	ACL((-503,3482,-35));
+	ACL((-760,3130,-37));
+	ACL((-297,2355,68));
+	ACL((-1000,1986,-67));
+	ACL((-1726,2374,-65));
+	ACL((-884,926,-67));
+	ACL((-1252,14,-67));
+	ACL((-262,-642,-67));
+	ACL((419,-515,69));
+	ACL((1039,-600,-67));
+	ACL((837,-26,-67));
+	ACL((451,715,-67));
+	ACL((373,1193,-100));
+	ACL((-480,1622,-100));
+	ACL((-952,-258,-67));
+	ACL((-2107,3037,-65));
+	ACL((-2180,5690,-67));
+	ACL((-5048,6701,-67));
+	ACL((-9556,5280,-67));
+	
+	ACL((-711,-3509,76));
+	ACL((-702,-3805,76));
+	ACL((-593,-4155,76));
+	ACL((-215,-4155,76));
+	ACL((-94,-3812,76));
+	ACL((-94,-3488,76));
+	ACL((-234,-2763,76));
+	ACL((-565,-2765,76));
+	ACL((-402,-2431,216));
+	ACL((-406,-1093,356));
+	ACL((-736,-989,205));
+	
+	AAL((-81,-1418,-64));
+	AAL((-74,-1014,-65));
+	AAL((-39,-560,-67));
+	AAL((306,-88,-20));
+	AAL((736,-120,-40));
+	AAL((793,584,-67));
+	AAL((825,1077,-97));
+	AAL((1256,1518,62));
+	AAL((639,1409,62));
+	AAL((1083,1875,62));
+	AAL((836,2262,-99));
+	AAL((1124,3292,-67));
+	AAL((596,2760,-73));
+	AAL((281,3417,-67));
+	AAL((-175,4018,-67));
+	AAL((164,4464,-67));
+	AAL((490,4316,-75));
+	AAL((614,3846,-67));
+	AAL((-565,2931,-67));
+	AAL((-1167,2761,-67));
+	AAL((-1826,2231,-64));
+	AAL((-1532,1427,-65));
+	AAL((-1127,1065,67));
+	AAL((-240,1004,-100));
+	AAL((-128,2092,-67));
+	AAL((-3436,4031,-67));
+	AAL((-5591,4786,-67));
+	AAL((-6910,5956,-67));
+	AAL((-9603,4883,-67));
+	
+	ASIL((-3030,4558,-67));
+	ASIL((-364,3140,-74));
+	ASIL((-887,2158,78));
+	ASIL((-1321,1380,-67));
+	ASIL((-1480,23,-67));
+	ASIL((-1079,627,-56));
+	ASIL((-365,-148,78));
+	ASIL((-131,-163,78));
+	ASIL((543,-797,69));
+	ASIL((-392,-1736,-63));
+	ASIL((-303,-2844,-63));
+	ASIL((-344,-3873,76));
+	ASIL((-311,-3391,76));
+	ASIL((-555,-3350,76));
+	ASIL((-243,-908,-67));
+	ASIL((809,-303,-67));
+	ASIL((409,985,-67));
+	ASIL((-59,1629,-100));
+	ASIL((920,1452,-97));
+	ASIL((1365,2812,-67));
+	ASIL((66,3715,-75));
+	ASIL((685,4624,-75));
+	ASIL((1239,4510,-75));
+	ASIL((-52,4691,-75));
+	ASIL((-1265,3170,-8));
+	ASIL((-1837,2548,-61));
+	ASIL((-1689,1758,-34));
+	
+	ASDL((-619,808,67));
+	ASDL((-55,1426,-100));
+	ASDL((151,3629,-75));
+	ASDL((-834,3672,-67));
+	ASDL((-1396,2691,-67));
+	ASDL((-2513,5285,-67));
+	ASDL((-4916,4717,-67));
+	ASDL((-704,1831,67));
+	ASDL((-784,1657,67));
+	ASDL((-50,690,-67));
+	ASDL((232,-565,-67));
+	ASDL((-701,-2430,216));
+	ASDL((-726,-2124,216));
+	ASDL((-102,-2434,216));
+	ASDL((-103,-2134,216));
 }
 
 Plaza()
@@ -313,6 +480,7 @@ Detour()
 
 Uplink()
 { }
+
 
 
 
