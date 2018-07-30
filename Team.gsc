@@ -133,7 +133,7 @@ shouldDealDamage(attacker) {
 	return true;
 }
 personalPrintTeamMates() {
-	if (self.teamtag != "") {
+	if (self.isonteam) {
 		for(x = 0; x < level.teamsmap[self.teamtag].size; x++) {
 			if (level.teamsmap[self.teamtag][x] != self) {
 				self iprintln("^5" + level.teamsmap[self.teamtag][x].name + " ^7is on your team!");
@@ -144,7 +144,7 @@ personalPrintTeamMates() {
 	}
 }
 hasTeamatesAlive() {
-	if (!isDefined(level.teamsmap[self.teamtag])) {
+	if (!self.isonteam) {
 		return false;
 	}
 	for(x = 0; x < level.teamsmap[self.teamtag]; x++) {
@@ -167,11 +167,14 @@ formTheTeams() {
 				if (!isDefined(level.teamsmap[level.players[x].teamtag])) {
 					level.teamsmap[level.players[x].teamtag] = [];
 					level.teamsmap[level.players[x].teamtag][0] = level.players[x];
+					level.players[x].isonteam = true;
 				} else if (level.maxperteam > level.teamsmap[level.players[x].teamtag].size) {
 					level.teamsmap[level.players[x].teamtag][level.teamsmap[level.players[x].teamtag].size] = level.players[x];
+					level.players[x].isonteam = true;
 				} else {
 					// Too many players on that team, disableing that players team tag.
 					level.players[x].teamtag = "";
+					level.players[x].isonteam = false;
 				}
 			}
 		}
@@ -249,6 +252,8 @@ prepForTeamBasedFortnite() {
 	level.allowteams = false;
 	level.maxperteam
 */
+
+
 
 
 

@@ -73,24 +73,6 @@ Standoff()
 	level.stormstartingradius = 20000;
 	level.mapcustomentitylimit = 426; // Note to mapediters, The higher you set this, the more objects players can have at once, If you set it too high you will get an entity overflow.
 	level thread spawnObject("collision_clip_wall_256x256x10", (594,-1615, -5), (0,0,90)); // Patches an exploitable hole in the map.
-	/*
-	if (level.debugger) {
-		level thread SpawnChest((-752,-786,0),(0,0,0));
-		level thread SpawnChest((-681,-459,0),(0,0,0));
-		level thread SpawnChest((-690,-92,0),(0,0,0));
-		level thread SpawnChest((-660,352,0),(0,0,0));
-		level thread SpawnChest((-834,-121,0),(0,0,0));
-		level thread SpawnItemDrop((-1454,-2283,0));
-		level thread SpawnItemDrop((-1669,-1429,5));
-		level thread SpawnItemDrop((-1194,-1253,8));
-		level thread SpawnItemDrop((-1092,-932,8));
-		level thread SpawnItemDrop((-1569,-505,8));
-		
-		level thread SpawnAmmoCrate((-452,918,10), (0,90,0));
-		level thread SpawnAmmoCrate((-921,966,8), (0,90,0));
-		level thread SpawnAmmoCrate((-735,657,0), (0,90,0));
-	}
-	*/
 	ACL((-1584,1226,10));
 	ACL((-2158,-2698,-5));
 	ACL((-750,-2047,8));
@@ -480,6 +462,8 @@ Detour()
 
 Uplink()
 { }
+
+
 
 
 

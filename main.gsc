@@ -28,12 +28,13 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.debugger = true;
+	level.versionID = "^11.1.4 Public Beta";
+	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
-	level.allowteams = true;
+	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
+	level.allowteams = false;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
-	level.versionID = "^11.1.2 Public Beta";
 	// Do not change anything else ...
 	level.mapcustomentitylimit = 440;
 	level.entitiesperplayer = 30;
@@ -249,6 +250,7 @@ init_player_vars()
 	
 	//V1.2 Update
 	self.teamtag = "";
+	self.isonteam = false;
 	self.downed = false;
 	self.closestally = self;
 	self.isbeingrevived = false;
@@ -256,6 +258,8 @@ init_player_vars()
 		self init_Teams_Client();
 	}
 }
+
+
 
 
 

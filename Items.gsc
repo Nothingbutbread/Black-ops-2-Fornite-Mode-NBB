@@ -402,19 +402,20 @@ SlurpJuiceItem(index) {
 SlurpJuice_Effect() {
 	self endon("death");
 	self endon("disconnect");
-	for(x = 0; x < 25; x++) {
-		if (self.fortshield < 100) {
-			self.fortshield++;
-		}
+	for(x = 0; x < 75; x++) {
 		if (self.forthealth < 100) {
 			self.forthealth++;
+		} else if (self.fortshield < 100) {
+			self.fortshield++;
 		}
 		if (!CanuseAddShieldAndHealthPotions()){
 			break;
 		}
-		wait 1;
+		wait .33;
 	}
 }
+
+
 
 
 

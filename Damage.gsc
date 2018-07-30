@@ -68,7 +68,8 @@ appHit(damage, attacker, weapon) {
 	}
 	if (level.allowteams && !self.downed && self.forthealth <= 0) {
 		iprintln(self.name + " was knocked out by " + attacker.name + " bymeans of " + weapon);
-		self thread OnPlayerDowned(attacker, weapon);
+		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weapon);
+		//self thread OnPlayerDowned(attacker, weapon);
 	} else if (self.forthealth <= 0) { 
 		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weapon);
 	}
@@ -202,6 +203,8 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
+
+
 
 
 

@@ -84,8 +84,7 @@ RandIntArrayNoDupe(size, min, max)
 	}
 	return nums;
 }
-isAWeapon(weap)
-{
+isAWeapon(weap) {
 	w = getRawWeapon(weap);
 	if (w.size < 3) { return false; }
 	start = w.size - 3;
@@ -601,6 +600,8 @@ kickAFKPlayers() {
 	iprintln("^3[Info]: ^7Kicked " + self.name + " for being AFK");
 	kick(self GetEntityNumber());
 }
+
+
 
 
 
