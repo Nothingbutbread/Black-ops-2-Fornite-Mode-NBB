@@ -26,6 +26,7 @@ GrenadeInventoryUpdator(weap, index) {
 		self.inv[index].clip--;
 		if (self.inv[index].clip < 1) {
 			self thread SetandChangeInventoryToDefaultWeapon(index);
+			self ChangeToNextItemInInvetory();
 		}
 		self iprintln("We have " + self.inv[index].clip + " of this grenade left");
 	}
@@ -104,6 +105,7 @@ Bandageitem(index) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
+					self ChangeToNextItemInInvetory();
 				}
 				self iprintln("We have " + self.inv[index].clip + " bandages left");
 				time = 0;
@@ -156,6 +158,7 @@ Medkititem(index) {
 				self fadeOutProgressBar();
 				self thread SetandChangeInventoryToDefaultWeapon(index);
 				self fadeOutItemToolTip();
+				self ChangeToNextItemInInvetory();
 			}
 			self iprintln("We have " + self.inv[index].clip + " medkits left");
 			time = 0;
@@ -215,6 +218,7 @@ SmallShielditem(index) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
+					self ChangeToNextItemInInvetory();
 				}
 				self iprintln("We have " + self.inv[index].clip + " small shields left");
 				time = 0;
@@ -275,6 +279,7 @@ LargeShielditem(index) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
+					self ChangeToNextItemInInvetory();
 				}
 				self iprintln("We have " + self.inv[index].clip + " large shields left");
 				time = 0;
@@ -333,6 +338,7 @@ ChugJugItem(index) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
+					self ChangeToNextItemInInvetory();
 				}
 				self iprintln("We have " + self.inv[index].clip + " Chug Jugs left");
 				time = 0;
@@ -390,6 +396,7 @@ SlurpJuiceItem(index) {
 					self fadeOutProgressBar();
 					self thread SetandChangeInventoryToDefaultWeapon(index);
 					self fadeOutItemToolTip();
+					self ChangeToNextItemInInvetory();
 				}
 				self iprintln("We have " + self.inv[index].clip + " Slurp Juices left");
 				time = 0;
@@ -414,6 +421,7 @@ SlurpJuice_Effect() {
 		wait .3;
 	}
 }
+
 
 
 

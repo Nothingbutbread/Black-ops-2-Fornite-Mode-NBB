@@ -12,6 +12,7 @@ GunFunctionsTest()
 		wait 1;
 	}
 }
+
 GiveTestInventory()
 {
 	for(x = 0; x < self.ammotypes.size; x++) {
@@ -19,18 +20,20 @@ GiveTestInventory()
 	}
 	i1 = createInventorySlotStruct();
 	i1.weapon = "mp7_mp+silencer";
-	i1.clip = 16;
+	i1.clip = 39;
 	i1.rarity = 2;
 	i1.ammotype = 0;
 	i1.isweapon = true;
+	i1.slotfilled = true;
 	self addItemToInventory(0, i1);
 	
 	i2 = createInventorySlotStruct();
-	i2.weapon = "Chug Jug";
+	i2.weapon = "Large Shield";
 	i2.clip = 1;
-	i2.rarity = 4;
+	i2.rarity = 2;
 	i2.ammotype = -1;
 	i2.isweapon = false;
+	i2.slotfilled = true;
 	self addItemToInventory(1, i2);
 }
 printOrigin()
@@ -55,7 +58,7 @@ DammageTestBotSpawn() {
 	foreach(player in level.players) {
 		if (player is_bot())
         {
-        	player AdjustLoadout(4);
+        	player AdjustLoadout(0);
         	player FreezeControls(true);
         	player thread FreezeBotOnSpawn();
         	player DisableInvulnerability(); 
@@ -67,7 +70,7 @@ FreezeBotOnSpawn() {
 	while(true) {
 		self waittill("spawned_player");
 		wait 1;
-		self AdjustLoadout(4);
+		self AdjustLoadout(0);
         self FreezeControls(true);
         self DisableInvulnerability(); 
 	}
@@ -118,6 +121,7 @@ DEBUG_PRINTITEMS(data) {
 		wait 1;
 	}
 }
+
 
 
 

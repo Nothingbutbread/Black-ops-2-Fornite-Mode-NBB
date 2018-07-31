@@ -177,36 +177,17 @@ SpawnItemDrop(origin) {
 	level.activespiningitems--;
 	trig delete();
 }
-SpawnPlayerDeathDrop() 
-{
+SpawnPlayerDeathDrop() {
 	self endon("disconnect");
-	newdata = [];
-	i = 0;
-	for(x = 0; x < 4; x++) {
-		if (!IsEmpty(x)) {
-			temp = self.inv[x];
-		}
-		if (temp.size != 0) {
-			newdata[i] = temp;
-			i++;
-			//level.debuggerhost iprintln("Item index: " + x + " added to dumpable inventory");
-		}
+	retval = [];
+	ammo = [];
+	for(x = 0; x < 5; x++) {
+		retval[x] = deepCopyInvStruct(self.inv[x]);
+		ammo[x] = self.ammotypes[x];
 	}
-	if (newdata.size > 0) {
-		retval = [];
-		// Up to this point this is stable!
-		for(x = 0; x < newdata.size; x++) {
-			retval[x][0] = newdata[x][0];
-			retval[x][1] = "" + teirIDToStringColor(int(newdata[x][2])) + "" + getDisplayName(newdata[x][0]);
-			retval[x][2] = newdata[x][2];
-			retval[x][3] = newdata[x][1];
-			retval[x][4] = newdata[x][4];
-		}
-		level thread SpawnPlayerDeathDropLevelThread(self.name, self.ammotypes, retval, self.origin);
-	}
+	level thread SpawnPlayerDeathDropLevelThread(self.name, ammo, retval, self.origin);
 }
-SpawnPlayerDeathDropLevelThread(name, ammo, data, origin) 
-{
+SpawnPlayerDeathDropLevelThread(name, ammo, data, origin) {
 	level endon("game_ended");
 	m = spawnEntity("t6_wpn_supply_drop_trap", origin, (0,0,0));
 	trig = spawn("trigger_radius", m.origin, 1, 60, 60);
@@ -216,12 +197,12 @@ SpawnPlayerDeathDropLevelThread(name, ammo, data, origin)
 	while(1800 > tick) {
 		trig waittill("trigger", player);
 		if (player useButtonPressed() && isAlive(player) && !player.menuopen) {
-			for(x = 0; x < ammo.size; x++) {
-				player addAmmo(x, ammo[x]);
+			for(x = 0; x < 5; x++) {
+				if (ammo[x] != 0) {
+					player addAmmo(x, ammo[x]);
+				}
 			}
-			if (data.size != 0) {
-				player thread OpenChestGUI(data, true);
-			}
+			player thread OpenChestGUI(data, 2);
 			trig triggerOff();
 			m delete();
 			break;
@@ -234,8 +215,7 @@ SpawnPlayerDeathDropLevelThread(name, ammo, data, origin)
 	trig delete();
 }
 // 
-spawnObject(model, origin, angle)
-{
+spawnObject(model, origin, angle) {
 	obj = spawnEntity(model, origin, angle);
 }
 spawnEntity(model, origin, angle)
@@ -251,8 +231,7 @@ spawnSafeEntity(model, origin, angle)
     entity = spawn("script_model", origin);
     entity.angles = angle;
     entity setModel(model);
-    if(getentarray().size >= level.mapcustomentitylimit)
-    {
+    if (getentarray().size >= level.mapcustomentitylimit) {
         self iprintln("^1Error: Max Entity spawn limmit reached, some objects did not spawn to prevent overflow!");
         entity delete();
     }
@@ -339,7 +318,9 @@ FlyToMap() {
 	self updateControlsInfo("[{+actionslot 1}] Open Menu");
 	self enableWeapons();
 	self.status = 3;
-	wait 10;
+	wait 2;
+	self thread PatchThread();
+	wait 8;
 	self thread kickAFKPlayers();
 }
 DetachWhenReady(time) {
@@ -688,7 +669,10 @@ DoNotBuildZone(cor1,cor2)
 deletePreExistingEntites() {
 	 array = [];
 	 array = getentarray();
-	 array_delete(array);
+	 for(x = 1; x < array.size; x++) {
+	 	array[x] delete();
+	 }
+	 //array_delete(array);
 }
 Forge_Elevator(model, origin, uorigin, angle, movetime, groundtime) {
 	level endon("game_ended");
@@ -700,6 +684,7 @@ Forge_Elevator(model, origin, uorigin, angle, movetime, groundtime) {
 		wait groundtime;
 	}
 }
+
 
 
 

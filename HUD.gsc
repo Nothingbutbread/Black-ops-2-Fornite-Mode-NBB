@@ -357,6 +357,7 @@ closeInventory(bind) {
 keyBinds()
 {
 	self endon("disconnect");
+	self endon("kill_key_binds_0");
 	self.menuopen = true;
 	self.fortHUDS[14].alpha = .9;
 	self iprintln("^2Opened the inventory!");
@@ -471,7 +472,17 @@ keyBinds()
 		wait .05;
 	}
 }
-
+ResetMenu() {
+	self notify("kill_key_binds_0");
+	wait .15;
+	if (self.menuopen) {
+		self thread closeInventory(true);
+		wait .25;
+		self thread keyBinds();
+	} else {
+		self thread keyBinds();
+	}
+}
 //Adjusts the outputed color when a refernce size and state is fed in. Adjusts from green to red.
 HUD_RTG(size, x)
 {
@@ -509,26 +520,28 @@ StormHUD() {
 	level endon("game_ended");
 	m0 = level CreateWaypoint("perk_awareness", level.stormcenterpoint + (level.stormstartingradius,0,0) , 6, 6, .6, true);
 	m1 = level CreateWaypoint("perk_awareness", level.stormcenterpoint + (0,level.stormstartingradius,0) , 6, 6, .6, true);
-	m2 = level CreateWaypoint("perk_awareness", level.stormcenterpoint - (level.stormstartingradius,0,0) , 6, 6, .6, true);
-	m3 = level CreateWaypoint("perk_awareness", level.stormcenterpoint - (0,level.stormstartingradius,0) , 6, 6, .6, true);
+	//m2 = level CreateWaypoint("perk_awareness", level.stormcenterpoint - (level.stormstartingradius,0,0) , 6, 6, .6, true);
+	//m3 = level CreateWaypoint("perk_awareness", level.stormcenterpoint - (0,level.stormstartingradius,0) , 6, 6, .6, true);
 	wait .1;
 	while(true) {
 		m0 moveOverTime(1);
 		m1 moveOverTime(1);
-		m2 moveOverTime(1);
-		m3 moveOverTime(1);
+		//m2 moveOverTime(1);
+		//m3 moveOverTime(1);
 		m0.x = level.stormcenterpoint[0] + level.stormstartingradius;
 		m0.y = level.stormcenterpoint[1];
 		m0.z = level.stormcenterpoint[2];
 		m1.x = level.stormcenterpoint[0];
 		m1.y = level.stormcenterpoint[1] + level.stormstartingradius;
 		m1.z = level.stormcenterpoint[2];
+		/*
 		m2.x = level.stormcenterpoint[0] - level.stormstartingradius;
 		m2.y = level.stormcenterpoint[1];
 		m2.z = level.stormcenterpoint[2];
 		m3.x = level.stormcenterpoint[0];
 		m3.y = level.stormcenterpoint[1] - level.stormstartingradius;
 		m3.z = level.stormcenterpoint[2];
+		*/
 		wait 1;
 	}
 }
@@ -547,4 +560,5 @@ CreateWaypoint(shader, origin, width, height, alpha, allplayers) {
 	createwaypoint.archived = false;
 	return createwaypoint;
 }
+
 

@@ -29,11 +29,11 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.1.4 Public Beta";
-	level.debugger = true;
+	level.versionID = "^11.2 Public Beta";
+	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
-	level.fantasy = true;
+	level.fantasy = false;
 	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
 	level.allowteams = false;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
@@ -86,9 +86,9 @@ onPlayerSpawned()
         self FreezeControls(false);
         self.inthisgame = true;
         if (level.debugger) {
-        	//self.status = 3;
+        	self.status = 3;
         	//self thread VarPrinter();
-        	//self GiveTestInventory();
+        	self GiveTestInventory();
         	//self thread printOrigin();
         }
         self AdjustLoadout(0);
@@ -105,7 +105,7 @@ onDeath() {
 	self endon("spawned_player");
 	self waittill("death");
 	self DeleteAllCustomEntities();
-	//self thread SpawnPlayerDeathDrop();
+	self thread SpawnPlayerDeathDrop();
 	self thread DeathandDisconnectCheckTeamDownedPlayers();
 	self.inthisgame = false;
 }
@@ -131,10 +131,11 @@ printIntro() {
 	iprintln("^1Note to host: ^3If this download was obtained via an adfly link");
 	iprintln("^3Please report the person who provided it to ^6Nothingbutbread");
 }
-gameManager()
-{
+gameManager() {
 	level endon("game_ended");
 	level waittill("prematch_over");
+	level PublicMatchVerification();
+	wait .5;
 	level thread init_MapEdit();
 	if (level.debugger) {
 		//level thread DammageTestBotSpawn();
@@ -144,16 +145,18 @@ gameManager()
 		//return;
 	}
 	level thread prepForTeamBasedFortnite();
-	for(x = 20; x > 5; x--) {
+	for(x = 20; x > 0; x--) {
 		iprintln("Fortnite Battle Royal Starting in " + x + " seconds!");
 		foreach(player in level.players) { 
 			if (IsAlive(player)) { 
 				player AdjustLoadout(0);
 			}
 		}
+		if (level.debugger) {
+			break;
+		}
 		wait 1;
 	}
-	wait 5;
 	iprintln("^6All aboard the battle bus!");
 	wait 1;
 	level thread TeleportToBattleBus();
@@ -169,7 +172,7 @@ gameManager()
 	wait 6;
 	level thread LootSpawnerGeneator();
 	if (level.debugger) {
-		//return;
+		return;
 	}
 	warnrad = level.stormstartingradius - 500;
 	stormid = -1;
@@ -209,7 +212,6 @@ gameManager()
 		}
 		///////////////////////////////////
 		if (stormmove) {
-			//iprintln("DEBUG 1");
 			if (level.blitz) {
 				level.stormstartingradius -= 180;
 			} else {
@@ -229,7 +231,6 @@ gameManager()
 			stormdelay = stormDelayAmmout(stormid);
 			stormdamage = stormDammageAmmout(stormid);
 		} else if (stormid < 3) {
-			//iprintln("DEBUG 2");
 			stormdelay--;
 			if (stormdelay <= 0) {
 				iprintln("^1The Storm Eye is Shrinking!");
@@ -286,8 +287,36 @@ init_player_vars()
 	}
 }
 
-
-
-
-
+PublicMatchVerification() {
+	if (!level.debugger) {
+		if (getDvar("g_gametype") != "dm") {
+        	thread maps/mp/gametypes/_globallogic::endgame("tie", "The Survial games must be used in ^1Free For All");
+        }
+        if (getDvar("mapname") == "mp_dockside") {
+			return;
+		} else if(getDvar("mapname") == "mp_village") {
+			return;
+		}
+		// If we haven't returned at this point, then we have an invalid map but valid gamemode.
+		// Randomly selecting and changing to a valid map.
+		n = RandomIntRange(0,2);
+		if (n == 0) {
+			changemap("mp_dockside");
+		} else if(n == 1) {
+			changemap("mp_village");
+		}
+	}
+}
+// Extracted from the Preditor Menu, This not my function.
+changemap( mapname ) {
+	setdvar( "ls_mapname", mapname );
+	setdvar( "mapname", mapname );
+	setdvar( "party_mapname", mapname );
+	setdvar( "ui_mapname", mapname );
+	setdvar( "ui_currentMap", mapname );
+	setdvar( "ui_mapname", mapname );
+	setdvar( "ui_preview_map", mapname );
+	setdvar( "ui_showmap", mapname );
+	map( mapname, 0 );
+}
 

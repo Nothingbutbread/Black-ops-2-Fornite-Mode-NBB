@@ -1,3 +1,18 @@
+PatchThread() {
+	self endon("disconnect");
+    self endon("death");
+    level endon("game_ended");
+	while(true) {
+		if (self.forthealth <= 0) {
+			self killMySelf();
+		}
+		if (self meleebuttonpressed() && self jumpbuttonpressed() && self adsbuttonpressed()) { //R3 + X 
+			self iprintlnbold("^5Menu reset!");
+			self ResetMenu();
+		}
+		wait .1;
+	}
+}
 DamageMonitor()
 {
     self endon("disconnect");
@@ -10,7 +25,6 @@ DamageMonitor()
     // Apply Custom Health tracking
     self.forthealth = 100;
     self.fortshield = 0;
-    
     while(true) {
         self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname);
         self.lastdammagedby = attacker;
@@ -204,6 +218,7 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
+
 
 
 

@@ -214,12 +214,19 @@ ActivateItem(index) {
 		self thread SlurpJuiceItem(index);
 	}
 }
-
-
-
-
-
-
-
-
+ChangeToNextItemInInvetory() {
+	for(x = 0; x < 5; x++) {
+		self.selectorpos++;
+		if (self.selectorpos > 4) {
+			self.selectorpos = 0;
+			self.fortHUDS[14].x -= 180;
+		} else {
+			self.fortHUDS[14].x += 45;
+		}
+		if (self.inv[self.selectorpos].slotfilled) {
+			break;
+		}
+	}
+	self AdjustLoadout(self.selectorpos);
+}
 

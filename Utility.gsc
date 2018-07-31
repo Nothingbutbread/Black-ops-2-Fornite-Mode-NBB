@@ -650,3 +650,4 @@ stormDammageAmmout(id) {
 	}
 	return 5;
 }
+
