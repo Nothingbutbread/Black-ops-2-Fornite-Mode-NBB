@@ -170,7 +170,7 @@ SmallShielditem(index) {
 	self endon("new_item_at_" + index);
 	time = 0;
 	if (self.fortshield >= 50) {
-		self fadeInItemToolTip("Your shield is above 50 percent!");
+		self fadeInItemToolTip("Your Shield is above 50 percent!");
 	} else {
 		self fadeInItemToolTip("Hold [{+usereload}] to use Shield");
 	}
@@ -190,7 +190,7 @@ SmallShielditem(index) {
 			time++;
 		} else if (self usebuttonpressed() && self.fortshield >= 50) {
 			time = 0;
-			self.ItemUseText = "Your shield is already halfway or more charged!";
+			self.ItemUseText = "Your Shield is already halfway or more charged!";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
 			self fadeOutProgressBar();
 			
@@ -230,9 +230,9 @@ LargeShielditem(index) {
 	self endon("new_item_at_" + index);
 	time = 0;
 	if (self.fortshield >= 100) {
-		self fadeInItemToolTip("Your shield is already fully charged!");
+		self fadeInItemToolTip("Your Shield is already fully charged!");
 	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use shield");
+		self fadeInItemToolTip("Hold [{+usereload}] to use Shield");
 	}
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
@@ -290,7 +290,7 @@ ChugJugItem(index) {
 	self endon("new_item_at_" + index);
 	time = 0;
 	if (self.fortshield >= 100 && self.forthealth >= 100) {
-		self fadeInItemToolTip("Your health and shield is already maxed out");
+		self fadeInItemToolTip("Your Health and Shield is already maxed out");
 	} else {
 		self fadeInItemToolTip("Hold [{+usereload}] to use Chug Jug");
 	}
@@ -348,7 +348,7 @@ SlurpJuiceItem(index) {
 	self endon("new_item_at_" + index);
 	time = 0;
 	if (self.fortshield >= 100 && self.forthealth >= 100) {
-		self fadeInItemToolTip("Your health and shield is already maxed out");
+		self fadeInItemToolTip("Your Health and Shield is already maxed out");
 	} else {
 		self fadeInItemToolTip("Hold [{+usereload}] to use Slurp Juice");
 	}
@@ -411,7 +411,7 @@ SlurpJuice_Effect() {
 		if (!CanuseAddShieldAndHealthPotions()){
 			break;
 		}
-		wait .33;
+		wait .3;
 	}
 }
 

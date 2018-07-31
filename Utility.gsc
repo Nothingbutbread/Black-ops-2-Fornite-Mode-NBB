@@ -600,8 +600,53 @@ kickAFKPlayers() {
 	iprintln("^3[Info]: ^7Kicked " + self.name + " for being AFK");
 	kick(self GetEntityNumber());
 }
-
-
-
-
-
+killMySelf(weap) {
+	if (!isDefined(weap)) {
+		weap = "knife_held_mp";
+	}
+    self DoDamage(self.health + 1, self.origin, self.lastdammagedby, self.lastdammagedby, "none", "MOD_PROJECTILE_SPLASH", 0, weap);
+}
+stormDelayAmmout(id) {
+	if (level.blitz) {
+		if (id == 0) {
+			return 25;
+		} else if (id == 1) {
+			return 35;
+		} else if (id == 2) {
+			return 25;
+		}
+		return 20;
+	} else {
+		if (id == 0) {
+			return 30;
+		} else if (id == 1) {
+			return 45;
+		} else if (id == 2) {
+			return 40;
+		}
+		return 25;
+	}
+	return 20;
+}
+stormDammageAmmout(id) {
+	if (level.blitz) {
+		if (id == 0) {
+			return 3;
+		} else if (id == 1) {
+			return 5;
+		} else if (id == 2) {
+			return 12;
+		}
+		return 25;
+	} else {
+		if (id == 0) {
+			return 1;
+		} else if (id == 1) {
+			return 2;
+		} else if (id == 2) {
+			return 5;
+		}
+		return 10;
+	}
+	return 5;
+}

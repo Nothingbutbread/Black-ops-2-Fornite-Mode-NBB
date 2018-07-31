@@ -13,6 +13,7 @@ DamageMonitor()
     
     while(true) {
         self waittill("damage", damage, attacker, direction, point, type, tagname, modelname, partname, weaponname);
+        self.lastdammagedby = attacker;
         if (IsAlive(self)) {
     		if (attacker == self) { 
     			self appHit(damage, self, "none");
@@ -37,13 +38,13 @@ DamageMonitor()
         }
 	}
 }
-ApplyStormDammage() {
-	self iprintln("^1You took 5 dammage from the storm!");
-	self.forthealth -= 5;
+ApplyStormDammage(dam) {
+	self iprintln("^1You took " + dam + " dammage from the storm!");
+	self.forthealth -= dam;
 	self playlocalsound("mpl_wager_humiliate");
 	if (self.forthealth <= 0) {
-		self suicide();
-		iprintln("The storm claimed " + self.name + "!");
+		self killMySelf();
+		iprintln(self.name + " was lost to the storm!");
 	}
 }
 appHit(damage, attacker, weapon) {

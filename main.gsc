@@ -25,11 +25,12 @@ init()
 	level.activespeicallootdrops = 0;
 	level.stormcenterpoint = (0,0,0);
 	level.stormstartingradius = 20000;
+	level.stormcircles = (10000,4000,1000);
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
 	level.versionID = "^11.1.4 Public Beta";
-	level.debugger = false;
+	level.debugger = true;
 	level.solidgold = false;
 	level.blitz = false;
 	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
@@ -167,9 +168,13 @@ gameManager()
 	wait 6;
 	level thread LootSpawnerGeneator();
 	if (level.debugger) {
-		return;
+		//return;
 	}
-	warnrad = level.stormstartingradius - 600;
+	warnrad = level.stormstartingradius - 500;
+	stormid = -1;
+	stormmove = false;
+	stormdelay = stormDelayAmmout(0);
+	stormdamage = stormDammageAmmout(0);
 	while(true) {
 		level.playersalive = 0;
 		foreach(player in level.players) {
@@ -177,7 +182,7 @@ gameManager()
 				level.playersalive++;
 				d = Distance(player.origin, level.stormcenterpoint);
 				if (d >= level.stormstartingradius) {
-					player ApplyStormDammage();
+					player ApplyStormDammage(stormdamage);
 				} else if (d >= warnrad) {
 					player iprintlnbold("^3Get closer to the map or you will start to take damage!");
 				}
@@ -185,12 +190,12 @@ gameManager()
 					if (player.unstuckability) {
 						player setorigin(player.spawnorigin);
 					} else {
-						player suicide();
+						player killMySelf();
 						iprintln(player.name + " fell out of the map!");
 					}
 				}
 				if (player.forthealth <= 0) {
-					player suicide();
+					player killMySelf();
 				}
 			}
 		}
@@ -200,17 +205,37 @@ gameManager()
 				player.fortHUDS[17] setSafeText(level.gamestatestr);
 			}
 		}
-		if (level.blitz) {
-			level.stormstartingradius -= 200;
-			if (level.stormstartingradius < 1500) {
-				level.stormstartingradius = 1500;
+		///////////////////////////////////
+		if (stormmove) {
+			//iprintln("DEBUG 1");
+			if (level.blitz) {
+				level.stormstartingradius -= 180;
+			} else {
+				level.stormstartingradius -= 80;
 			}
-		} else {
-			level.stormstartingradius -= 80;
-			if (level.stormstartingradius < 2400) {
-				level.stormstartingradius = 2400;
+			if (stormid < 3) {
+				if (level.stormstartingradius < level.stormcircles[stormid]) {
+					level.stormstartingradius = level.stormcircles[stormid];
+					stormmove = false;
+				}
+			} else {
+				if (level.stormstartingradius < 150) {
+					level.stormstartingradius = 150;
+					stormmove = false;
+				}
+			}
+			stormdelay = stormDelayAmmout(stormid);
+			stormdamage = stormDammageAmmout(stormid);
+		} else if (stormid < 3) {
+			//iprintln("DEBUG 2");
+			stormdelay--;
+			if (stormdelay <= 0) {
+				iprintln("^1The Storm Eye is Shrinking!");
+				stormid++;
+				stormmove = true;
 			}
 		}
+	
 		wait 1;
 		warnrad = level.stormstartingradius - 750;
 	}
@@ -247,7 +272,7 @@ init_player_vars()
 	self.hastodeleteentities = false;
 	self.canbuild = false;
 	self.lastplacedramp = false;
-	
+	self.lastdammagedby = self;
 	//V1.2 Update
 	self.teamtag = "";
 	self.isonteam = false;
