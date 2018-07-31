@@ -71,7 +71,7 @@ Standoff()
 	level.battlebustimetotarget = 15;
 	level.stormcenterpoint = (-169,-160,50);
 	level.stormstartingradius = 25000;
-	level.stormcircles = (10000,2800,500);
+	level.stormcircles = (8000,2500,1000);
 	level.mapcustomentitylimit = 426; // Note to mapediters, The higher you set this, the more objects players can have at once, If you set it too high you will get an entity overflow.
 	level thread spawnObject("collision_clip_wall_256x256x10", (594,-1615, -5), (0,0,90)); // Patches an exploitable hole in the map.
 	ACL((-1584,1226,10));

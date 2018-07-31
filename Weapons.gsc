@@ -1,3 +1,14 @@
+getRawWeapon(str)
+{
+	retval = "";
+	for(x = 0; x < str.size; x++)
+	{
+		if (str[x] == "+") { break; }
+		retval += str[x];
+	}
+	return retval;
+}
+
 DefineWeapondataarray()
 {
 	level.AttachmentArray = [];
@@ -11,10 +22,10 @@ DefineWeapondataarray()
 	level.AttachmentArray[7] = "reflex"; //Reflex Sight
 	level.AttachmentArray[8] = "rf"; //Rapid Fire
 	level.AttachmentArray[9] = "tacknife"; //Tactical Knife
-	level.AttachmentArray[10] = "stalker"; //Stock
+	level.AttachmentArray[10] = "stalker"; //Stock 
 	level.AttachmentArray[11] = "silencer"; //Suppressor
 	level.AttachmentArray[12] = "extclip"; //Extended Clip
-	level.AttachmentArray[13] = "fmj"; //FMJ
+	level.AttachmentArray[13] = "fmj"; //FMJ 
 	level.AttachmentArray[14] = "steadyaim"; //Laser
 	level.AttachmentArray[15] = "acog"; //ACOG
 	level.AttachmentArray[16] = "dualclip"; //Fast Mag
@@ -30,7 +41,7 @@ DefineWeapondataarray()
 	level.WeaponArray2[1] = "sticky_grenade_mp";
 	level.WeaponArray2[2] = "hatchet_mp";
 	level.WeaponArray2[3] = "bouncingbetty_mp";
-	level.WeaponArray2[4] = "satchet_charge_mp";
+	level.WeaponArray2[4] = "satchel_charge_mp";
 	level.WeaponArray2[5] = "claymore_mp";
 	
 	level.WeaponArray3 = [];
@@ -101,191 +112,82 @@ DefineWeapondataarray()
 	
 	//level.WeaponArray[41] = "riotshield_mp";
 }
-getWeaponAttachments(weapon)
-{
-	attachments = [];
-	items = strtok(weapon, "+");
-	x = 0;
-	foreach(att in items)
-	{
-		if (x > 0)
-		{ attachments[attachments.size] = att; }
-		x++;
+isSingleShot(weap) {
+	// Hand Cannon
+	if (weap == "fnp45_mp+dualclip" || weap == "fnp45_mp+dualclip+fmj") {
+		return true;
 	}
-	return attachments;
+	// Bolt action sniper
+	else if (weap == "dsr50_mp+dualclip") {
+		return true;
+	}
+	// Hunting Rifle
+	else if (weap == "ballista_mp+is") {
+		return true;
+	}
+	return false;
 }
-// Takes an array and an int.
-// Array is that of strings, the id is the id of the attchment in the attachment array.
-// Assumes incomeing attachments are each unique
+isScropedNotSniper(weap) {
+	if (weap == "sa58_mp+acog") {
+		return true;
+	}
+	return false;
+}
+WeaponMod_SingleShot(weap, index) {
+	self endon("death");
+	self endon("disconnect");
+	self endon("new_item_at_" + index);
+	while(weap == self.activeweapon) {
+		self waittill("weapon_fired");
+		if (weap != self.activeweapon) {
+			break;
+		}
+		self.ammotypes[self.activetype] += self getweaponammoclip(self.activeweapon);
+		self setWeaponAmmoClip(self.activeweapon, 0);
+	}
+}
+WeaponMod_Scoped(weap, index) {
+	// self setclientthirdperson(1);
+	self endon("death");
+	self endon("disconnect");
+	self endon("new_item_at_" + index);
+	while(weap == self.activeweapon) {
+		if (self adsbuttonpressed())  {
+			self setclientthirdperson(0);
+			wait .1;
+		} else {
+			self setclientthirdperson(1);
+		}
+		wait .1;
+	}
+}
+WeaponMod_RefreshStock() {
+	self endon("death");
+	self endon("disconnect");
+	while(true) {
+		if (self.amholdinggun) {
+			stock = self getweaponammostock(self.activeweapon);
+			self setWeaponAmmoStock(self.activeweapon, (stock + self.ammotypes[self.activetype]));
+			newstock = self getweaponammostock(self.activeweapon);
+			r = newstock - stock;
+			if (r > 0) {
+				self.ammotypes[self.activetype] -= r;
+			}
+		} else {
+			wait .4;
+		}
+		wait .1;
+	}
+}
 
-isCompatableWithCurrentGun(attachments, id, gunid)
-{
-	attachments[attachments.size] = level.AttachmentArray[id];
-	if (attachments.size > 3) { return false; }
-	// Is the attchements compactable with the guns useable attchments?
-	if (gunid < 11 && gunid != 5) { return false; } // Dosn't
-	if (gunid > 43) { return false; }
-	sights = strtok("dualoptic,holo,mms,rangefinder,acog,ir,is", ",");
-	
-	if (gunid == 5) // Cross bow
-	{
-		cb = strtok("reflex,acog,ir,vzoom,stackfire", ",");
-		count = 0;
-		vzoom = false;
-		for(x = 0; x < attachments.size; x++)
-		{
-			good = false;
-			foreach(at in cb) { if (attachments[x] == at) { if (at == "vzoom") { vzoom = true; }good = true; break; } }
-			if (!good) { return false; }
-		}
-		if (attachments.size == 1) { return true; }
-		else 
-		{
-			dualband = false;
-			for(x = 0; x < attachments.size; x++) 
-			{ 
-				foreach(at in sights) 
-				{ 
-					if (attachments[x] == at) 
-					{ 
-						count++; 
-						if (at == "ir") { dualband = true; } 
-						break; 
-					} 
-				} 
-			}
-			if (count == 0) { return true; }
-			else if (dualband && vzoom && attachments.size == 3) { return true; }
-			else if (count == 1 && !vzoom) { return true; }
-			return false;
-		}
-	}
-	else if (gunid >= 10 && gunid <= 15) //10 - 15
-	{
-		// 14 can't use extclip
-		pi = strtok("reflex,extbarrel,dualclip,steadyaim,fmj,tacknife,silencer,extclip",",");
-		for(x = 0; x < attachments.size; x++) 
-		{ 
-			good = false;
-			foreach(at in pi)  { if (attachments[x] == at) { good = true; break; } }
-			if (!good) { return false; }
-		}
-		haslong = false; hassil = false; hasfmag = false; hasextmag = false;
-		for(x = 0; x < attachments.size; x++) 
-		{ 
-			foreach(at in pi) 
-			{
-				if (attachments[x] == at)
-				{
-					if (at == "extbarrel") { haslong = true; }
-					else if (at == "silencer") { hassil = true; }
-					else if (at == "dualclip") { hasfmag = true; }
-					else if (at == "extclip") { hasextmag = true; }
-					break;
-				}
-			}
-		}
-		if (hasfmag && hasextmag) { return false; }
-		if (gunid == 14 && hasextmag) { return false; }
-		if (haslong && hassil) { return false; }
-		return true;
-	}
-	else if (gunid >= 16 && gunid <= 19) //16 - 19
-	{
-		sg = strtok("reflex,extbarrel,dualclip,steadyaim,stalker,silencer,extclip,fastads,mms",",");
-		haslong = false; hassil = false; hasfmag = false; hasextmag = false;
-		for(x = 0; x < attachments.size; x++) 
-		{ 
-			good = false;
-			foreach(at in sg)  { if (attachments[x] == at) { good = true; break; } }
-			if (!good) { return false; }
-		}
-		for(x = 0; x < attachments.size; x++) 
-		{ 
-			foreach(at in sg) 
-			{
-				if (attachments[x] == at)
-				{
-					if (at == "extbarrel") { haslong = true; }
-					else if (at == "silencer") { hassil = true; }
-					else if (at == "dualclip") { hasfmag = true; }
-					else if (at == "extclip") { hasextmag = true; }
-					break;
-				}
-			}
-		}
-		count = 0;
-		for(x = 0; x < attachments.size; x++) 
-		{ 
-			foreach(at in sights) 
-			{ 
-				if (attachments[x] == at) 
-				{ 
-					count++; 
-					break; 
-				} 
-			} 
-		}
-		if  (count > 1) { return false; }
-		for(x = 0; x < attachments.size; x++) 
-		{ 
-			foreach(at in sg) 
-			{
-				if (attachments[x] == at)
-				{
-					if (at == "extbarrel") { haslong = true; }
-					else if (at == "silencer") { hassil = true; }
-					else if (at == "dualclip") { hasfmag = true; }
-					else if (at == "extclip") { hasextmag = true; }
-					break;
-				}
-			}
-		}
-		if (hasfmag && hasextmag) { return false; }
-		if (haslong && hassil) { return false; }
-		return true;
-	}
-	else if (gunid >= 40 && gunid <= 43) //40 - 43
-	{
-		sniper = strtok("ir,steadyaim,extclip,acog,fmj,daulclip,vzoom,swayreduc,silencer", ",");
-	}
-	lmg = strtok("ir,steadyaim,extclip,acog,fmj,vzoom,silencer,holo,grip,reflex,fastads,rangefinder,stalker,rf,dualoptic", ",");
-	smg = strtok("steadyaim,extclip,acog,fmj,daulclip,silencer,holo,grip,reflex,fastads,rangefinder,stalker,rf,daulclip,mms,sf,extbarrel", ",");
-	ar = strtok("reflex,fastads,dualclip,acog,grip,stalker,rangefinder,steadyaim,sf,gl,holo,silencer,fmj,dualoptic,extclip,mms,extclip", ",");
-	// Silencer or Long barrel
-	// Hybrid optic or Grenade Launcher or Select fire
-	// Grenade Launcher or Foregrip
-	// Vzoom requires a Dual band or Default sniper scope.
-	// FMJ or MMS sight
-	
-	
-}
-/*
-	level.AttachmentArray[0] = "dualoptic"; //Hybrid Optic
-	level.AttachmentArray[1] = "extbarrel"; //Long Barrel  
-	level.AttachmentArray[2] = "fastads"; //Quickdraw
-	level.AttachmentArray[3] = "grip"; //Fore Grip
-	level.AttachmentArray[4] = "holo"; //EOTech
-	level.AttachmentArray[5] = "mms"; //MMS
-	level.AttachmentArray[6] = "rangefinder"; //Target Finder
-	level.AttachmentArray[7] = "reflex"; //Reflex Sight
-	level.AttachmentArray[8] = "rf"; //Rapid Fire
-	level.AttachmentArray[9] = "tacknife"; //Tactical Knife
-	level.AttachmentArray[10] = "stalker"; //Stock
-	level.AttachmentArray[11] = "silencer"; //Suppressor
-	level.AttachmentArray[12] = "extclip"; //Extended Clip
-	level.AttachmentArray[13] = "fmj"; //FMJ
-	level.AttachmentArray[14] = "steadyaim"; //Laser
-	level.AttachmentArray[15] = "acog"; //ACOG
-	level.AttachmentArray[16] = "dualclip"; //Fast Mag
-	level.AttachmentArray[17] = "vzoom"; //Variable Zoom
-	level.AttachmentArray[18] = "ir"; //Dual Band
-	level.AttachmentArray[19] = "is"; //Iron sights
-	level.AttachmentArray[20] = "swayreduc"; //Ballistics CPU
-	level.AttachmentArray[21] = "stackfire"; //Tri-Bolt
-	level.AttachmentArray[22] = "sf"; //Select Fire
-	level.AttachmentArray[23] = "gl"; //Grenade Launcher
-*/
+
+
+
+
+
+
+
+
 
 
 

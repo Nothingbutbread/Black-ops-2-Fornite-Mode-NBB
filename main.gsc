@@ -1,82 +1,70 @@
-#include maps\mp\_utility;
-#include common_scripts\utility;
-#include maps\mp\gametypes\_hud_util;
-#include maps\mp\gametypes\_hud_message;
-///////////////////////////////////////////////////
-//  The Survival Games                           //
-///////////////////////////////////////////////////
-//  Created by: Nothingbutbread                  //
-///////////////////////////////////////////////////
-//  Build: V1.2.1 Initial Release                //
-///////////////////////////////////////////////////////////
-//  Usage of this mod must be inaccordance               //
-//  to the terms termsofuse.txt                          // 
-///////////////////////////////////////////////////////////
-//  Credits: For whose works I drew external assets from //
-//  Note: Most assets in this mod not derived from       //
-//  external sources. However not 100% of it my own code.//
-//                                                       //
-//  Shark: Core HUD functions, Modified from Zombieland  //
-//  OfficalCoolJay: Extra HUD functions, bits of code    //
-//    - Waypoint function drawn from his Zombieland edit //
-//  NGU Script list contributers:                        //
-//   - Electric Cherry code, varrious others             //
-//  xTul: GSC Overflow fix                               //
-///////////////////////////////////////////////////////////
+#include maps/mp/gametypes/_globallogic_score;
+#include maps/mp/gametypes/_globallogic_utils;
+#include maps/mp/_scoreevents;
+#include maps/mp/teams/_teams;
+#include maps/mp/_utility;
+#include common_scripts/utility;
+#include maps/mp/gametypes/_hud;
+#include maps/mp/gametypes/_hud_util;
+#include maps/mp/gametypes/_hud_message;
+#include maps/mp/gametypes/_spawnlogic;
+#include maps/mp/gametypes/_spawning;
+#include maps/mp/killstreaks/_turret_killstreak;
+#include maps/mp/gametypes/_globallogic_ui;
+
 init()
 {
-	PrecacheItem("minigun_wager_mp");
-	PrecacheItem("m32_wager_mp");
-	Precacheshader("perk_hardline");
-	Precacheshader("perk_awareness");
-	Precacheshader("perk_flak_jacket");
-	PrecacheModel("projectile_sidewinder_missile");
-	PrecacheModel("mp_flag_neutral");
-	PrecacheModel("t6_wpn_supply_drop_trap");
-	PrecacheModel("collision_clip_wall_128x128x10");
-	PrecacheModel("collision_clip_wall_256x256x10");
-	PrecacheModel("collision_clip_wall_512x512x10");
 	level.strings = [];
-	level.lc = []; // Loot crate possible locations, Storeage of vectors.
-	level.overflowfixthreaded = false;
-	level.finalspawnpoint = (0,0,0);
-	level.startalive = true;
-	level.peacetime = false;
-	level.versionid = "V1.3";
+	level.chestspawnlocations = [];
+	level.ammospawnlocations = [];
+	level.spinningweaponlocations = [];
+	level.supplydroplocations = [];
+	level.activechests = 0;
+	level.activeammodrops = 0;
+	level.activespiningitems = 0;
+	level.activespeicallootdrops = 0;
+	level.stormcenterpoint = (0,0,0);
+	level.stormstartingradius = 20000;
+	level.stormcircles = (10000,4000,1000);
 	level.belowmapdeathbarrier = -3000;
-	level.activetraps = 0;
-	level.targtedplayers = 0;
-	level.activelootboxes = 0;
-	level.mmiconsspawned = 0;
-	// ******** Settings ************** //
-	
-	level.debugger = false; // Set to true if you want make map edits and do testing related things.
-	level.disableEndGameWallHack = false; // Set to true to disable giving of Wall Hack to the last few people to quicken the game.
-	level.playercountforEndGameWallHackToTrigger = 3; // Set the ammout of players needed to triger the 
-	level.timeforEndGameWallHackToTrigger = 300;
-	
-	// ******************************** //
-	level DefineWeapondataarray();
+	level.playersalive = 2;
+	// You Can Change these:
+	level.versionID = "^11.1.4 Public Beta";
+	level.debugger = true;
+	level.solidgold = false;
+	level.blitz = false;
+	level.fantasy = true;
+	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
+	level.allowteams = false;
+	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
+	// Do not change anything else ...
+	level.mapcustomentitylimit = 440;
+	level.entitiesperplayer = 30;
+	level.gamestatestr = "Players Alive: Unknown\nStorm Width: 25000";
+	level PrecacheAll();
     level thread onPlayerConnect();
-    level thread init_SurvivalGames();
-    if (!level.debugger) { registernumlives(1, 100); }
+    level thread gameManager();
+    if (!level.debugger) { 
+    	registernumlives(1, 999999); 
+    }
     registertimelimit( 0, 0);
 }
 
 onPlayerConnect()
 {
-    for(;;)
-    {
+    while(true) {
         level waittill("connected", player);
-        if (player isHost())
-        {
+        if (player isHost()) {
         	setDvar("party_connectToOthers", "0");
 	        setDvar("partyMigrate_disabled", "1");
 	        setDvar("party_mergingEnabled", "0");
 	        setDvar("allowAllNAT", "1");
-	        level.dahost = player;
+	        level.debuggerhost = player;
         }
-        if (!level.overflowfixthreaded) { level thread overflowfix(); level.overflowfixthreaded = true; level.lastkilled = player; }
+        if (!level.overflowfixthreaded) { 
+        	level thread overflowfix(); 
+        	level.overflowfixthreaded = true;
+        }
         player thread onPlayerSpawned();
     }
 }
@@ -85,293 +73,219 @@ onPlayerSpawned()
 {
     self endon("disconnect");
 	level endon("game_ended");
-	self.spawnorigin = (0,0,0);
-	self.sp = 0;
-	self.curspeed = 1;
-	self.basespeed = 1;
-	self.basehealth = 100;
-	self.lootboxitemcount = 0;
-	self.lootboxrarity = "Common";
-	self.occupation = "";
-	self.inventory_menu_open = false;
-	self.loot_menu_open = false;
-	self.iscoolfordisgame = false;
-	self.occupation_bonus = false;
-	self.canteleport = true;
-	self.cantaunt = true;
-	self.istargted = false;
-	self.resistanceabilityactive = false;
-	self.canusemenu = true;
-	self.eastereggeffect = false;
-	self.savedfromthedepths = true;
-	self thread init_HUDS();
-	self thread onPlayerDisconnect();
-    while(true)
-    {
+	self init_player_vars();
+	self thread CreatePlayerHUDS();
+	self.inthisgame = false;
+	level.disableweapondrop = true;
+    while(true) {
     	self notify("menuresponse", "changeclass", "class_smg");
         self waittill("spawned_player");
         self.spawnorigin = self.origin;
-        self SetClientUIVisibilityFlag("g_compassShowEnemies", 0);
-        self StartingLoadout();
+        self thread onDisconnect();
+		self thread onDeath();
         self FreezeControls(false);
-        self.iscoolfordisgame = level.startalive;
-        self.inventory_menu_open = false;
-        self.loot_menu_open = false;
-        self.canusemenu = true;
-        self.resistanceabilityactive = false;
-        self thread Menu_Inventory_Open_Bind(); // If the player is not in, the bind will not run.
-        self.inventory_menu_HUD.alpha = 0;
-		self.inventory_menu_BG.alpha = 0;
-		self.inventory_menu_Scroller.alpha = 0;
-		self.loot_menu_Scroller.alpha = 0;
-		self EnableInvulnerability();
-		self thread onPlayerDeath();
-        if (self.iscoolfordisgame) // Player is in the game
-        { self thread WatchForFallOutOfMap();}
+        self.inthisgame = true;
+        if (level.debugger) {
+        	//self.status = 3;
+        	//self thread VarPrinter();
+        	//self GiveTestInventory();
+        	//self thread printOrigin();
+        }
+        self AdjustLoadout(0);
+        self EnableInvulnerability();
+        
+        //self setclientthirdperson(1);
+        //self setclientuivisibilityflag("hud_visible", 1);
+        self thread DamageMonitor();
+        self thread WeaponMod_RefreshStock();
     }
 }
-
-onPlayerDeath()
-{
+onDeath() {
 	self endon("disconnect");
+	self endon("spawned_player");
 	self waittill("death");
-	level.lastkilled = self;
-	if (self.inventory_menu_open) { self thread Menu_Inventory_Close(); }
-	else if (self.loot_menu_open) { self thread Menu_Loot_Close(); }
-	if (self.istargted) { level.targtedplayers--; }
-	if (isDefined(self.waypointHUD)) { self.waypointHUD destroy(); }
-	self thread Player_Drop_Inventory();
-	self.sp = 0;
+	self DeleteAllCustomEntities();
+	//self thread SpawnPlayerDeathDrop();
+	self thread DeathandDisconnectCheckTeamDownedPlayers();
+	self.inthisgame = false;
 }
-onPlayerDisconnect()
-{
+onDisconnect() {
 	self endon("death");
+	self endon("spawned_player");
 	self waittill("disconnect");
-	if (self.istargted) { level.targtedplayers--; }
-	if (isDefined(self.waypointHUD)) { self.waypointHUD destroy(); }
+	self DeleteAllCustomEntities();
+	self thread DeathandDisconnectCheckTeamDownedPlayers();
+	self.inthisgame = false;
 }
-WatchForFallOutOfMap()
+printIntro() {
+	iprintln("^2This is ^5Fortnite Battle Royal ^3V" + level.versionID);
+	wait 2;
+	iprintln("^2Developed by: ^6Nothingbutbread");
+	wait 1;
+	iprintln("^3If you enjoy this gamemode, Subscribe to the developer on ^1Youtube");
+	iprintln("^5https://www.youtube.com/channel/UCkoRr0Ye4If_Wc24KQBgloQ");
+	wait 3;
+	iprintln("^3Thank you, and have a awesome match!");
+	iprintln("^5Features such as teaming, new weapons and mapedits coming in the next update!");
+	wait 4;
+	iprintln("^1Note to host: ^3If this download was obtained via an adfly link");
+	iprintln("^3Please report the person who provided it to ^6Nothingbutbread");
+}
+gameManager()
 {
-	self endon("death");
-	self endon("disconnect");
-	while(true)
-	{
-		if (self.origin[2] < level.belowmapdeathbarrier)
-		{
-			if (self.savedfromthedepths)
-			{ 
-				self iprintln("^3You just fell off the map, you were saved this time but not the next time!");
-				self iprintln("^1You lost everything in your inventory!");
-				if (self.inventory_menu_open) { self thread Menu_Inventory_Close(); }
-				else if (self.loot_menu_open) { self thread Menu_Loot_Close(); }
-				self.invgun = []; self.invboo = []; self.invabi = []; self.invaat = [];
-				for(x=0;x<7;x++){ self.invgun[x] = ""; self.invboo[x] = ""; self.invabi[x] = ""; self.invaat[x] = ""; }
-				n = 0;
-				while(true) { n = RandomIntRange(0,8); if (level.lca[n] >= 0) { break; } wait .05; }
-				self setorigin( level.lc[ level.lca[n] ] + (0,0,20) );
-				wait .5;
-				self.savedfromthedepths = false;
+	level endon("game_ended");
+	level waittill("prematch_over");
+	level thread init_MapEdit();
+	if (level.debugger) {
+		//level thread DammageTestBotSpawn();
+		//level thread LootSpawnerGeneator();
+		//level.entitiesperplayer = 200;
+		//level thread printIntro();
+		//return;
+	}
+	level thread prepForTeamBasedFortnite();
+	for(x = 20; x > 5; x--) {
+		iprintln("Fortnite Battle Royal Starting in " + x + " seconds!");
+		foreach(player in level.players) { 
+			if (IsAlive(player)) { 
+				player AdjustLoadout(0);
 			}
-			else { self suicide(); }
 		}
 		wait 1;
 	}
-}
-init_SurvivalGames()
-{
-	level endon("game_ended");
-	level.trapsqueue = []; 
-	level.trapsqueueplayers = [];
-	level.lca = []; // Active locations, Storage of indexes in the lc array.
-	level.startalive = true; // While true new joiners can play in the round. Once the game starts and peacetime ends, this will become false.
-	level.peacetime = false; // While true, everyone has godmode and can collect loot boxes.
-	level.deadmansskybarrier = 1000; // The Hight value all dead players must mantain to inorder to not be telported back to spawn.
-	level.finalspawnpoint = (0,0,0); // The center point that used as the spawn point.
-	for(x=0;x<8;x++) { level.lca[x] = -1; } // All 8 active crates are assigned -1, meaning not spawend.
-	level waittill("prematch_over");
-	level PublicMatchVerification();
+	wait 5;
+	iprintln("^6All aboard the battle bus!");
 	wait 1;
-	if (!level.debugger)
-	{
-		for(p=0;p<15;p++)
-		{
-			iprintln("^6Game starting in ^3" + (15 - p));
-			wait 1;
-		}
+	level thread TeleportToBattleBus();
+	initcount = 0;
+	foreach(player in level.players) { 
+		if (IsAlive(player)) { 
+			player DisableInvulnerability(); 
+			player AdjustLoadout(0);
+			initcount++;
+		} 
 	}
-	iprintln("^3Game started! ^5Peace time active!");
-	level thread init_MapEdit();
-	level.time = 600; // 10 minutes total
-	level thread LootBox_Spawner();
-	level.peacetime = true;
-	if (level.debugger) { return; }
-	level.startalive = false;
-	// Createing the HUD
-	level.timestring = "Time left: 10 Minutes 0 Seconds";
-	level.timerHUDMinute = CreateText(level.timestring, 2, 300, 0, (1,1,1), 1, 50, true, true, true, true);
-	level.alivestring = "Players Alive: Unknown";
-	level.aliveHUD = CreateText(level.alivestring, 2, 300, 20, (1,1,1), 1, 50, true, true, true, true);
-	min = 10;
-	sec = 0;
-	count = 18;
-	triguredendgamewallhack = false;
-	foreach(player in level.players) { player StartingLoadout(); }
-	while(level.time > 540) 
-	{ 
-		count = 0;
-		foreach(player in level.players) { if (IsAlive(player) && player.iscoolfordisgame) { count++; } }
-		level.alivestring = "Players Alive: " + count;
-		level.aliveHUD setSafeText(level.alivestring);
-		wait 1; 
-		level.time--; 
-		if (level.time == 550) { iprintln("^3Peace time ends in 10 seconds!"); }
-		if (level.time == 545) { iprintln("^1Peace time ends in 5 seconds!"); }
-		min = int(floor(level.time / 60));
-		sec = int(level.time - (min * 60));
-		level.timestring = "Time left: " + min + " Minutes " + sec + " Seconds";
-		level.timerHUDMinute setSafeText(level.timestring);
+	level.entitiesperplayer = int(level.mapcustomentitylimit / initcount);
+	wait 6;
+	level thread LootSpawnerGeneator();
+	if (level.debugger) {
+		//return;
 	}
-	level.peacetime = false;
-	level.startalive = false;
-	foreach(player in level.players)
-	{ if (IsAlive(player)) { player DisableInvulnerability(); } }
-	iprintln("^1Peace time over! You can now kill each other!");
-	while(level.time > 0) 
-	{ 
-		wait 1; 
-		level.time--;
-		min = int(floor(level.time / 60));
-		sec = int(level.time - (min * 60));
-		level.timestring = "Time left: " + min + " Minutes " + sec + " Seconds";
-		level.timerHUDMinute setSafeText(level.timestring);
-		count = 0;
-		foreach(player in level.players) { if (IsAlive(player) && player.iscoolfordisgame) { count++; } }
-		level.alivestring = "Players Alive: " + count;
-		level.aliveHUD setSafeText(level.alivestring);
-		if (count <= level.playercountforEndGameWallHackToTrigger && !level.disableEndGameWallHack && level.time < level.timeforEndGameWallHackToTrigger && !triguredendgamewallhack) { level thread EndGameWallHack(); triguredendgamewallhack = true;}
-		else if (count <= 1) 
-		{ 
-			target = level.dahost;
-			foreach(player in level.players) { if (IsAlive(player) && player.iscoolfordisgame) { target = player; } }
-			level.winnersstring = "^2" + target.name + " has won the game!";
-			level thread maps/mp/gametypes/_globallogic::endgame("tie", "^2" + target.name + " has won the game!");
-		}		
-	}
-	target = level.dahost;
-	dis = 999999;
-	foreach(player in level.players)
-	{
-		if (IsAlive(player) && player.iscoolfordisgame)
-		{
-			if (Distance(player.origin, level.finalspawnpoint) < dis)
-			{
-				dis = Distance(player.origin, level.finalspawnpoint);
-				target = player;
+	warnrad = level.stormstartingradius - 500;
+	stormid = -1;
+	stormmove = false;
+	stormdelay = stormDelayAmmout(0);
+	stormdamage = stormDammageAmmout(0);
+	level thread StormHUD();
+	while(true) {
+		level.playersalive = 0;
+		foreach(player in level.players) {
+			if (player.inthisgame) {
+				level.playersalive++;
+				d = Distance(player.origin, level.stormcenterpoint);
+				if (d >= level.stormstartingradius) {
+					player ApplyStormDammage(stormdamage);
+				} else if (d >= warnrad) {
+					player iprintlnbold("^3Get closer to the map or you will start to take damage!");
+				}
+				if (player.origin[2] < level.belowmapdeathbarrier) {
+					if (player.unstuckability) {
+						player setorigin(player.spawnorigin);
+					} else {
+						player killMySelf();
+						iprintln(player.name + " fell out of the map!");
+					}
+				}
+				if (player.forthealth <= 0) {
+					player killMySelf();
+				}
 			}
 		}
-	}
-	level.winnersstring = "^2" + target.name + " has won the game!";
-	level thread maps/mp/gametypes/_globallogic::endgame("tie", "^2" + target.name + " has won the game!");
-}
-EndGameWallHack()
-{
-	foreach(player in level.players)
-	{
-		if (IsAlive(player) && player.iscoolfordisgame)
-		{
-			player notify("end_AAT_ReconPaluse_Effect");
-			if (player.istargted)
-			{
-				level.targtedplayers--;
+		level.gamestatestr = "Players Alive: " + level.playersalive + "\nStorm Width: " + level.stormstartingradius;
+		foreach(player in level.players) {
+			if (player.inthisgame) {
+				player.fortHUDS[17] setSafeText(level.gamestatestr);
 			}
-			player thread EndgameWallHack_Effect();
 		}
+		///////////////////////////////////
+		if (stormmove) {
+			//iprintln("DEBUG 1");
+			if (level.blitz) {
+				level.stormstartingradius -= 180;
+			} else {
+				level.stormstartingradius -= 80;
+			}
+			if (stormid < 3) {
+				if (level.stormstartingradius < level.stormcircles[stormid]) {
+					level.stormstartingradius = level.stormcircles[stormid];
+					stormmove = false;
+				}
+			} else {
+				if (level.stormstartingradius < 150) {
+					level.stormstartingradius = 150;
+					stormmove = false;
+				}
+			}
+			stormdelay = stormDelayAmmout(stormid);
+			stormdamage = stormDammageAmmout(stormid);
+		} else if (stormid < 3) {
+			//iprintln("DEBUG 2");
+			stormdelay--;
+			if (stormdelay <= 0) {
+				iprintln("^1The Storm Eye is Shrinking!");
+				stormid++;
+				stormmove = true;
+			}
+		}
+	
+		wait 1;
+		warnrad = level.stormstartingradius - 750;
 	}
 }
-EndgameWallHack_Effect()
+init_player_vars()
 {
-	self endon("disconnect");
-	self endon("death");
-	level.targtedplayers++;
-	self.istargted = true;
-	self.waypointHUD Destroy();
-	self.waypointHUD = self CreateWaypoint("perk_awareness", self.origin, 5, 5, .5, true);
-	self iprintln("^2You and your opponet(s) are now marked!");
-	while(true)
-	{
-		self.waypointHUD moveOverTime(.1);
-		self.waypointHUD.x = self.origin[0];
-		self.waypointHUD.y = self.origin[1];
-		self.waypointHUD.z = self.origin[2] - 20;
-		wait .1;
+	self.inv = self createInventory();
+	self.ammotypes = [];
+	for(x = 0; x < 5; x++) { 
+		self.ammotypes[x] = 0; 
+	}
+	
+	self.lastusedinvslotindex = 0;
+	self.activeweapon = "knife_held_mp";
+	self.activerarity = 0;
+	self.activetype = 0;
+	self.amholdinggun = true;
+	
+	self.forthealth = 100;
+    self.fortshield = 0;
+    
+    self.selectorpos = 0;
+    self.menuselectorpos = 0;
+	self.curmenu = 0;
+	self.menuopen = false;
+	
+	self.status = 0;
+	self.canteleport = true;
+	self.spawnorigin = (0,0,0);
+	self.unstuckability = true;
+	
+	self.buildentites = [];
+	self.activebuildindex = 0;
+	self.hastodeleteentities = false;
+	self.canbuild = false;
+	self.lastplacedramp = false;
+	self.lastdammagedby = self;
+	//V1.2 Update
+	self.teamtag = "";
+	self.isonteam = false;
+	self.downed = false;
+	self.closestally = self;
+	self.isbeingrevived = false;
+	if (level.allowteams) {
+		self init_Teams_Client();
 	}
 }
-PublicMatchVerification()
-{
-	if (!level.debugger)
-	{
-		if(getDvar("g_gametype") != "dm")
-        	thread maps/mp/gametypes/_globallogic::endgame("tie", "The Survial games must be used in ^1Free For All");
-        if(getDvar("mapname") == "mp_nuketown_2020")
-			return;
-		else if(getDvar("mapname") == "mp_meltdown")
-			return;
-		else if(getDvar("mapname") == "mp_hijacked")
-			return;
-		else if(getDvar("mapname") == "mp_drone")
-			return;
-		else if(getDvar("mapname") == "mp_turbine")
-			return;
-		else if(getDvar("mapname") == "mp_raid")
-			return;
-		else if(getDvar("mapname") == "mp_la")
-			return;
-		else if(getDvar("mapname") == "mp_dockside") 
-			return;
-		else if(getDvar("mapname") == "mp_village")
-			return;
-		else if(getDvar("mapname") == "mp_socotra")
-			return;
-		changeToRandomSurportedMap();
-	}
-}
-changeToRandomSurportedMap()
-{
-	n = RandomIntRange(0,10);
-	if(n == 0)
-		changemap("mp_turbine");
-	else if(n == 1)
-		changemap("mp_dockside");
-	else if(n == 2)
-		changemap("mp_drone");
-	else if(n == 3)
-		changemap("mp_nuketown_2020");
-	else if(n == 4)
-		changemap("mp_village");
-	else if(n == 5)
-		changemap("mp_socotra");
-	else if(n == 6)
-		changemap("mp_hijacked");
-	else if(n == 7)
-		changemap("mp_la");
-	else if(n == 8)
-		changemap("mp_raid");
-	else if(n == 9)
-		changemap("mp_meltdown");
-}
-// Extracted from the Preditor Menu, This not my function.
-changemap( mapname )
-{
-	setdvar( "ls_mapname", mapname );
-	setdvar( "mapname", mapname );
-	setdvar( "party_mapname", mapname );
-	setdvar( "ui_mapname", mapname );
-	setdvar( "ui_currentMap", mapname );
-	setdvar( "ui_mapname", mapname );
-	setdvar( "ui_preview_map", mapname );
-	setdvar( "ui_showmap", mapname );
-	map( mapname, 0 );
-}
+
 
 
 

@@ -118,9 +118,9 @@ GetRandomAmmoAmmout(type) {
 	// Type: 4 Explosive Shells (RPG/War Machine) 
 	ammo = 2;
 	if (type == 0) {
-		ammo = RandomIntRange(20, 80);
+		ammo = RandomIntRange(30, 80);
 	} else if (type == 1) {
-		ammo = RandomIntRange(15, 40);
+		ammo = RandomIntRange(25, 65);
 	} else if (type == 2) {
 		ammo = RandomIntRange(6, 20);
 	} else if (type == 3) {
@@ -631,22 +631,22 @@ stormDelayAmmout(id) {
 stormDammageAmmout(id) {
 	if (level.blitz) {
 		if (id == 0) {
-			return 3;
-		} else if (id == 1) {
 			return 5;
+		} else if (id == 1) {
+			return 10;
 		} else if (id == 2) {
-			return 12;
+			return 20;
 		}
-		return 25;
+		return 30;
 	} else {
 		if (id == 0) {
-			return 1;
-		} else if (id == 1) {
 			return 2;
-		} else if (id == 2) {
+		} else if (id == 1) {
 			return 5;
+		} else if (id == 2) {
+			return 10;
 		}
-		return 10;
+		return 20;
 	}
 	return 5;
 }

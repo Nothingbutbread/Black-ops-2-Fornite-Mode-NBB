@@ -78,7 +78,7 @@ appHit(damage, attacker, weapon) {
 dammageMap(weap) {
 	// Burst rifle
 	if (weap == "sig556_mp" || weap == "sig556_mp+stalker") {
-		return 27;
+		return 25;
 	}
 	// Drum Gun / Tommy Gun
 	else if (weap == "pdw57_mp+fastads") {
@@ -90,7 +90,7 @@ dammageMap(weap) {
 	}
 	// Auto rifle
 	else if (weap == "scar_mp" || weap == "scar_mp+extclip") {
-		return 30;
+		return 19;
 	}
 	// Scoped rifle
 	else if (weap == "sa58_mp+acog") {
