@@ -75,11 +75,23 @@ FreezeBotOnSpawn() {
         self DisableInvulnerability(); 
 	}
 }
+ToggleNoclip() {
+	if (!isDefined(self.noclip)) {
+		self.noclip = false;
+	}
+	if (self.noclip) {
+		self.noclip = false;
+		self iprintln("Noclip Disabled!");
+	} else {
+		self.noclip = true;
+		self thread Noclip();
+	}
+}
 Noclip() {
 	obj = spawn("script_origin", self.origin);
 	obj.angles = self.angles;
 	self PlayerLinkTo(obj, undefined);
-	while(true) 
+	while(self.noclip) 
 	{
 		if (self adsbuttonpressed()) 
 		{ 
@@ -121,6 +133,7 @@ DEBUG_PRINTITEMS(data) {
 		wait 1;
 	}
 }
+
 
 
 

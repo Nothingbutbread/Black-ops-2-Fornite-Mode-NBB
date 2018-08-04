@@ -463,6 +463,7 @@ PrecacheAll()
 	PrecacheModel("collision_clip_wall_256x256x10");
 	PrecacheModel("collision_clip_wall_512x512x10");
 	PrecacheModel("p6_dockside_container_lrg_red");
+	PrecacheModel("p6_dockside_container_lrg_orange");
 }
 boolToString(bool)
 {
@@ -651,3 +652,9 @@ stormDammageAmmout(id) {
 	return 5;
 }
 
+doOR(a,b) {
+	if (a || b) {
+		return true;
+	}
+	return false;
+}

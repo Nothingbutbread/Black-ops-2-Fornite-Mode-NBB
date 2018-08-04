@@ -194,7 +194,14 @@ SpawnPlayerDeathDropLevelThread(name, ammo, data, origin) {
 	trig setCursorHint("HINT_NOICON", trig);
 	trig setHintString("Hold [{+usereload}] to loot " + name + "'s inventory");
 	tick = 0;
-	while(1800 > tick) {
+	openinv = false;
+	for(x = 0; x < data.size; x++) {
+		if (data[x].slotfilled) {
+			oveninv = true;
+			break;
+		}
+	}
+	while(1200 > tick) {
 		trig waittill("trigger", player);
 		if (player useButtonPressed() && isAlive(player) && !player.menuopen) {
 			for(x = 0; x < 5; x++) {
@@ -202,12 +209,23 @@ SpawnPlayerDeathDropLevelThread(name, ammo, data, origin) {
 					player addAmmo(x, ammo[x]);
 				}
 			}
-			player thread OpenChestGUI(data, 2);
+			if (openinv) {
+				player thread OpenChestGUI(data, 2);
+			}
 			trig triggerOff();
 			m delete();
 			break;
-		} else if (player useButtonPressed() && isAlive(player) && player.menuopen) {
+		} else if (player useButtonPressed() && isAlive(player) && player.menuopen && openinv) {
 			player iprintlnbold("^1Your inventory must be closed to use this!");
+		} else if (player useButtonPressed() && isAlive(player) && player.menuopen && !openinv) {
+			for(x = 0; x < 5; x++) {
+				if (ammo[x] != 0) {
+					player addAmmo(x, ammo[x]);
+				}
+			}
+			trig triggerOff();
+			m delete();
+			break;
 		}
 		wait .05;
 		tick++;
@@ -684,6 +702,7 @@ Forge_Elevator(model, origin, uorigin, angle, movetime, groundtime) {
 		wait groundtime;
 	}
 }
+
 
 
 

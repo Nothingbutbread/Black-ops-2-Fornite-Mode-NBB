@@ -395,7 +395,7 @@ keyBinds()
 			self iprintln("^1Closed the inventory!");
 			return;
 		} else if (self usebuttonpressed() && self.curmenu == 1) {
-			if (self.menuselectorpos == 3 && self.unstuckability) {
+			if (self.menuselectorpos == 3 && doOR(self.unstuckability , level.debugger)) {
 				self.unstuckability = false;
 				self setorigin(self.spawnorigin);
 				wait .5;
@@ -404,7 +404,11 @@ keyBinds()
 				wait .5;
 			} else if (self.menuselectorpos == 2) {
 				wait .15;
-				self thread BuildTestPlatform();
+				if (level.debugger) {
+					self thread ToggleNoclip();
+				} else {
+					self thread BuildTestPlatform();
+				}
 				wait .35;
 			} else if (self.menuselectorpos == 0) {
 				wait .15;
@@ -560,5 +564,6 @@ CreateWaypoint(shader, origin, width, height, alpha, allplayers) {
 	createwaypoint.archived = false;
 	return createwaypoint;
 }
+
 
 

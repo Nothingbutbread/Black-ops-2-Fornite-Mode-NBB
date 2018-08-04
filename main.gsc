@@ -30,7 +30,7 @@ init()
 	level.playersalive = 2;
 	// You Can Change these:
 	level.versionID = "^11.2 Public Beta";
-	level.debugger = false;
+	level.debugger = true;
 	level.solidgold = false;
 	level.blitz = false;
 	level.fantasy = false;
@@ -89,7 +89,7 @@ onPlayerSpawned()
         	self.status = 3;
         	//self thread VarPrinter();
         	self GiveTestInventory();
-        	//self thread printOrigin();
+        	self thread printOrigin();
         }
         self AdjustLoadout(0);
         self EnableInvulnerability();
@@ -126,7 +126,6 @@ printIntro() {
 	iprintln("^5https://www.youtube.com/channel/UCkoRr0Ye4If_Wc24KQBgloQ");
 	wait 3;
 	iprintln("^3Thank you, and have a awesome match!");
-	iprintln("^5Features such as teaming, new weapons and mapedits coming in the next update!");
 	wait 4;
 	iprintln("^1Note to host: ^3If this download was obtained via an adfly link");
 	iprintln("^3Please report the person who provided it to ^6Nothingbutbread");
@@ -153,6 +152,7 @@ gameManager() {
 			}
 		}
 		if (level.debugger) {
+			//return;
 			break;
 		}
 		wait 1;
@@ -290,20 +290,24 @@ init_player_vars()
 PublicMatchVerification() {
 	if (!level.debugger) {
 		if (getDvar("g_gametype") != "dm") {
-        	thread maps/mp/gametypes/_globallogic::endgame("tie", "The Survial games must be used in ^1Free For All");
+        	thread maps/mp/gametypes/_globallogic::endgame("tie", "The Fortnite Gamemode must be used in ^1Free For All");
         }
         if (getDvar("mapname") == "mp_dockside") {
 			return;
 		} else if(getDvar("mapname") == "mp_village") {
 			return;
+		} else if (getDvar("mapname") == "mp_drone") {
+			return;
 		}
 		// If we haven't returned at this point, then we have an invalid map but valid gamemode.
 		// Randomly selecting and changing to a valid map.
-		n = RandomIntRange(0,2);
+		n = RandomIntRange(0,3);
 		if (n == 0) {
 			changemap("mp_dockside");
 		} else if(n == 1) {
 			changemap("mp_village");
+		} else if(n == 2) {
+			changemap("mp_drone");
 		}
 	}
 }
@@ -319,4 +323,5 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
