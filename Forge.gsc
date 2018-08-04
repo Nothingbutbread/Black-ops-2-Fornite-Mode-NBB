@@ -197,7 +197,7 @@ SpawnPlayerDeathDropLevelThread(name, ammo, data, origin) {
 	openinv = false;
 	for(x = 0; x < data.size; x++) {
 		if (data[x].slotfilled) {
-			oveninv = true;
+			openinv = true;
 			break;
 		}
 	}
@@ -702,6 +702,7 @@ Forge_Elevator(model, origin, uorigin, angle, movetime, groundtime) {
 		wait groundtime;
 	}
 }
+
 
 
 

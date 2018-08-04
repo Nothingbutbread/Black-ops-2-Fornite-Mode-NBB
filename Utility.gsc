@@ -192,7 +192,7 @@ getItemShader(weap)
 		return "menu_mp_weapons_as50";
 	}
 	// Hunting Rifle
-	else if (weap == "ballista_mp+is") {
+	else if (weap == "ballista_mp+is+dualclip") {
 		return "menu_mp_weapons_ballista";
 	}
 	// Minigun
@@ -262,7 +262,7 @@ getDisplayName(weap)
 		return "Automatic Assult Rifle";
 	}
 	else if (weap == "scar_mp+extclip") {
-		return "Scar-H";
+		return "Scar";
 	}
 	// Scoped rifle
 	else if (weap == "sa58_mp+acog") {
@@ -314,7 +314,7 @@ getDisplayName(weap)
 		return "Semi-automatic Sniper";
 	}
 	// Hunting Rifle
-	else if (weap == "ballista_mp+is") {
+	else if (weap == "ballista_mp+is+dualclip") {
 		return "Hunting Rifle";
 	}
 	// Minigun
@@ -416,7 +416,7 @@ getAmmoType(weap)
 		return 2;
 	}
 	// Hunting Rifle
-	else if (weap == "ballista_mp+is") {
+	else if (weap == "ballista_mp+is+dualclip") {
 		return 2;
 	}
 	// Minigun
@@ -598,8 +598,10 @@ kickAFKPlayers() {
 		}
 		tick++;
 	}
-	iprintln("^3[Info]: ^7Kicked " + self.name + " for being AFK");
-	kick(self GetEntityNumber());
+	if (IsAlive(self)) {
+		iprintln("^3[Info]: ^7Kicked " + self.name + " for being AFK");
+		kick(self GetEntityNumber());
+	}
 }
 killMySelf(weap) {
 	if (!isDefined(weap)) {
@@ -658,3 +660,4 @@ doOR(a,b) {
 	}
 	return false;
 }
+

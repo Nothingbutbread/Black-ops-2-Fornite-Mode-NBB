@@ -77,6 +77,10 @@ GenerateSpiningDropLoot()
 		if (luck >= 75) { retval.rarity = 2; item = PickRareGrenade(); }
 		else if (luck >= 40) { retval.rarity = 1; item = PickUncommonGrenade(); }
 	}
+	if (level.debugger) {
+		item = DebugItemSpawn();
+		retval.rarity = 2;
+	}
 	retval.weapon = item;
 	retval.isweapon = isAWeapon(item);
 	retval.slotfilled = true;
@@ -156,12 +160,7 @@ GenerateSupplyDropLoot() {
 	return retval;
 }
 DebugItemSpawn() {
-	c = RandomIntRange(0, 5);
-	if (c == 0) { return "scar_mp+extclip"; }
-	else if (c == 1) { return "svu_mp+ir"; }
-	else if (c == 2) { return "pdw57_mp+fastads"; }
-	else if (c == 3) { return "sig556_mp+stalker"; }
-	else if (c == 4) { return "fnp45_mp+dualclip+fmj"; }
+	return "ballista_mp+is+dualclip";
 }
 PickAnyWeapon() {
 	c = RandomIntRange(0, 21);
@@ -174,7 +173,7 @@ PickAnyWeapon() {
 	else if (c == 6) { return "peacekeeper_mp+rf"; }
 	else if (c == 7) { return "insas_mp"; }
 	else if (c == 8) { return "ksg_mp"; }
-	else if (c == 9) { return "ballista_mp+is"; }
+	else if (c == 9) { return "ballista_mp+is+dualclip"; }
 	else if (c == 10) { return "sa58_mp+acog"; }
 	else if (c == 11) { return "dsr50_mp+dualclip"; }
 	else if (c == 12) { return "lsat_mp+steadyaim"; }
@@ -194,12 +193,9 @@ PickCommonWeapon() {
 	else if (c == 2) { return "mp7_mp+silencer"; }
 	else if (c == 3) { return "fiveseven_mp"; }
 	else if (c == 4) { return "fnp45_mp+dualclip"; }
-	else if (c == 5) { return "870mcs_mp+extbarrel"; }
+	else if (c == 5) { return "peacekeeper_mp+rf"; }
 	else if (c == 6) { return "insas_mp"; }
 	else if (c == 7) { return "ksg_mp"; }
-	else if (c == 8) { return "ballista_mp+is"; }
-	else if (c == 9) { return "pdw57_mp+fastads"; }
-	else if (c == 10) { return "peacekeeper_mp+rf"; }
 }
 PickCommonItem() {
 	return "Bandage";
@@ -217,7 +213,7 @@ PickUncommonWeapon() {
 	else if (c == 5) { return "870mcs_mp+extbarrel"; }
 	else if (c == 6) { return "insas_mp"; }
 	else if (c == 7) { return "ksg_mp"; }
-	else if (c == 8) { return "ballista_mp+is"; }
+	else if (c == 8) { return "ballista_mp+is+dualclip"; }
 	else if (c == 9) { return "pdw57_mp+fastads"; }
 	else if (c == 10) { return "peacekeeper_mp+rf"; }
 }
@@ -240,7 +236,7 @@ PickRareWeapon() {
 	else if (c == 5) { return "870mcs_mp+extbarrel"; }
 	else if (c == 6) { return "insas_mp"; }
 	else if (c == 7) { return "ksg_mp"; }
-	else if (c == 8) { return "ballista_mp+is"; }
+	else if (c == 8) { return "ballista_mp+is+dualclip"; }
 	else if (c == 9) { return "sa58_mp+acog"; }
 	else if (c == 10) { return "dsr50_mp+dualclip"; }
 	else if (c == 11) { return "lsat_mp+steadyaim"; }
@@ -295,6 +291,7 @@ PickLegendaryWeapon() {
 PickLegendaryItem() {
 	return "Chug Jug";
 }
+
 
 
 

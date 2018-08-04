@@ -175,12 +175,12 @@ SmallShielditem(index) {
 	if (self.fortshield >= 50) {
 		self fadeInItemToolTip("Your Shield is above 50 percent!");
 	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use Shield");
+		self fadeInItemToolTip("Hold [{+usereload}] to use Small Shield");
 	}
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
 		if (self usebuttonpressed() && self.fortshield < 50 && time == 0 && !self.menuopen) {
-			self.ItemUseText = "Hold [{+usereload}] to use Shield";
+			self.ItemUseText = "Hold [{+usereload}] to use Small Shield";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
 			self.fortHUDS[16].bar.color = HUD_RTG(40, time);
 			self fadeInProgressBar();
@@ -421,6 +421,7 @@ SlurpJuice_Effect() {
 		wait .3;
 	}
 }
+
 
 
 

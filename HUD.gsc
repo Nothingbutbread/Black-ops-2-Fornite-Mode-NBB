@@ -567,3 +567,4 @@ CreateWaypoint(shader, origin, width, height, alpha, allplayers) {
 
 
 
+
