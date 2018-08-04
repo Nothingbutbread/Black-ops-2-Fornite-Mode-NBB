@@ -9,6 +9,10 @@ Reguarding builds: Builds are denoted with a VX.X.X form. The first X is the maj
 Public Beta V1.2.0: http://www.mediafire.com/file/1cxq1p1iryf31bh/FortnitePBV1.2.zip/file
 Public Beta V1.1.0: http://www.mediafire.com/file/dn1t5t9gvhzg41c/FortnitePublicBetaV1.1.zip/file
 Public Beta V1.0.0: http://www.mediafire.com/file/rn9rs4htx9ahimm/FortnitePublicBetaV1.zip/file
+# Next update Version 1.2.1 Hotfix
+1) Fix Opening a player inventory when its empty.
+2) Fix Incorrect Loot spawning of the common teir.
+3) Fix a few spelling errors.
 
 # Next Release Version 2.0.0 Release
 1) Add surport for teams. (A patrial version is likey where its just no freindly fire and winning as a team).
