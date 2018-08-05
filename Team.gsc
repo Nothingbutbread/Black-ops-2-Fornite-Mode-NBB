@@ -10,10 +10,10 @@ init_Teams_Client() {
 DeathandDisconnectCheckTeamDownedPlayers() {
 	if (level.allowteams && self.teamtag != "") {
 		if (!self hasTeamatesAlive()) {
-			for(x = 0; x < level.teamsmap[self.teamtag]; x++) {
+			for(x = 0; x < level.teamsmap[self.teamtag].size; x++) {
 				if (isDefined(level.teamsmap[self.teamtag][x])) {
-					if (level.teamsmap[self.teamtag].inthisgame) {
-						level.teamsmap[self.teamtag].forthealth = 0;
+					if (level.teamsmap[self.teamtag][x].inthisgame) {
+						level.teamsmap[self.teamtag][x].forthealth = 0;
 					}
 				}
 			}
@@ -73,7 +73,7 @@ CarryOutReviving() {
 				if (self usebuttonpressed()) {
 					self.ItemUseText = "Hold [{+usereload}] to use revive " + self.closestally.name;
 					self.fortHUDS[15] setSafeText(self.ItemUseText);
-					self.fortHUDS[16].bar.color = HUD_RTG(100, time);
+					self.fortHUDS[16].bar.color = HUD_RTG(40, time);
 					self fadeInProgressBar();
 					self.fortHUDS[16] updateBar(0);
 					time = 0;
@@ -109,7 +109,7 @@ NearestTeammate() {
 	if (!isDefined(level.teamsmap[self.teamtag])) {
 		return;
 	}
-	if (level.teamsmap[self.teamtag].size == 1) {
+	if (level.teamsmap[self.teamtag].size <= 1) {
 		return;
 	}
 	team = level.teamsmap[self.teamtag];
@@ -123,7 +123,7 @@ NearestTeammate() {
 				}
 			}
 		}
-		wait 1.25;
+		wait 1;
 	}
 }
 shouldDealDamage(attacker) {
@@ -147,7 +147,7 @@ hasTeamatesAlive() {
 	if (!self.isonteam) {
 		return false;
 	}
-	for(x = 0; x < level.teamsmap[self.teamtag]; x++) {
+	for(x = 0; x < level.teamsmap[self.teamtag].size; x++) {
 		if (isDefined(level.teamsmap[self.teamtag][x])) {
 			if (level.teamsmap[self.teamtag].inthisgame && !level.teamsmap[self.teamtag].downed && level.teamsmap[self.teamtag] != self) {
 				return true;
@@ -225,6 +225,8 @@ prepForTeamBasedFortnite() {
 				break;
 			}
 		}
+		iprintln("Alive teams: " + aliveteams);
+		/*
 		if (aliveteams <= 1) {
 			winningteam = "UNDEFINED TEAM";
 			foreach(team in level.teamsmap) {
@@ -243,6 +245,7 @@ prepForTeamBasedFortnite() {
 			//level thread maps/mp/gametypes/_globallogic::endgame("tie", "^2Team ^3" + winningteam + " ^6victory royal!");
 			iprintln("^5Wining team: ^1" + winningteam);
 		}
+		*/
 		wait 2;
 	}
 }
@@ -252,11 +255,3 @@ prepForTeamBasedFortnite() {
 	level.allowteams = false;
 	level.maxperteam
 */
-
-
-
-
-
-
-
-

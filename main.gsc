@@ -29,13 +29,13 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.3 Public Beta";
-	level.debugger = false;
+	level.versionID = "^11.3.1 Public Beta";
+	level.debugger = true;
 	level.solidgold = false;
 	level.blitz = false;
 	level.fantasy = false;
 	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
-	level.allowteams = false;
+	level.allowteams = true;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
 	// Do not change anything else ...
 	level.mapcustomentitylimit = 440;
@@ -48,6 +48,7 @@ init()
     	registernumlives(1, 999999); 
     }
     registertimelimit( 0, 0);
+    registernumlives(1, 999999); 
 }
 
 onPlayerConnect()
@@ -89,7 +90,7 @@ onPlayerSpawned()
         	self.status = 3;
         	//self thread VarPrinter();
         	self GiveTestInventory();
-        	self thread printOrigin();
+        	//self thread printOrigin();
         }
         self AdjustLoadout(0);
         self EnableInvulnerability();
@@ -157,6 +158,7 @@ gameManager() {
 		}
 		wait 1;
 	}
+	wait 15;
 	iprintln("^6All aboard the battle bus!");
 	wait 1;
 	level thread TeleportToBattleBus();
@@ -290,7 +292,8 @@ init_player_vars()
 PublicMatchVerification() {
 	if (!level.debugger) {
 		if (getDvar("g_gametype") != "dm") {
-        	thread maps/mp/gametypes/_globallogic::endgame("tie", "The Fortnite Gamemode must be used in ^1Free For All");
+        	//thread maps/mp/gametypes/_globallogic::endgame("tie", "The Fortnite Gamemode must be used in ^1Free For All");
+        	iprintln("^1Warning: ^7This Gamemode is not surported, ^3This may cause unwanted issues!");
         }
         if (getDvar("mapname") == "mp_dockside") {
 			return;
@@ -323,6 +326,7 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
 
 

@@ -3,7 +3,7 @@ PatchThread() {
     self endon("death");
     level endon("game_ended");
 	while(true) {
-		if (self.forthealth <= 0) {
+		if (self.forthealth <= 0 && !level.debugger) {
 			self killMySelf();
 		}
 		if (self meleebuttonpressed() && self jumpbuttonpressed() && self adsbuttonpressed()) { //R3 + X 
@@ -218,6 +218,7 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
+
 
 
 
