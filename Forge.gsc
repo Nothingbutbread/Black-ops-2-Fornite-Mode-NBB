@@ -92,7 +92,7 @@ SpawnChest(origin, angle)
 	ammotype2 = RandomIntRange(0, 5);
 	item[0] = createAmmoItem(ammotype1, GetRandomAmmoAmmout(ammotype1));
 	item[1] = createAmmoItem(ammotype2, GetRandomAmmoAmmout(ammotype2));
-	totalitems = RandomIntRange(3, 6);
+	totalitems = RandomIntRange(3, 7);
 	for(x = 2; x < totalitems; x++) {
 		item[x] = level GenerateChestLoot(false);
 	}

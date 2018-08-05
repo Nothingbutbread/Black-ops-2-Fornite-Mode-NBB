@@ -272,7 +272,7 @@ PickEpicItem() {
 	return "Slurp Juice"; 
 }
 PickLegendaryWeapon() {
-	c = RandomIntRange(0, 14); // Only weapons for now
+	c = RandomIntRange(0, 13); // Only weapons for now
 	if (c == 0) { return "scar_mp+extclip"; }
 	else if (c == 1) { return "sig556_mp+stalker"; }
 	else if (c == 2) { return "m32_wager_mp"; }
@@ -285,8 +285,7 @@ PickLegendaryWeapon() {
 	else if (c == 9) { return "sa58_mp+acog"; }
 	else if (c == 10) { return "dsr50_mp+dualclip"; }
 	else if (c == 11) { return "sig556_mp+stalker"; }
-	else if (c == 12) { return "sa58_mp+acog"; }
-	else if (c == 13) { return "svu_mp+ir"; }
+	else if (c == 12) { return "svu_mp+ir"; }
 }
 PickLegendaryItem() {
 	return "Chug Jug";
