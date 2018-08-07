@@ -154,7 +154,7 @@ dammageMap(weap) {
 		return 55;
 	}
 	// Hunting Rifle
-	else if (weap == "ballista_mp+is+dualclip") {
+	else if (weap == "ballista_mp+dualclip+is") {
 		return 82;
 	}
 	// Minigun
@@ -218,6 +218,7 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
+
 
 
 

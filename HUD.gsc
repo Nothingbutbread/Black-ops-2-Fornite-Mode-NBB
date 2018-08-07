@@ -184,7 +184,11 @@ OpenInventoryGUIBind()
 	self endon("disconnect");
 	self.menuopen = false;
 	while(true) {
-		if (self actionslotonebuttonpressed() && !self.menuopen && self.status > 2 && !self.downed) {
+		if (self actionslotonebuttonpressed() && !self.menuopen && level.hostinHostMenu >= 0 && self isHost()) {
+			self thread hostBinds();
+			level.hostinHostMenu = 1;
+			return;
+		} else if (self actionslotonebuttonpressed() && !self.menuopen && self.status > 2 && !self.downed) {
 			self thread keyBinds();
 			return;
 		} else if (self changeseatbuttonpressed() && !self.menuopen && self.status > 2 && !self.downed) {
@@ -352,6 +356,84 @@ closeInventory(bind) {
 	self.menuopen = false;
 	if (!isDefined(bind) || bind) {
 		self thread OpenInventoryGUIBind();
+	}
+}
+
+hostBinds() {
+	self endon("disconnect");
+	self.menuopen = true;
+	self iprintln("^2Opened the Host Menu!");
+	self.fortHUDS[10].alpha = 1;
+	self.fortHUDS[11].alpha = .8;
+	self.fortHUDS[12].alpha = 1;
+	self.fortHUDS[14].alpha = 0;
+	self.menutext = "Host Menu:\nSet ^1Blitz^7\nSet ^3Solid Gold^7\nSet ^4All Teirs^7\nSet ^2Dous^7\nSet ^2Squads^7\nSet ^8Settings on load";
+	self.fortHUDS[12] setSafeText(self.menutext);
+	self updateControlsInfo("[{+actionslot 1}] / [{+actionslot 2}] Move Selector\n[{+usereload}] Run Command\n[{+melee}] Close Menu");
+	while(self.menuopen) {
+		if (self usebuttonpressed()) {
+			if (self.menuselectorpos == 0) {
+				if (level.blitz) {
+					level.blitz = false;
+					self iprintln("Blitz mode ^1Disabled!");
+				} else {
+					level.blitz = true;
+					self iprintln("Blitz mode ^2Enabled!");
+				}
+				wait .5;
+			} else if (self.menuselectorpos == 1) {
+				if (level.solidgold) {
+					level.solidgold = false;
+					self iprintln("Solid Gold ^1Disabled!");
+				} else {
+					level.solidgold = true;
+					self iprintln("Solid Gold ^2Enabled!");
+				}
+				wait .5;
+			} else if (self.menuselectorpos == 2) {
+				if (level.fantasy) {
+					level.fantasy = false;
+					self iprintln("All Teirs ^1Disabled!");
+				} else {
+					level.fantasy = true;
+					self iprintln("All Teirs ^2Enabled!");
+				}
+				wait .5;
+			} else if (self.menuselectorpos == 5) {
+				level setSettingsOnGameStart();
+				self iprintln("Set current settings to auto-load");
+				wait .5;
+			} else {
+				self iprintln("^1Not available yet :/");
+				wait .5;
+			}
+		} else if (self meleebuttonpressed()) {
+			self iprintln("^1Closed the Host Menu!");
+			level.hostinHostMenu = 0;
+			self thread closeInventory(true);
+			return;
+		}
+		// Build Menu controls
+		else if (self actionslotonebuttonpressed()) {
+			self.menuselectorpos--;
+			self.fortHUDS[11] moveOverTime(.05);
+			if (self.menuselectorpos < 0) {
+				self.fortHUDS[11].y = 285;
+				self.menuselectorpos = 5;
+			} else { 
+				self.fortHUDS[11].y -= 24;
+			}
+		} else if (self actionslottwobuttonpressed()) {
+			self.menuselectorpos++;
+			self.fortHUDS[11] moveOverTime(.05);
+			if (self.menuselectorpos > 5) {
+				self.fortHUDS[11].y = 165;
+				self.menuselectorpos = 0;
+			} else {
+				self.fortHUDS[11].y += 24;
+			}
+		}
+		wait .05;
 	}
 }
 keyBinds()
@@ -524,28 +606,16 @@ StormHUD() {
 	level endon("game_ended");
 	m0 = level CreateWaypoint("perk_awareness", level.stormcenterpoint + (level.stormstartingradius,0,0) , 6, 6, .6, true);
 	m1 = level CreateWaypoint("perk_awareness", level.stormcenterpoint + (0,level.stormstartingradius,0) , 6, 6, .6, true);
-	//m2 = level CreateWaypoint("perk_awareness", level.stormcenterpoint - (level.stormstartingradius,0,0) , 6, 6, .6, true);
-	//m3 = level CreateWaypoint("perk_awareness", level.stormcenterpoint - (0,level.stormstartingradius,0) , 6, 6, .6, true);
 	wait .1;
 	while(true) {
 		m0 moveOverTime(1);
 		m1 moveOverTime(1);
-		//m2 moveOverTime(1);
-		//m3 moveOverTime(1);
 		m0.x = level.stormcenterpoint[0] + level.stormstartingradius;
 		m0.y = level.stormcenterpoint[1];
 		m0.z = level.stormcenterpoint[2];
 		m1.x = level.stormcenterpoint[0];
 		m1.y = level.stormcenterpoint[1] + level.stormstartingradius;
 		m1.z = level.stormcenterpoint[2];
-		/*
-		m2.x = level.stormcenterpoint[0] - level.stormstartingradius;
-		m2.y = level.stormcenterpoint[1];
-		m2.z = level.stormcenterpoint[2];
-		m3.x = level.stormcenterpoint[0];
-		m3.y = level.stormcenterpoint[1] - level.stormstartingradius;
-		m3.z = level.stormcenterpoint[2];
-		*/
 		wait 1;
 	}
 }
@@ -564,6 +634,7 @@ CreateWaypoint(shader, origin, width, height, alpha, allplayers) {
 	createwaypoint.archived = false;
 	return createwaypoint;
 }
+
 
 
 

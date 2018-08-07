@@ -662,3 +662,49 @@ doOR(a,b) {
 }
 
 
+// This stores the xp lobby settings to dvars
+setSettingsOnGameStart() {
+	setDvar("fortniteSavedSettings", "yes");
+	a = "";
+	if (level.solidgold) {
+		a += "t";
+	} else {
+		a ++ "f";
+	}
+	if (level.blitz) {
+		a += "t";
+	} else {
+		a ++ "f";
+	}
+	if (level.fantasy) {
+		a += "t";
+	} else {
+		a ++ "f";
+	}
+	setDvar("fortniteSavedData", a);
+	self iprintln("^2Fortnite settings will auto-apply to any new fortnite matches!");
+}
+// This runs on start of game and applies any saved xp lobby settings.
+UnpackageAndSetSettings() {
+	if (isDefined(GetDvar("fortniteSavedSettings"))) { 
+		if (GetDvar("fortniteSavedSettings") == "yes") {
+			a = GetDvar("fortniteSavedData");
+			if (a[0] == "t") {
+				level.solidgold = true;
+			} else {
+				level.solidgold = false;
+			}
+			if (a[1] == "t") {
+				level.blitz = true;
+			} else {
+				level.blitz = false;
+			}
+			if (a[2] == "t") {
+				level.fantasy = true;
+			} else {
+				level.fantasy = false;
+			}
+			iprintln("Fortnite game settings updated from previous game!");
+		} 
+	}
+}

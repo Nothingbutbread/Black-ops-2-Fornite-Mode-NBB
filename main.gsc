@@ -35,12 +35,14 @@ init()
 	level.blitz = false;
 	level.fantasy = false;
 	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
-	level.allowteams = true;
+	level.allowteams = false;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
 	// Do not change anything else ...
 	level.mapcustomentitylimit = 440;
 	level.entitiesperplayer = 30;
 	level.gamestatestr = "Players Alive: Unknown\nStorm Width: 25000";
+	level.hostinHostMenu = 0; // Must be 0 or lower for the game to finish initing. 
+	// When the host is in menu, is set to greater than 1, then set back to 0 when he is out.
 	level PrecacheAll();
     level thread onPlayerConnect();
     level thread gameManager();
@@ -48,7 +50,7 @@ init()
     	registernumlives(1, 999999); 
     }
     registertimelimit( 0, 0);
-    registernumlives(1, 999999); 
+   // registernumlives(1, 999999); 
 }
 
 onPlayerConnect()
@@ -87,16 +89,16 @@ onPlayerSpawned()
         self FreezeControls(false);
         self.inthisgame = true;
         if (level.debugger) {
-        	self.status = 3;
+        	//self.status = 3;
         	//self thread VarPrinter();
-        	self GiveTestInventory();
+        	//self GiveTestInventory();
         	//self thread printOrigin();
         }
         self AdjustLoadout(0);
         self EnableInvulnerability();
         
         //self setclientthirdperson(1);
-        //self setclientuivisibilityflag("hud_visible", 1);
+        self setclientuivisibilityflag("hud_visible", 1);
         self thread DamageMonitor();
         self thread WeaponMod_RefreshStock();
     }
@@ -106,7 +108,7 @@ onDeath() {
 	self endon("spawned_player");
 	self waittill("death");
 	self DeleteAllCustomEntities();
-	self thread SpawnPlayerDeathDrop();
+	//self thread SpawnPlayerDeathDrop();
 	self thread DeathandDisconnectCheckTeamDownedPlayers();
 	self.inthisgame = false;
 }
@@ -134,6 +136,8 @@ printIntro() {
 gameManager() {
 	level endon("game_ended");
 	level waittill("prematch_over");
+	level UnpackageAndSetSettings();
+	wait .5;
 	level PublicMatchVerification();
 	wait .5;
 	level thread init_MapEdit();
@@ -154,11 +158,15 @@ gameManager() {
 		}
 		if (level.debugger) {
 			//return;
-			break;
+			//break;
 		}
 		wait 1;
 	}
-	wait 15;
+	while(level.hostinHostMenu > 0) {
+		iprintln("Waiting for host to finish editing game settings!");
+		wait 1;
+	}
+	level.hostinHostMenu = -1;
 	iprintln("^6All aboard the battle bus!");
 	wait 1;
 	level thread TeleportToBattleBus();
@@ -326,6 +334,7 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
 
 
