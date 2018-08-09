@@ -436,18 +436,8 @@ PlayerGetDirrection() {
 }
 // Each zone is 140 x 140 x 70
 // This point is the cordnate tabled version of the location to build.
-/*
 PlayerGetBuildGridId(t) {
-	target = self.origin - (0,0,20);
-	if (isDefined(t)){ 
-		target = t - (0,0,25);
-	}
-	dif = (0,0,0) - target;
-	return (int((floor(dif[0] / 140) * -1) - 1), int((floor(dif[1] / 140) * -1) - 1), int(floor(dif[2] / 70) * -1));
-}
-*/
-PlayerGetBuildGridId(t) {
-	target = self.origin - (0,0,20);
+	target = self.origin;
 	if (isDefined(t)){ 
 		target = t - (0,0,25);
 	}

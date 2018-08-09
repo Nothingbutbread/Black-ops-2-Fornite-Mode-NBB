@@ -488,11 +488,11 @@ keyBinds()
 				wait .5;
 			} else if (self.menuselectorpos == 2) {
 				wait .15;
-				//if (level.debugger) {
-					//self thread ToggleNoclip();
-				//} else {
+				if (level.debugger) {
+					self thread ToggleNoclip();
+				} else {
 					self thread BuildTestPlatform();
-				//}
+				}
 				wait .35;
 			} else if (self.menuselectorpos == 0) {
 				wait .15;

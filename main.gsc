@@ -29,8 +29,8 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.3.2 Public Beta";
-	level.debugger = true;
+	level.versionID = "^11.3.3 Public Beta";
+	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
 	level.fantasy = false;
@@ -92,7 +92,7 @@ onPlayerSpawned()
         	self thread PatchThread();
         	//self thread VarPrinter();
         	//self GiveTestInventory();
-        	self thread printOrigin();
+        	//self thread printOrigin();
         }
         self AdjustLoadout(0);
         self EnableInvulnerability();
@@ -143,11 +143,11 @@ gameManager() {
 	level StormCenterIcon();
 	if (level.debugger) {
 		//level thread DammageTestBotSpawn();
-		level thread LootSpawnerGeneator();
+		//level thread LootSpawnerGeneator();
 		level.entitiesperplayer = 200;
 		level.hostinHostMenu = -1;
 		//level thread printIntro();
-		return;
+		//return;
 	}
 	level thread prepForTeamBasedFortnite();
 	for(x = 20; x > 0; x--) {
@@ -310,16 +310,20 @@ PublicMatchVerification() {
 			return;
 		} else if (getDvar("mapname") == "mp_drone") {
 			return;
+		} else if (getDvar("mapname") == "mp_socotra") {
+			return;
 		}
 		// If we haven't returned at this point, then we have an invalid map but valid gamemode.
 		// Randomly selecting and changing to a valid map.
-		n = RandomIntRange(0,3);
+		n = RandomIntRange(0,4);
 		if (n == 0) {
 			changemap("mp_dockside");
 		} else if(n == 1) {
 			changemap("mp_village");
 		} else if(n == 2) {
 			changemap("mp_drone");
+		} else if(n == 3) {
+			changemap("mp_socotra");
 		}
 	}
 }
