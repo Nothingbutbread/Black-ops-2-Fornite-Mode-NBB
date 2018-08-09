@@ -69,10 +69,10 @@ Drone()
 	level.belowmapdeathbarrier = -325;
 	level.stormstartingradius = 25000;
 	level.stormcircles = (8000,2500,1000);
-	level.stormcenterpoint = (-2248,-2251,82);
+	level.stormcenterpoint = (-210,-320,76);
 	level.battlebusendorigin = (-11267,-12396,3000);
 	level.stormstartingradius = 22000;
-	level.mapcustomentitylimit = 225;
+	level.mapcustomentitylimit = 500;
 	level.battlebustimetotarget = 20;
 	level spawnObject("collision_clip_wall_512x512x10", (-606,-2150,105), (0,0,90)); // Patches another fall out area
 	level spawnObject("collision_clip_wall_512x512x10", (-241,-1849,105), (0,0,90));
@@ -403,7 +403,7 @@ Cargo()
 	level.battlebusendorigin = (4356,-5434,3700);
 	level.battlebustimetotarget = 15;
 	level.stormstartingradius = 20000;
-	level.mapcustomentitylimit = 400; // Note to mapediters, The higher you set this, the more objects players can have at once, If you set it too high you will get an entity overflow.
+	level.mapcustomentitylimit = 500; // Note to mapediters, The higher you set this, the more objects players can have at once, If you set it too high you will get an entity overflow.
 	level thread Forge_Teleport((-2496,4145,-67), (-949,3471,-67));
 	level thread Forge_CreateBattleBus((-11639,8083,3700));
 	level thread DoNotBuildZone((2312,3761,-1000), (-1577,-350,250));
@@ -620,6 +620,7 @@ Detour()
 
 Uplink()
 { }
+
 
 
 

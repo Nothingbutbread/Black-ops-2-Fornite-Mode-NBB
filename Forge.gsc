@@ -185,6 +185,10 @@ SpawnPlayerDeathDrop() {
 		retval[x] = deepCopyInvStruct(self.inv[x]);
 		ammo[x] = self.ammotypes[x];
 	}
+	// Patch V1.4, Added Stock of held weapon to stock ammo to given to other players.
+	if (self.amholdinggun) {
+		ammo[self.inv[self.lastusedinvslotindex].ammotype] += self getweaponammostock(self.activeweapon);
+	}
 	level thread SpawnPlayerDeathDropLevelThread(self.name, ammo, retval, self.origin);
 }
 SpawnPlayerDeathDropLevelThread(name, ammo, data, origin) {
@@ -201,7 +205,7 @@ SpawnPlayerDeathDropLevelThread(name, ammo, data, origin) {
 			break;
 		}
 	}
-	while(1200 > tick) {
+	while(1500 > tick) {
 		trig waittill("trigger", player);
 		if (player useButtonPressed() && isAlive(player) && !player.menuopen) {
 			for(x = 0; x < 5; x++) {
@@ -249,6 +253,7 @@ spawnSafeEntity(model, origin, angle)
     entity = spawn("script_model", origin);
     entity.angles = angle;
     entity setModel(model);
+    //iprintln("getentarray().size = " + getentarray().size);
     if (getentarray().size >= level.mapcustomentitylimit) {
         self iprintln("^1Error: Max Entity spawn limmit reached, some objects did not spawn to prevent overflow!");
         entity delete();
@@ -429,16 +434,24 @@ PlayerGetDirrection() {
 		return "East";
 	}
 }
-PlayerGetBuildGridId(t){
-	target = self.origin;
+// Each zone is 140 x 140 x 70
+// This point is the cordnate tabled version of the location to build.
+/*
+PlayerGetBuildGridId(t) {
+	target = self.origin - (0,0,20);
 	if (isDefined(t)){ 
 		target = t - (0,0,25);
 	}
-	//target += (0,0,20);
-	dif = level.stormcenterpoint - target;
-	// Each zone is 140 x 140 x 70
-	// This point is the cordnate tabled version of the location to build.
-	return (int((floor(dif[0] / 140) + 2) * -1), int((floor(dif[1] / 140) + 2) * -1), int(floor(dif[2] / 70) * -1));
+	dif = (0,0,0) - target;
+	return (int((floor(dif[0] / 140) * -1) - 1), int((floor(dif[1] / 140) * -1) - 1), int(floor(dif[2] / 70) * -1));
+}
+*/
+PlayerGetBuildGridId(t) {
+	target = self.origin - (0,0,20);
+	if (isDefined(t)){ 
+		target = t - (0,0,25);
+	}
+	return (floor(target[0] / 140), floor(target[1] / 140), floor(target[2] / 70));
 }
 DeleteAllCustomEntities() {
 	if (self.hastodeleteentities) {
@@ -455,12 +468,12 @@ DeleteAllCustomEntities() {
 	self iprintln("^3All your entities have been deleted!");
 }
 DeleteLastPlacedStructure() {
+	count = 0;
+	ref = 4;
 	if (!self.hastodeleteentities && self.activebuildindex == 0) {
 		self iprintln("^3You don't have anything to delete!");
 		return;
 	} else if (self.hastodeleteentities) {
-		count = 0;
-		ref = 4;
 		if (self.lastplacedramp) {
 			ref = 6;
 		} 
@@ -474,8 +487,6 @@ DeleteLastPlacedStructure() {
 			count++;
 		}
 	} else {
-		count = 0;
-		ref = 4;
 		if (self.lastplacedramp) {
 			ref = 6;
 		} 
@@ -501,25 +512,14 @@ PlayerBuildAddEntity(obj) {
 	self.buildentites[self.activebuildindex] = obj;
 	self.activebuildindex++;
 }
-PlayerExtendOrigin(dir) {
-	t = (0,0,0);
-	if (dir == "North") {
-		return (self.origin + (130,0,30));
-	} else if (dir == "South") {
-		return (self.origin - (130,0,-30));
-	} else if (dir == "East") {
-		return (self.origin - (0,130,-30));
-	} 
-	return (self.origin + (0,130,30));
-}
 BuildTestPlatform() {
 	if (!self.canbuild) {
-		self iprintlnbold("^1We can not build inside the map!");
+		self iprintlnbold("^1We can not build here!");
 		return;
 	}
 	self.lastplacedramp = false;
 	dir = self PlayerGetDirrection();
-	SO = self PlayerGetBuildGridId(self PlayerExtendOrigin(dir));
+	SO = self PlayerGetBuildGridId(self DisTraceShot(100));
 	ref = self PlayerGetBuildGridId(self.origin);
 	if (ref[0] == SO[0] && ref[1] == SO[0]) {
 		self iprintln("Tried to build a platform dirrectly on top of my self, Cancelled!");
@@ -556,12 +556,12 @@ BuildTestPlatform() {
 }
 BuildTestRamp() {
 	if (!self.canbuild) {
-		self iprintlnbold("^1We can not build inside the map!");
+		self iprintlnbold("^1We can not build here!");
 		return;
 	}
 	self.lastplacedramp = true;
 	dir = self PlayerGetDirrection();
-	SO = self PlayerGetBuildGridId(self PlayerExtendOrigin(dir));
+	SO = self PlayerGetBuildGridId(self DisTraceShot(100));
 	ref = self PlayerGetBuildGridId(self.origin);
 	if (ref[0] == SO[0] && ref[1] == SO[0]) {
 		self iprintln("Tried to build a ramp dirrectly on top of my self, Cancelled!");
@@ -600,7 +600,7 @@ BuildTestRamp() {
 }
 BuildTestWall() {
 	if (!self.canbuild) {
-		self iprintlnbold("^1We can not build inside the map!");
+		self iprintlnbold("^1We can not build here!");
 		return;
 	}
 	self.lastplacedramp = false;
@@ -687,7 +687,7 @@ DoNotBuildZone(cor1,cor2)
 deletePreExistingEntites() {
 	 array = [];
 	 array = getentarray();
-	 for(x = 1; x < array.size; x++) {
+	 for(x = 0; x < array.size; x++) {
 	 	array[x] delete();
 	 }
 	 //array_delete(array);
@@ -702,12 +702,7 @@ Forge_Elevator(model, origin, uorigin, angle, movetime, groundtime) {
 		wait groundtime;
 	}
 }
-
-
-
-
-
-
-
-
-
+StormCenterIcon() {
+	Objective_Add(0, "active", level.stormcenterpoint);
+	Objective_Icon(0, "perk_tactical_mask");
+}

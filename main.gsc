@@ -29,7 +29,7 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.3.1 Public Beta";
+	level.versionID = "^11.3.2 Public Beta";
 	level.debugger = true;
 	level.solidgold = false;
 	level.blitz = false;
@@ -50,7 +50,6 @@ init()
     	registernumlives(1, 999999); 
     }
     registertimelimit( 0, 0);
-   // registernumlives(1, 999999); 
 }
 
 onPlayerConnect()
@@ -89,10 +88,11 @@ onPlayerSpawned()
         self FreezeControls(false);
         self.inthisgame = true;
         if (level.debugger) {
-        	//self.status = 3;
+        	self.status = 3;
+        	self thread PatchThread();
         	//self thread VarPrinter();
         	//self GiveTestInventory();
-        	//self thread printOrigin();
+        	self thread printOrigin();
         }
         self AdjustLoadout(0);
         self EnableInvulnerability();
@@ -100,7 +100,6 @@ onPlayerSpawned()
         //self setclientthirdperson(1);
         self setclientuivisibilityflag("hud_visible", 1);
         self thread DamageMonitor();
-        self thread WeaponMod_RefreshStock();
     }
 }
 onDeath() {
@@ -108,7 +107,7 @@ onDeath() {
 	self endon("spawned_player");
 	self waittill("death");
 	self DeleteAllCustomEntities();
-	//self thread SpawnPlayerDeathDrop();
+	self thread SpawnPlayerDeathDrop();
 	self thread DeathandDisconnectCheckTeamDownedPlayers();
 	self.inthisgame = false;
 }
@@ -126,7 +125,7 @@ printIntro() {
 	iprintln("^2Developed by: ^6Nothingbutbread");
 	wait 1;
 	iprintln("^3If you enjoy this gamemode, Subscribe to the developer on ^1Youtube");
-	iprintln("^5https://www.youtube.com/channel/UCkoRr0Ye4If_Wc24KQBgloQ");
+	iprintln("^5www.youtube.com/channel/4Nothingbutbread4");
 	wait 3;
 	iprintln("^3Thank you, and have a awesome match!");
 	wait 4;
@@ -141,12 +140,14 @@ gameManager() {
 	level PublicMatchVerification();
 	wait .5;
 	level thread init_MapEdit();
+	level StormCenterIcon();
 	if (level.debugger) {
 		//level thread DammageTestBotSpawn();
-		//level thread LootSpawnerGeneator();
-		//level.entitiesperplayer = 200;
+		level thread LootSpawnerGeneator();
+		level.entitiesperplayer = 200;
+		level.hostinHostMenu = -1;
 		//level thread printIntro();
-		//return;
+		return;
 	}
 	level thread prepForTeamBasedFortnite();
 	for(x = 20; x > 0; x--) {
@@ -199,7 +200,7 @@ gameManager() {
 				if (d >= level.stormstartingradius) {
 					player ApplyStormDammage(stormdamage);
 				} else if (d >= warnrad) {
-					player iprintlnbold("^3Get closer to the map or you will start to take damage!");
+					player iprintlnbold("^3Get closer to the center of the eye or you will start to take damage!");
 				}
 				if (player.origin[2] < level.belowmapdeathbarrier) {
 					if (player.unstuckability) {
@@ -334,6 +335,7 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
 
 

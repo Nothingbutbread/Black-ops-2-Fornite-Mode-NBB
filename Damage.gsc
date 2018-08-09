@@ -10,6 +10,15 @@ PatchThread() {
 			self iprintlnbold("^5Menu reset!");
 			self ResetMenu();
 		}
+		if (self.amholdinggun) {
+			stock = self getweaponammostock(self.activeweapon);
+			self setWeaponAmmoStock(self.activeweapon, (stock + self.ammotypes[self.activetype]));
+			newstock = self getweaponammostock(self.activeweapon);
+			r = newstock - stock;
+			if (r > 0) {
+				self.ammotypes[self.activetype] -= r;
+			}
+		}
 		wait .1;
 	}
 }
@@ -218,6 +227,7 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
+
 
 
 

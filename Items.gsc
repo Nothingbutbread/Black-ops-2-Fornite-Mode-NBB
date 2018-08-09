@@ -2,8 +2,6 @@ getDefaultItemSpawnCount(item)
 {
 	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice") {
 		return 1;
-	} else if (item == "satchel_charge_mp") {
-		return 4;
 	} else if (item == "Bandage") {
 		return 5;
 	}
@@ -421,6 +419,7 @@ SlurpJuice_Effect() {
 		wait .3;
 	}
 }
+
 
 
 

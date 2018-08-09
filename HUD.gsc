@@ -160,7 +160,9 @@ overflowfix()
 		if (level.strings.size >= limit) {
 			test ClearAllTextAfterHudElem();
 			level.strings = []; 
-			iprintln("^3[Info]: ^7Overflow Fix Ran!");
+			if (level.debugger) {
+				iprintln("^3[Info]: ^7Overflow Fix Ran!");
+			}
 			foreach(player in level.players) {
 				player RebuildHUDS();
 			}
@@ -486,11 +488,11 @@ keyBinds()
 				wait .5;
 			} else if (self.menuselectorpos == 2) {
 				wait .15;
-				if (level.debugger) {
-					self thread ToggleNoclip();
-				} else {
+				//if (level.debugger) {
+					//self thread ToggleNoclip();
+				//} else {
 					self thread BuildTestPlatform();
-				}
+				//}
 				wait .35;
 			} else if (self.menuselectorpos == 0) {
 				wait .15;
@@ -634,6 +636,7 @@ CreateWaypoint(shader, origin, width, height, alpha, allplayers) {
 	createwaypoint.archived = false;
 	return createwaypoint;
 }
+
 
 
 

@@ -122,7 +122,7 @@ isSingleShot(weap) {
 		return true;
 	}
 	// Hunting Rifle
-	else if (weap == "ballista_mp+is") {
+	else if (weap == "ballista_mp+is+dualclip") {
 		return true;
 	}
 	return false;
@@ -179,6 +179,7 @@ WeaponMod_RefreshStock() {
 		wait .1;
 	}
 }
+
 
 
 
