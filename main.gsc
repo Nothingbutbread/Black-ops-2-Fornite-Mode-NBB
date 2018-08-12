@@ -206,8 +206,8 @@ gameManager() {
 					if (player.unstuckability) {
 						player setorigin(player.spawnorigin);
 					} else {
-						player killMySelf();
 						iprintln(player.name + " fell out of the map!");
+						player killMySelf();
 					}
 				}
 				if (player.forthealth <= 0) {
@@ -339,6 +339,9 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
+
+
 
 
 

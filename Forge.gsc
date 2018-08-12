@@ -357,36 +357,18 @@ DetachWhenReady(time) {
 	self setperk("specialty_fallheight");
 	self fadeInItemToolTip("Hold [{+usereload}] to Jump off the Battle Bus");
 	while(true) {
-		if (self usebuttonpressed() && time == 0) {
-			self.ItemUseText = "Hold [{+usereload}] to Jump off the Battle Bus";
-			self.fortHUDS[15] setSafeText(self.ItemUseText);
-			self.fortHUDS[16].bar.color = HUD_RTG(8, time);
-			self fadeInProgressBar();
-			self.fortHUDS[16] updateBar(0);
-			time++;
-		} else if (self usebuttonpressed() && time > 0) {
-			self.fortHUDS[16] updateBar(time / 8);
-			self.fortHUDS[16].bar.color = HUD_RTG(8, time);
-			time++;
-		} else {
-			self fadeOutProgressBar();
-			self.fortHUDS[16] updateBar(0);
-			time = 0;
-		}
-		if (time >= 8) {
+		if (self usebuttonpressed()) {
 			self fadeOutItemToolTip();
 			self DetachAll();
 			self.battlebus delete();
 			self.status = 2;
 			self setorigin(self.origin - (0,0,250));
 			self fadeOutProgressBar();
-			self iprintlnbold("^2Jumped off the Battle Bus!");
 			self thread FlyToMap();
 			break;
 		}
 		wait .05;
 	}
-	
 }
 DeleteDeathBarriers()
 {
@@ -680,7 +662,6 @@ deletePreExistingEntites() {
 	 for(x = 0; x < array.size; x++) {
 	 	array[x] delete();
 	 }
-	 //array_delete(array);
 }
 Forge_Elevator(model, origin, uorigin, angle, movetime, groundtime) {
 	level endon("game_ended");
@@ -696,3 +677,6 @@ StormCenterIcon() {
 	Objective_Add(0, "active", level.stormcenterpoint);
 	Objective_Icon(0, "perk_tactical_mask");
 }
+
+
+
