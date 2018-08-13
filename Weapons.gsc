@@ -117,12 +117,16 @@ isSingleShot(weap) {
 	if (weap == "fnp45_mp+dualclip" || weap == "fnp45_mp+dualclip+fmj") {
 		return true;
 	}
+	// Heavy Sniper
+	else if (weap == "dsr50_mp+vzoom") {
+		return true;
+	}
 	// Bolt action sniper
-	else if (weap == "dsr50_mp+dualclip") {
+	else if (weap == "ballista_mp+dualclip") {
 		return true;
 	}
 	// Hunting Rifle
-	else if (weap == "ballista_mp+is+dualclip") {
+	else if (weap == "saritch_mp+dualclip") {
 		return true;
 	}
 	return false;
@@ -196,6 +200,7 @@ WeaponMod_RefreshStock() {
 		wait .1;
 	}
 }
+
 
 
 

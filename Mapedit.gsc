@@ -514,6 +514,167 @@ Standoff()
 }
 Nuketown()
 { 
+	level thread DeleteDeathBarriers();
+	level.belowmapdeathbarrier = -100;
+	level.battlebusendorigin = (-2201,-2411,300);
+	level.battlebustimetotarget = 15;
+	level.stormcenterpoint = (108,344,-37);
+	level.stormstartingradius = 17500;
+	level.stormcircles = (5000,2250,1000);
+	level.mapcustomentitylimit = 400;
+	level thread DoNotBuildZone((-1629,-238,-1000), (1409,1687,1000));
+	level thread Forge_CreateBattleBus((4141,5050,300));
+	
+	level spawnObject("collision_clip_wall_512x512x10", (90,-1225,-60), (0,0,0));
+	level spawnObject("collision_clip_wall_512x512x10", (602,-1225,-60), (0,0,0));
+	level spawnObject("collision_clip_wall_512x512x10", (1114,-1225,-60), (0,0,0));
+	level spawnObject("collision_clip_wall_512x512x10", (1370,-1225,-60), (0,0,0));
+	level spawnObject("collision_clip_wall_512x512x10", (-422,-1225,-60), (0,0,0));
+	level spawnObject("collision_clip_wall_512x512x10", (-934,-1225,-60), (0,0,0));
+	level spawnObject("collision_clip_wall_512x512x10", (-1190,-1225,-60), (0,0,0));
+	level spawnObject("collision_clip_wall_512x512x10", (-1273,-1043,-60), (0,90,0));
+	level spawnObject("collision_clip_wall_512x512x10", (-1513,-535,-60), (0,135,0));
+	level spawnObject("collision_clip_wall_512x512x10", (-1650,-221,-60), (0,90,0));
+	level spawnObject("collision_clip_wall_512x512x10", (-1231,-540, 275), (0,135,0));
+	level spawnObject("collision_clip_wall_512x512x10", (1594,-980,-60), (0,90,0));
+	level spawnObject("collision_clip_wall_512x512x10", (1594,-570,-60), (0,90,0));
+	level spawnObject("collision_clip_wall_512x512x10", (1594,-250,-60), (0,90,0));
+	level spawnObject("collision_clip_wall_512x512x10", (1250,-980,-60), (0,90,0));
+	level spawnObject("collision_clip_wall_512x512x10", (1250,-703,-60), (0,90,0));
+	level spawnObject("collision_clip_wall_512x512x10", (980,-1053,-60), (0,90,0));
+	level spawnObject("collision_clip_wall_256x256x10", (739,-631,-60), (0,90,0));
+	level thread Forge_Teleport((1463,25,-63),(1429,-1092,-60));
+	level thread Forge_Teleport((-1631,108,-64),(-1622,-12,-64));
+	level thread Forge_Teleport((-226,-334,-60),(-241,-743,-60));
+	level thread Forge_Teleport((-1229,993,-63),(-1151,1169,-60));
+	level thread Forge_Teleport((1330,1066,-63),(1263,1209,-60));
+	level spawnObject("collision_clip_wall_512x512x10", (150,1765,-60), (0,0,90));
+	level spawnObject("collision_clip_wall_512x512x10", (-390,1686,-60), (0,0,90));
+	
+	ACL((1573,-1204,-62));
+	ACL((1573,-78,-63));
+	ACL((1270,-587,-63));
+	ACL((548,-239,-60));
+	ACL((404,-807,-61));
+	ACL((718,-631,-63));
+	ACL((959,-858,-63));
+	ACL((24,-1204,-65));
+	ACL((-1252,-1204,-60));
+	ACL((-1401,-618,-62));
+	ACL((-1629,-224,-62));
+	ACL((-571,-224,-58));
+	ACL((304,-1051,-60));
+	ACL((544,1184,-62));
+	ACL((265,1615,-54));
+	ACL((-329,1609,-54));
+	ACL((-484,1206,-62));
+	ACL((-1666,1378,-62));
+	ACL((-1375,1911,-62));
+	ACL((1495,1714,-62));
+	
+	ACL((-683,67,-56));
+	ACL((-835,298,-56));
+	ACL((-1391,66,-48));
+	ACL((-1892,145,-63));
+	ACL((-2088,209,-63));
+	ACL((-1918,678,-63));
+	ACL((-1594,551,-63));
+	ACL((-1771,841,-63));
+	ACL((-1638,1203,-63));
+	ACL((-948,796,-63));
+	ACL((-756,516,-56));
+	ACL((-515,259,-61));
+	ACL((-1022,529,79));
+	ACL((-626,484,79));
+	ACL((-401,1008,-63));
+	ACL((108,1069,-62));
+	ACL((7,524,-37));
+	ACL((153,313,-37));
+	ACL((683,727,-54));
+	ACL((1024,495,-56));
+	ACL((885,173,-56));
+	ACL((1069,467,79));
+	ACL((730,361,79));
+	ACL((726,47,79));
+	ACL((1214,504,78));
+	ACL((1748,714,-63));
+	ACL((1247,898,-63));
+	ACL((1192,173,-62));
+	ACL((1814,90,-63));
+	ACL((1917,687,-63));
+	
+	AAL((-1639,1201,-63));
+	AAL((-1588,781,-63));
+	AAL((-1076,501,-58));
+	AAL((-938,10,-61));
+	AAL((-522,222,-10));
+	AAL((-573,293,-56));
+	AAL((-954,713,79));
+	AAL((-567,603,79));
+	AAL((-818,736,-63));
+	AAL((-151,190,-69));
+	AAL((687,323,-54));
+	AAL((861,411,-22));
+	AAL((1375,498,-62));
+	AAL((1821,322,-62));
+	AAL((988,54,-62));
+	AAL((447,1759,-62));
+	AAL((-535,1777,-54));
+	AAL((-1053,-192,-60));
+	AAL((859,-858,-63));
+	AAL((985,-387,-63));
+	AAL((1270,-1204,-63));
+	
+	ASDL((1480,-244,-63));
+	ASDL((568,-521,-61));
+	ASDL((491,-1066,-12));
+	ASDL((33,-893,-6));
+	ASDL((-617,-973,-60));
+	ASDL((-742,-476,-59));
+	ASDL((-1063,-711,-62));
+	ASDL((-1349,-315,-62));
+	ASDL((-1462,427,-63));
+	ASDL((-1162,743,77));
+	ASDL((-429,-71,-59));
+	ASDL((-195,550,63));
+	ASDL((315,430,-63));
+	ASDL((1668,253,-62));
+	ASDL((1488,877,-55));
+	ASDL((532,2036,-62));
+	ASDL((-703,1974,-62));
+	ASDL((-1269,1450,-62));
+	
+	ASIL((-1411,123,-62));
+	ASIL((-937,1435,-62));
+	ASIL((47,1944,-54));
+	ASIL((841,2008,-62));
+	ASIL((1117,1328,-62));
+	ASIL((1613,234,-62));
+	ASIL((1928,405,-60));
+	ASIL((1293,427,18));
+	ASIL((963,295,79));
+	ASIL((598,152,79));
+	ASIL((899,98,28));
+	ASIL((1007,285,-56));
+	ASIL((827,612,-56));
+	ASIL((326,671,-61));
+	ASIL((-289,751,-63));
+	ASIL((-358,196,-60));
+	ASIL((25,117,-67));
+	ASIL((176,-294,-69));
+	ASIL((-862,171,-56));
+	ASIL((-1231,578,13));
+	ASIL((-845,481,79));
+	ASIL((-542,451,79));
+	ASIL((-685,610,8));
+	ASIL((-901,526,-56));
+	ASIL((-1572,862,-63));
+	ASIL((-1613,318,-64));
+	ASIL((-1379,-418,-62));
+	ASIL((-629,-1089,-60));
+	ASIL((772,-1026,-63));
+	ASIL((1428,-307,-63));
+	ASIL((1432,-859,-63));
 }
 
 Hijacked()
@@ -770,6 +931,7 @@ Detour()
 
 Uplink()
 { }
+
 
 
 

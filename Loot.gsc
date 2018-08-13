@@ -160,10 +160,16 @@ GenerateSupplyDropLoot() {
 	return retval;
 }
 DebugItemSpawn() {
-	return "saiga12_mp+extbarrel";
+	c = RandomIntRange(0, 3);
+	if (c == 0) {
+		return "ballista_mp+dualclip";
+	} else if (c == 1) {
+		return "saritch_mp+dualclip";
+	}
+	return "dsr50_mp+vzoom";
 }
 PickAnyWeapon() {
-	c = RandomIntRange(0, 22);
+	c = RandomIntRange(0, 23);
 	if (c == 0) { return "scar_mp"; }
 	else if (c == 1) { return "sig556_mp"; }
 	else if (c == 2) { return "mp7_mp+silencer"; }
@@ -173,9 +179,9 @@ PickAnyWeapon() {
 	else if (c == 6) { return "peacekeeper_mp+rf"; }
 	else if (c == 7) { return "evoskorpion_mp+extclip"; }
 	else if (c == 8) { return "ksg_mp"; }
-	else if (c == 9) { return "ballista_mp+is+dualclip"; }
+	else if (c == 9) { return "ballista_mp+dualclip"; }
 	else if (c == 10) { return "sa58_mp+acog"; }
-	else if (c == 11) { return "dsr50_mp+dualclip"; }
+	else if (c == 11) { return "dsr50_mp+vzoom"; }
 	else if (c == 12) { return "lsat_mp+steadyaim"; }
 	else if (c == 13) { return "smaw_mp"; }
 	else if (c == 14) { return "m32_wager_mp"; }
@@ -186,6 +192,7 @@ PickAnyWeapon() {
 	else if (c == 19) { return "fiveseven_mp+silencer"; }
 	else if (c == 20) { return "fnp45_mp+dualclip+fmj"; }
 	else if (c == 21) { return "saiga12_mp+extbarrel"; }
+	else if (c == 22) { return "saritch_mp+dualclip"; }
 }
 PickCommonWeapon() {
 	c = RandomIntRange(0, 6);
@@ -211,7 +218,7 @@ PickUncommonWeapon() {
 	else if (c == 4) { return "fnp45_mp+dualclip"; }
 	else if (c == 5) { return "870mcs_mp+extbarrel"; }
 	else if (c == 6) { return "ksg_mp"; }
-	else if (c == 7) { return "ballista_mp+is+dualclip"; }
+	else if (c == 7) { return "saritch_mp+dualclip"; }
 	else if (c == 8) { return "pdw57_mp+fastads"; }
 	else if (c == 9) { return "peacekeeper_mp+rf"; }
 }
@@ -233,9 +240,9 @@ PickRareWeapon() {
 	else if (c == 4) { return "fnp45_mp+dualclip"; }
 	else if (c == 5) { return "870mcs_mp+extbarrel"; }
 	else if (c == 6) { return "ksg_mp"; }
-	else if (c == 7) { return "ballista_mp+is+dualclip"; }
+	else if (c == 7) { return "ballista_mp+dualclip"; }
 	else if (c == 8) { return "sa58_mp+acog"; }
-	else if (c == 9) { return "dsr50_mp+dualclip"; }
+	else if (c == 9) { return "saritch_mp+dualclip"; }
 	else if (c == 10) { return "lsat_mp+steadyaim"; }
 	else if (c == 11) { return "smaw_mp"; }
 	else if (c == 12) { return "m32_wager_mp"; }
@@ -249,7 +256,7 @@ PickRareItem() {
 	return "Large Shield";
 }
 PickEpicWeapon() {
-	c = RandomIntRange(0, 15);
+	c = RandomIntRange(0, 16);
 	if (c == 0) { return "scar_mp+extclip"; }
 	else if (c == 1) { return "sig556_mp+stalker"; }
 	else if (c == 2) { return "m32_wager_mp"; }
@@ -260,17 +267,18 @@ PickEpicWeapon() {
 	else if (c == 7) { return "as50_mp+extclip"; }
 	else if (c == 8) { return "minigun_wager_mp"; }
 	else if (c == 9) { return "sa58_mp+acog"; }
-	else if (c == 10) { return "dsr50_mp+dualclip"; }
+	else if (c == 10) { return "dsr50_mp+vzoom"; }
 	else if (c == 11) { return "lsat_mp+steadyaim"; }
 	else if (c == 12) { return "smaw_mp"; }
 	else if (c == 13) { return "svu_mp+ir"; }
 	else if (c == 14) { return "saiga12_mp+extbarrel"; }
+	else if (c == 15) { return "ballista_mp+dualclip"; }
 }
 PickEpicItem() {
 	return "Slurp Juice"; 
 }
 PickLegendaryWeapon() {
-	c = RandomIntRange(0, 14); // Only weapons for now
+	c = RandomIntRange(0, 15); // Only weapons for now
 	if (c == 0) { return "scar_mp+extclip"; }
 	else if (c == 1) { return "sig556_mp+stalker"; }
 	else if (c == 2) { return "m32_wager_mp"; }
@@ -280,15 +288,17 @@ PickLegendaryWeapon() {
 	else if (c == 6) { return "smaw_mp"; }
 	else if (c == 7) { return "as50_mp+extclip"; }
 	else if (c == 8) { return "minigun_wager_mp"; }
-	else if (c == 9) { return "dsr50_mp+dualclip"; }
+	else if (c == 9) { return "dsr50_mp+vzoom"; }
 	else if (c == 10) { return "sig556_mp+stalker"; }
 	else if (c == 11) { return "svu_mp+ir"; }
 	else if (c == 12) { return "evoskorpion_mp+extclip"; }
 	else if (c == 13) { return "saiga12_mp+extbarrel"; }
+	else if (c == 14) { return "ballista_mp+dualclip"; }
 }
 PickLegendaryItem() {
 	return "Chug Jug";
 }
+
 
 
 

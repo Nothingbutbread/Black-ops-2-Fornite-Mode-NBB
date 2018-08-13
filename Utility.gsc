@@ -167,6 +167,7 @@ getItemShader(weap)
 	else if (weap == "fiveseven_mp" || weap == "fiveseven_mp+silencer") {
 		return "menu_mp_weapons_five_seven";
 	}
+	// Compact SMG
 	else if (weap == "evoskorpion_mp+extclip") {
 		return "menu_mp_weapons_evoskorpion";
 	}
@@ -186,15 +187,18 @@ getItemShader(weap)
 		return "menu_mp_weapons_srm";
 	}
 	// Bolt action sniper
-	else if (weap == "dsr50_mp+dualclip") {
+	else if (weap == "dsr50_mp+vzoom") {
 		return "menu_mp_weapons_dsr1";
 	}
 	// Semi-auto sniper
 	else if (weap == "as50_mp+extclip") {
 		return "menu_mp_weapons_as50";
 	}
+	else if (weap == "saritch_mp+dualclip") {
+		return "menu_mp_weapons_saritch";
+	}
 	// Hunting Rifle
-	else if (weap == "ballista_mp+is+dualclip") {
+	else if (weap == "ballista_mp+dualclip") {
 		return "menu_mp_weapons_ballista";
 	}
 	// Minigun
@@ -310,18 +314,23 @@ getDisplayName(weap)
 	else if (weap == "srm1216_mp") {
 		return "Heavy Shotgun";
 	}
-	// Bolt action sniper
-	else if (weap == "dsr50_mp+dualclip") {
-		return "Bolt-action Sniper";
+	// Heavy Sniper
+	else if (weap == "dsr50_mp+vzoom") {
+		return "Heavy Sniper";
 	}
 	// Semi-auto sniper
 	else if (weap == "as50_mp+extclip") {
 		return "Semi-automatic Sniper";
 	}
 	// Hunting Rifle
-	else if (weap == "ballista_mp+is+dualclip") {
+	else if (weap == "saritch_mp+dualclip") {
 		return "Hunting Rifle";
 	}
+	// Bolt action sniper
+	else if (weap == "ballista_mp+dualclip") {
+		return "Bolt-action Sniper";
+	}
+	
 	// Minigun
 	else if (weap == "minigun_wager_mp") {
 		return "Minigun";
@@ -415,16 +424,20 @@ getAmmoType(weap)
 	else if (weap == "saiga12_mp+extbarrel") {
 		return 3;
 	}
-	// Bolt action sniper
-	else if (weap == "dsr50_mp+dualclip") {
+	// Hunting Rifle
+	else if (weap == "saritch_mp+dualclip") {
+		return 2;
+	}
+	// Heavy sniper
+	else if (weap == "dsr50_mp+vzoom") {
 		return 2;
 	}
 	// Semi-auto sniper
 	else if (weap == "as50_mp+extclip") {
 		return 2;
 	}
-	// Hunting Rifle
-	else if (weap == "ballista_mp+is+dualclip") {
+	// Bolt action snniper
+	else if (weap == "ballista_mp+dualclip") {
 		return 2;
 	}
 	// Minigun
@@ -445,9 +458,10 @@ getAmmoType(weap)
 	}
 	return -1;
 }
+
 PrecacheAll()
 {
-	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,ar57,svu,pm,saiga12",",");
+	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,ar57,svu,pm,saiga12,saritch",",");
 	foreach(shader in shaders) { Precacheshader("menu_mp_weapons_" + shader); }
 	Precacheshader("hud_icon_minigun");
 	Precacheshader("hud_grenadeicon");
@@ -716,6 +730,7 @@ UnpackageAndSetSettings() {
 		} 
 	}
 }
+
 
 
 

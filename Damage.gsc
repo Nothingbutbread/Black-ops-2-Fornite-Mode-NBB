@@ -157,16 +157,20 @@ dammageMap(weap) {
 	else if (weap == "srm1216_mp") {
 		return 35; //6
 	}
-	// Bolt action sniper
-	else if (weap == "dsr50_mp+dualclip") {
-		return 96;
+	// Heavy Sniper
+	else if (weap == "dsr50_mp+vzoom") {
+		return 150;
 	}
 	// Semi-auto sniper
 	else if (weap == "as50_mp+extclip") {
 		return 55;
 	}
+	// Bolt action sniper
+	else if (weap == "ballista_mp+dualclip") {
+		return 96;
+	}
 	// Hunting Rifle
-	else if (weap == "ballista_mp+dualclip+is") {
+	else if (weap == "saritch_mp+dualclip") {
 		return 82;
 	}
 	// Minigun
@@ -230,6 +234,7 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
+
 
 
 
