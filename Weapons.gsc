@@ -146,6 +146,23 @@ WeaponMod_SingleShot(weap, index) {
 		self setWeaponAmmoClip(self.activeweapon, 0);
 	}
 }
+// "saiga12_mp+extbarrel"
+WeaponMod_DoubleBarrelShotgun(weap, index) {
+	self endon("death");
+	self endon("disconnect");
+	self endon("new_item_at_" + index);
+	while(weap == self.activeweapon) {
+		self waittill("weapon_fired");
+		if (weap != self.activeweapon) {
+			break;
+		}
+		if (self getweaponammoclip(self.activeweapon) < 9) {
+			self.ammotypes[self.activetype] += self getweaponammoclip(self.activeweapon);
+			self setWeaponAmmoClip(self.activeweapon, 0);
+			sf = 0;
+		}
+	}
+}
 WeaponMod_Scoped(weap, index) {
 	// self setclientthirdperson(1);
 	self endon("death");
@@ -179,6 +196,8 @@ WeaponMod_RefreshStock() {
 		wait .1;
 	}
 }
+
+
 
 
 

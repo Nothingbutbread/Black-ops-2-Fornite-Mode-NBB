@@ -146,7 +146,10 @@ SetLoadout(index) {
 		self.activetype = self.inv[index].ammotype;
 		if (isSingleShot(self.activeweapon)) {
 			self thread WeaponMod_SingleShot(self.activeweapon, index);
-		} /*
+		} else if (self.activeweapon == "saiga12_mp+extbarrel") {
+			self thread WeaponMod_DoubleBarrelShotgun(self.activeweapon, index);
+		}
+		/*
 		else if (isScropedNotSniper(self.activeweapon)) {
 			self thread WeaponMod_Scoped(self.activeweapon, index);
 		} */
@@ -229,6 +232,8 @@ ChangeToNextItemInInvetory() {
 	}
 	self AdjustLoadout(self.selectorpos);
 }
+
+
 
 
 

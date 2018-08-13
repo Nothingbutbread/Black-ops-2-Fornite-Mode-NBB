@@ -122,8 +122,8 @@ dammageMap(weap) {
 	else if (weap == "peacekeeper_mp+rf") {
 		return 18;
 	}
-	// Tatical SMG
-	else if (weap == "insas_mp" || weap == "insas_mp+stalker") {
+	// Compact SMG
+	else if (weap == "evoskorpion_mp+extclip") {
 		return 15;
 	}
 	// Silenced SMG
@@ -149,6 +149,9 @@ dammageMap(weap) {
 	// Assuming 8 pelets, Tatical Shotgun
 	else if (weap == "870mcs_mp+extbarrel"){
 		return 50; // 8 may be more accurate but 9 to keep the dammage consitant.
+	}
+	else if (weap == "saiga12_mp+extbarrel") {
+		return 84;
 	}
 	// Assuming 8 pelets, heavy shotgun .. Dammage at Gold end is VERY high
 	else if (weap == "srm1216_mp") {
@@ -180,7 +183,7 @@ dammageMap(weap) {
 	}
 	// Grenade Launcher
 	else if (weap == "m32_wager_mp") {
-		return 38; //Applied a large nerf due the explode on inpact nature of the weapon
+		return 32; //Applied a large nerf due the explode on inpact nature of the weapon
 	}
 	// Grenade / Clinger
 	else if (weap == "frag_grenade_mp" || weap == "sticky_grenade_mp") {
@@ -227,6 +230,8 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
+
+
 
 
 

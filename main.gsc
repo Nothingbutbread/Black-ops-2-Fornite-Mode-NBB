@@ -29,7 +29,7 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.3.3 Public Beta";
+	level.versionID = "^11.4.0 Public Beta";
 	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
@@ -89,7 +89,7 @@ onPlayerSpawned()
         self.inthisgame = true;
         if (level.debugger) {
         	self.status = 3;
-        	self thread PatchThread();
+        	//self thread PatchThread();
         	//self thread VarPrinter();
         	//self GiveTestInventory();
         	//self thread printOrigin();
@@ -159,7 +159,7 @@ gameManager() {
 		}
 		if (level.debugger) {
 			//return;
-			//break;
+			break;
 		}
 		wait 1;
 	}
@@ -339,6 +339,8 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
+
 
 
 

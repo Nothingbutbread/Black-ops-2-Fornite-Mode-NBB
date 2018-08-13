@@ -155,10 +155,6 @@ getItemShader(weap)
 	else if (weap == "peacekeeper_mp+rf") {
 		return "menu_mp_weapons_pm";
 	}
-	// Tatical SMG
-	else if (weap == "insas_mp" || weap == "insas_mp+stalker") {
-		return "menu_mp_weapons_insas";
-	}
 	// Silenced SMG
 	else if (weap == "mp7_mp+silencer") {
 		return "menu_mp_weapons_mp7";
@@ -171,6 +167,9 @@ getItemShader(weap)
 	else if (weap == "fiveseven_mp" || weap == "fiveseven_mp+silencer") {
 		return "menu_mp_weapons_five_seven";
 	}
+	else if (weap == "evoskorpion_mp+extclip") {
+		return "menu_mp_weapons_evoskorpion";
+	}
 	// Pumpaction Shotgun
 	else if (weap == "ksg_mp"){
 		return "menu_mp_weapons_ksg";
@@ -178,6 +177,9 @@ getItemShader(weap)
 	// Assuming 8 pelets, Tatical Shotgun
 	else if (weap == "870mcs_mp+extbarrel"){
 		return "menu_mp_weapons_870mcs"; // 8 may be more accurate but 9 to keep the dammage consitant.
+	}
+	else if (weap == "saiga12_mp+extbarrel") {
+		return "menu_mp_weapons_saiga12";
 	}
 	// Assuming 8 pelets, heavy shotgun .. Dammage at Gold end is VERY high
 	else if (weap == "srm1216_mp") {
@@ -271,9 +273,9 @@ getDisplayName(weap)
 	else if (weap == "peacekeeper_mp+rf") {
 		return "Submachine Gun";
 	}  
-	// Tatical SMG
-	else if (weap == "insas_mp" || weap == "insas_mp+stalker") {
-		return "Tatical Submachine Gun";
+	// Compact SMG
+	else if (weap == "evoskorpion_mp+extclip") {
+		return "Compact SMG";
 	}
 	// Silenced SMG
 	else if (weap == "mp7_mp+silencer") {
@@ -300,6 +302,9 @@ getDisplayName(weap)
 	// Assuming 8 pelets, Tatical Shotgun
 	else if (weap == "870mcs_mp+extbarrel"){
 		return "Tatical Shotgun"; // 8 may be more accurate but 9 to keep the dammage consitant.
+	}
+	else if (weap == "saiga12_mp+extbarrel") { 
+		return "Double Barrel Shotgun";
 	}
 	// Assuming 8 pelets, heavy shotgun .. Dammage at Gold end is VERY high
 	else if (weap == "srm1216_mp") {
@@ -375,8 +380,8 @@ getAmmoType(weap)
 	else if (weap == "peacekeeper_mp+rf") {
 		return 0;
 	}
-	// Tatical SMG
-	else if (weap == "insas_mp" || weap == "insas_mp+stalker") {
+	// Compact SMG
+	else if (weap == "evoskorpion_mp+extclip") {
 		return 0;
 	}
 	// Silenced SMG
@@ -405,6 +410,9 @@ getAmmoType(weap)
 	}
 	// Assuming 8 pelets, heavy shotgun .. Dammage at Gold end is VERY high
 	else if (weap == "srm1216_mp") {
+		return 3;
+	}
+	else if (weap == "saiga12_mp+extbarrel") {
 		return 3;
 	}
 	// Bolt action sniper
@@ -439,7 +447,7 @@ getAmmoType(weap)
 }
 PrecacheAll()
 {
-	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,insas,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,ar57,svu,pm",",");
+	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,ar57,svu,pm,saiga12",",");
 	foreach(shader in shaders) { Precacheshader("menu_mp_weapons_" + shader); }
 	Precacheshader("hud_icon_minigun");
 	Precacheshader("hud_grenadeicon");
@@ -708,6 +716,8 @@ UnpackageAndSetSettings() {
 		} 
 	}
 }
+
+
 
 
 
