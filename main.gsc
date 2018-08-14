@@ -205,6 +205,7 @@ gameManager() {
 				if (player.origin[2] < level.belowmapdeathbarrier) {
 					if (player.unstuckability) {
 						player setorigin(player.spawnorigin);
+						player.unstuckability = false;
 					} else {
 						iprintln(player.name + " fell out of the map!");
 						player killMySelf();

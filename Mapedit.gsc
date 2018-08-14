@@ -519,7 +519,7 @@ Nuketown()
 	level.battlebusendorigin = (-2201,-2411,300);
 	level.battlebustimetotarget = 15;
 	level.stormcenterpoint = (108,344,-37);
-	level.stormstartingradius = 17500;
+	level.stormstartingradius = 13000;
 	level.stormcircles = (5000,2250,1000);
 	level.mapcustomentitylimit = 400;
 	level thread DoNotBuildZone((-1629,-238,-1000), (1409,1687,1000));

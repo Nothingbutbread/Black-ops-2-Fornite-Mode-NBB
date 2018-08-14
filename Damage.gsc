@@ -167,7 +167,7 @@ dammageMap(weap) {
 	}
 	// Bolt action sniper
 	else if (weap == "ballista_mp+dualclip") {
-		return 96;
+		return 90;
 	}
 	// Hunting Rifle
 	else if (weap == "saritch_mp+dualclip") {
@@ -195,7 +195,7 @@ dammageMap(weap) {
 	}
 	// Remote Explosives
 	else if (weap == "satchel_charge_mp") {
-		return 95;
+		return 85;
 	}
 	// Melee
 	else if (weap == "knife_mp" || weap == "knife_held_mp") {
