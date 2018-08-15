@@ -1,6 +1,6 @@
 getDefaultItemSpawnCount(item)
 {
-	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice") {
+	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice" || item == "Jet Pack") {
 		return 1;
 	} else if (item == "Bandage") {
 		return 5;
@@ -29,28 +29,29 @@ GrenadeInventoryUpdator(weap, index) {
 		self iprintln("We have " + self.inv[index].clip + " of this grenade left");
 	}
 }
-itemProgressBar() {
-	self endon("death");
+JetPackitem(index) {
 	self endon("disconnect");
- 	self.fortHUDS[16] = createPrimaryProgressBar();
- 	for(i=1; i<101;i++) {
-	 	self.fortHUDS[16] updateBar(i / 100);
-	  	self.fortHUDS[16] setPoint("CENTER","CENTER",0,0);
-	  	self.fortHUDS[16].color=(0,0,0);
-	  	self.fortHUDS[16].bar.color = (1,1,0);
-	  	self.fortHUDS[16].alpha = 1;
-  		wait .1;
- 	}
- 	self.fortHUDS[16] destroyElem();
-}
-CreateProgressBar(x, y, alpha, bgcolor, barcolor) {
- 	hudele = createPrimaryProgressBar();
-	hudele updateBar(0);
-	hudele setPoint("CENTER","CENTER",x,y);
-	hudele.color = bgcolor;
-	hudele.bar.color = barcolor;
-	hudele.alpha = alpha;
-	return hudele;
+	self endon("death");
+	self endon("new_jet_pack");
+	self.hasjetpack = true;
+	//self iprintln("[DEBUG]: ^2Jet pack started!");
+	if (self.inv[index].clip > 250) {
+		self.inv[index].clip = 250;
+	}
+	while(true) {
+		if (self jumpbuttonpressed()){
+			if (self getvelocity()[2] < 300 && self.inv[index].clip > 0){
+				self setvelocity(self getvelocity() + (0,0,50));
+				self.inv[index].clip--;
+			} else { 
+				self iprintln("^1Jet pack overheated!");
+				wait 1;
+			}
+		} else if (self.inv[index].clip < 250) {
+			self.inv[index].clip++; 
+		}
+		wait .05;
+	}
 }
 Bandageitem(index) {
 	self endon("disconnect");
@@ -419,6 +420,7 @@ SlurpJuice_Effect() {
 		wait .3;
 	}
 }
+
 
 
 

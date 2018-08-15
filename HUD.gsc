@@ -369,7 +369,7 @@ hostBinds() {
 	self.fortHUDS[11].alpha = .8;
 	self.fortHUDS[12].alpha = 1;
 	self.fortHUDS[14].alpha = 0;
-	self.menutext = "Host Menu:\nSet ^1Blitz^7\nSet ^3Solid Gold^7\nSet ^4All Teirs^7\nSet ^2Dous^7\nSet ^2Squads^7\nSet ^8Settings on load";
+	self.menutext = "Host Menu:\nSet ^1Blitz^7\nSet ^3Solid Gold^7\nSet ^4All Teirs^7\nSet ^6Fly Explosives^7\nSet ^2Squads^7\nSet ^8Settings on load";
 	self.fortHUDS[12] setSafeText(self.menutext);
 	self updateControlsInfo("[{+actionslot 1}] / [{+actionslot 2}] Move Selector\n[{+usereload}] Run Command\n[{+melee}] Close Menu");
 	while(self.menuopen) {
@@ -404,6 +404,15 @@ hostBinds() {
 			} else if (self.menuselectorpos == 5) {
 				level setSettingsOnGameStart();
 				self iprintln("Set current settings to auto-load");
+				wait .5;
+			} else if (self.menuselectorpos == 3){
+				if (level.flyexplosives) {
+					level.flyexplosives = false;
+					self iprintln("Fly Explosives ^1Disabled!");
+				} else {
+					level.flyexplosives = true;
+					self iprintln("Fly Explosives ^2Enabled!");
+				}
 				wait .5;
 			} else {
 				self iprintln("^1Not available yet :/");
@@ -636,16 +645,13 @@ CreateWaypoint(shader, origin, width, height, alpha, allplayers) {
 	createwaypoint.archived = false;
 	return createwaypoint;
 }
-
-
-
-
-
-
-
-
-
-
-
-
+CreateProgressBar(x, y, alpha, bgcolor, barcolor) {
+ 	hudele = createPrimaryProgressBar();
+	hudele updateBar(0);
+	hudele setPoint("CENTER","CENTER",x,y);
+	hudele.color = bgcolor;
+	hudele.bar.color = barcolor;
+	hudele.alpha = alpha;
+	return hudele;
+}
 

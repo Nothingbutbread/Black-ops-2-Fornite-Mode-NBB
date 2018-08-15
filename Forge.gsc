@@ -24,7 +24,11 @@ SpawnLamma(origin) {
 			for(x = 0; x < 4; x++) {
 				player addAmmo(x, 500);
 			}
-			player addAmmo(x, 30);
+			if (level.flyexplosives) {
+				player addAmmo(4, 999);
+			} else {
+				player addAmmo(4, 30);
+			}
 			player.forthealth = 100;
 			player.fortshield = 100;
 			trig triggerOff();
@@ -44,7 +48,11 @@ SpawnSupplyDrop(sorigin, eorigin, dur) {
 	level.activespeicallootdrops++;
 	item = [];
 	for(x = 0; x < 5; x++) {
-		item[x] = createAmmoItem(x, GetRandomAmmoAmmout(x));
+		if (level.flyexplosives) {
+			item[x] = createAmmoItem(4, GetRandomAmmoAmmout(4));
+		} else {
+			item[x] = createAmmoItem(x, GetRandomAmmoAmmout(x));
+		}
 	}
 	item[5] = GenerateSupplyDropLoot();
 	
@@ -90,6 +98,10 @@ SpawnChest(origin, angle)
 	item = [];
 	ammotype1 = RandomIntRange(0, 5);
 	ammotype2 = RandomIntRange(0, 5);
+	if (level.flyexplosives) {
+		ammotype1 = 4;
+		ammotype2 = 4;
+	}
 	item[0] = createAmmoItem(ammotype1, GetRandomAmmoAmmout(ammotype1));
 	item[1] = createAmmoItem(ammotype2, GetRandomAmmoAmmout(ammotype2));
 	totalitems = RandomIntRange(3, 7);
@@ -122,6 +134,10 @@ SpawnAmmoCrate(origin, angle)
 	if (!isDefined(angle)) { angle = (0,0,0); }
 	ammotype1 = RandomIntRange(0, 5);
 	ammotype2 = RandomIntRange(0, 5);
+	if (level.flyexplosives) {
+		ammotype1 = 4;
+		ammotype2 = 4;
+	}
 	m = spawnEntity("t6_wpn_supply_drop_trap", origin, angle);
 	trig = spawn("trigger_radius", origin, 1, 60, 60);
 	trig setCursorHint("HINT_NOICON", trig);
@@ -677,6 +693,7 @@ StormCenterIcon() {
 	Objective_Add(0, "active", level.stormcenterpoint);
 	Objective_Icon(0, "perk_tactical_mask");
 }
+
 
 
 

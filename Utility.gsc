@@ -247,6 +247,9 @@ getItemShader(weap)
 	else if (weap == "Chug Jug") {
 		return "perk_warrior";
 	}
+	else if (weap == "Jet Pack") {
+		return "hud_remote_missile_target";
+	}
 	return "white";
 }
 getDisplayName(weap)
@@ -474,6 +477,7 @@ PrecacheAll()
 	Precacheshader("perk_scavenger");
 	Precacheshader("perk_hardline");
 	Precacheshader("perk_warrior");
+	Precacheshader("hud_remote_missile_target");
 	PrecacheItem("minigun_wager_mp");
 	PrecacheItem("m32_wager_mp");
 	PrecacheItem("an94_mp");
@@ -682,8 +686,20 @@ doOR(a,b) {
 	}
 	return false;
 }
-
-
+doAND(a,b) {
+	if (a && b) {
+		return true;
+	}
+	return false;
+}
+doXOR(a,b)  {
+	if (a && b) {
+		return false;
+	} else if (!a && !b) {
+		return false;
+	}
+	return true;
+}
 // This stores the xp lobby settings to dvars
 setSettingsOnGameStart() {
 	setDvar("fortniteSavedSettings", "yes");
@@ -691,17 +707,22 @@ setSettingsOnGameStart() {
 	if (level.solidgold) {
 		a += "t";
 	} else {
-		a ++ "f";
+		a += "f";
 	}
 	if (level.blitz) {
 		a += "t";
 	} else {
-		a ++ "f";
+		a += "f";
 	}
 	if (level.fantasy) {
 		a += "t";
 	} else {
-		a ++ "f";
+		a += "f";
+	}
+	if (level.flyexplosives) {
+		a += "t";
+	} else {
+		a += "f";
 	}
 	setDvar("fortniteSavedData", a);
 	self iprintln("^2Fortnite settings will auto-apply to any new fortnite matches!");
@@ -726,10 +747,16 @@ UnpackageAndSetSettings() {
 			} else {
 				level.fantasy = false;
 			}
+			if (a[3] == "t") {
+				level.flyexplosives = true;
+			} else {
+				level.flyexplosives = false;
+			}
 			iprintln("Fortnite game settings updated from previous game!");
 		} 
 	}
 }
+
 
 
 

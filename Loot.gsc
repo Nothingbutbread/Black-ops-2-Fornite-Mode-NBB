@@ -77,9 +77,13 @@ GenerateSpiningDropLoot()
 		if (luck >= 75) { retval.rarity = 2; item = PickRareGrenade(); }
 		else if (luck >= 40) { retval.rarity = 1; item = PickUncommonGrenade(); }
 	}
-	if (level.debugger) {
-		item = DebugItemSpawn();
+	if (level.flyexplosives) {
+		item = "Jet Pack";
 		retval.rarity = 4;
+	}
+	if (level.debugger) {
+		//item = DebugItemSpawn();
+		//retval.rarity = 4;
 	}
 	retval.weapon = item;
 	retval.isweapon = isAWeapon(item);
@@ -113,6 +117,12 @@ GenerateChestLoot(onlylegn) {
 		if (level.fantasy) { 
 			item = PickAnyWeapon();
 		}
+		if (level.flyexplosives) {
+			item = FEWeapon();
+			if (retval.rarity < 2) {
+				retval.rarity = 2;
+			}
+		}
 	} else if (pool < 90) {
 		item = PickCommonItem();
 		if (luck >= 95) { retval.rarity = 4; item = PickLegendaryItem(); }
@@ -141,9 +151,11 @@ GenerateChestLoot(onlylegn) {
 }
 GenerateSupplyDropLoot() {
 	retval = createInventorySlotStruct();
-	retval.rarity = 0;
 	retval.rarity = 4; 
 	item = PickLegendaryWeapon();
+	if (level.flyexplosives) {
+		item = FEWeapon();
+	}
 	retval.weapon = item;
 	retval.isweapon = isAWeapon(item);
 	retval.slotfilled = true;
@@ -159,14 +171,13 @@ GenerateSupplyDropLoot() {
 	}
 	return retval;
 }
+FEWeapon() {
+	c = RandomIntRange(0, 2);
+	if (c == 0) { return "m32_wager_mp"; }
+	else { return "smaw_mp"; }
+}
 DebugItemSpawn() {
-	c = RandomIntRange(0, 3);
-	if (c == 0) {
-		return "ballista_mp+dualclip";
-	} else if (c == 1) {
-		return "saritch_mp+dualclip";
-	}
-	return "dsr50_mp+vzoom";
+	return "Jet Pack";
 }
 PickAnyWeapon() {
 	c = RandomIntRange(0, 23);
@@ -296,8 +307,13 @@ PickLegendaryWeapon() {
 	else if (c == 14) { return "ballista_mp+dualclip"; }
 }
 PickLegendaryItem() {
+	c = RandomIntRange(0, 2);
+	if (c == 0) {
+		return "Jet Pack";
+	}
 	return "Chug Jug";
 }
+
 
 
 

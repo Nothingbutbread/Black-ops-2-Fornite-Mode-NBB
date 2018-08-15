@@ -36,7 +36,9 @@ addItemToInventory(index, item) {
 	olditem = self createInventorySlotStruct();
 	// Error Check
 	if (!item.slotfilled) {
-		self iprintln("^1ERROR: ^3Failed AITI item.slotfilled check. Tried to add an empty item!");
+		if (level.debugger) {
+			self iprintln("^1ERROR: ^3Failed AITI item.slotfilled check. Tried to add an empty item!");
+		}
 		return olditem;
 	}
 	// If its ammo, add it but don't adjust the inventory at all.
@@ -55,14 +57,23 @@ addItemToInventory(index, item) {
 			break;
 		}
 	}
-	
+	// If its a jetpack, run speical code for it
+	isjetpack = false;
+	if (item.weapon == "Jet Pack") {
+		isjetpack = true;
+		for(h = 0; h < 5; h++) {
+			if (self.inv[h].weapon == "Jet Pack") {
+				index = h;
+			}
+		}
+	}
 	// Determines if we should auto-change the current item out of the players hand or not.
 	if (self.lastusedinvslotindex == index && self.inv[index].weapon == self.activeweapon) {
 		replace = true;
 	}
 	// Merges items if non-gun items are inputed and can be merged on the base of count.
 	mergeindex = self whereDupe(item);
-	if (mergeindex >= 0) {
+	if (mergeindex >= 0 && !isjetpack) {
 		if (self.inv[mergeindex].weapon == item.weapon) {
 			if (!self.inv[mergeindex].isweapon) {
 				self.inv[mergeindex].clip += item.clip;
@@ -72,6 +83,20 @@ addItemToInventory(index, item) {
 				return olditem;
 			}
 		}
+	}
+	// If we have a jetpack and already have a jetpack
+	// replaces and returns the old jetpack.
+	if (self.hasjetpack && isjetpack) {
+		//self iprintln("[DEBUG]: ^2I got a jetpack and already had one!");
+		olditem = self deepCopyInvStruct(self.inv[index]);
+		self.inv[index].clip = item.clip;
+		return olditem;
+	} else if (self.hasjetpack && !isjetpack && full && self.inv[index].weapon == "Jet Pack") {
+		//self iprintln("[DEBUG]: ^2I replaced my jetpack with another item!");
+		self notify("new_jet_pack");
+		self.hasjetpack = false;
+	} else if (!self.hasjetpack && isjetpack) {
+		self thread JetPackitem(index);
 	}
 	// If the inventory is full and we need to send back an item. Get a deep copy of it.
 	if (full) {
@@ -215,6 +240,8 @@ ActivateItem(index) {
 		self thread ChugJugItem(index);
 	} else if (self.inv[index].weapon == "Slurp Juice") {
 		self thread SlurpJuiceItem(index);
+	} else if (self.inv[index].weapon == "Jet Pack" && !self.hasjetpack) {
+		self thread JetPackitem(index);
 	}
 }
 ChangeToNextItemInInvetory() {
@@ -232,6 +259,7 @@ ChangeToNextItemInInvetory() {
 	}
 	self AdjustLoadout(self.selectorpos);
 }
+
 
 
 

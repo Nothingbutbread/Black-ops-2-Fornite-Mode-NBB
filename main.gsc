@@ -34,6 +34,7 @@ init()
 	level.solidgold = false;
 	level.blitz = false;
 	level.fantasy = false;
+	level.flyexplosives = false;
 	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
 	level.allowteams = false;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
@@ -89,10 +90,10 @@ onPlayerSpawned()
         self.inthisgame = true;
         if (level.debugger) {
         	self.status = 3;
-        	//self thread PatchThread();
+        	self thread PatchThread();
         	//self thread VarPrinter();
         	//self GiveTestInventory();
-        	self thread printOrigin();
+        	//self thread printOrigin();
         }
         self AdjustLoadout(0);
         self EnableInvulnerability();
@@ -143,7 +144,7 @@ gameManager() {
 	level StormCenterIcon();
 	if (level.debugger) {
 		//level thread DammageTestBotSpawn();
-		//level thread LootSpawnerGeneator();
+		level thread LootSpawnerGeneator();
 		level.entitiesperplayer = 200;
 		level.hostinHostMenu = -1;
 		//level thread printIntro();
@@ -158,8 +159,8 @@ gameManager() {
 			}
 		}
 		if (level.debugger) {
-			//return;
-			break;
+			return;
+			//break;
 		}
 		wait 1;
 	}
@@ -288,6 +289,7 @@ init_player_vars()
 	self.canbuild = false;
 	self.lastplacedramp = false;
 	self.lastdammagedby = self;
+	self.hasjetpack = false;
 	//V1.2 Update
 	self.teamtag = "";
 	self.isonteam = false;
@@ -344,6 +346,7 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
 
 
