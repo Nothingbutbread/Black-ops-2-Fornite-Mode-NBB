@@ -700,62 +700,73 @@ doXOR(a,b)  {
 	}
 	return true;
 }
-// This stores the xp lobby settings to dvars
+// This runs on start of game and applies any saved xp lobby settings.
 setSettingsOnGameStart() {
-	setDvar("fortniteSavedSettings", "yes");
-	a = "";
-	if (level.solidgold) {
-		a += "t";
-	} else {
-		a += "f";
-	}
-	if (level.blitz) {
-		a += "t";
-	} else {
-		a += "f";
-	}
-	if (level.fantasy) {
-		a += "t";
-	} else {
-		a += "f";
-	}
-	if (level.flyexplosives) {
-		a += "t";
-	} else {
-		a += "f";
-	}
-	setDvar("fortniteSavedData", a);
-	self iprintln("^2Fortnite settings will auto-apply to any new fortnite matches!");
+    setDvar("fortniteSavedSettings", "yes");
+    a = "";
+    if (level.solidgold) {
+        a += "t";
+    } else {
+        a += "f";
+    }
+    if (level.blitz) {
+        a += "t";
+    } else {
+        a += "f";
+    }
+    if (level.fantasy) {
+        a += "t";
+    } else {
+        a += "f";
+    }
+    if (level.flyexplosives) {
+        a += "t";
+    } else {
+        a += "f";
+    }
+    if (level.snipershootout) {
+        a += "t";
+        } else {
+        a += "f";
+    }
+    setDvar("fortniteSavedData", a);
+    self iprintln("^2Fortnite settings will auto-apply to any new fortnite matches!");
 }
 // This runs on start of game and applies any saved xp lobby settings.
 UnpackageAndSetSettings() {
-	if (isDefined(GetDvar("fortniteSavedSettings"))) { 
-		if (GetDvar("fortniteSavedSettings") == "yes") {
-			a = GetDvar("fortniteSavedData");
-			if (a[0] == "t") {
-				level.solidgold = true;
-			} else {
-				level.solidgold = false;
-			}
-			if (a[1] == "t") {
-				level.blitz = true;
-			} else {
-				level.blitz = false;
-			}
-			if (a[2] == "t") {
-				level.fantasy = true;
-			} else {
-				level.fantasy = false;
-			}
-			if (a[3] == "t") {
-				level.flyexplosives = true;
-			} else {
-				level.flyexplosives = false;
-			}
-			iprintln("Fortnite game settings updated from previous game!");
-		} 
-	}
+    if (isDefined(GetDvar("fortniteSavedSettings"))) { 
+        if (GetDvar("fortniteSavedSettings") == "yes") {
+            a = GetDvar("fortniteSavedData");
+            if (a[0] == "t") {
+                level.solidgold = true;
+            } else {
+                level.solidgold = false;
+            }
+            if (a[1] == "t") {
+                level.blitz = true;
+            } else {
+                level.blitz = false;
+            }
+            if (a[2] == "t") {
+                level.fantasy = true;
+            } else {
+                level.fantasy = false;
+            }
+            if (a[3] == "t") {
+                level.flyexplosives = true;
+            } else {
+                level.flyexplosives = false;
+            }
+            if (a[4] == "t") {
+                level.snipershootout = true;
+            } else {
+                level.snipershootout = false;
+            }
+            iprintln("Fortnite game settings updated from previous game!");
+        } 
+    }
 }
+
 
 
 

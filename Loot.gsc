@@ -12,7 +12,7 @@ LootSpawnerGeneator() {
 	
 	ss = RandIntArrayNoDupe(level.spinningweaponlocations.size - 1, 0, level.spinningweaponlocations.size);
 	ssindex = 0;
-	sd = RandIntArrayNoDupe(level.spinningweaponlocations.size - 1, 0, level.spinningweaponlocations.size);
+	sd = RandIntArrayNoDupe(level.supplydroplocations.size - 1, 0, level.supplydroplocations.size);
 	sdindex = 0;
 	time = 0;
 	// Spawns the first and only lamma into the map.
@@ -66,6 +66,12 @@ GenerateSpiningDropLoot()
 		if (level.fantasy) { 
 			item = PickAnyWeapon();
 		}
+		if (level.snipershootout) {
+			if (retval.rarity == 0) {
+				retval.rarity = 1;
+			}
+			item = SSWeapon(retval.rarity);
+		}
 	} else if (pool < 85) {
 		item = PickCommonItem();
 		if (luck >= 95) { retval.rarity = 4; item = PickLegendaryItem(); }
@@ -73,9 +79,14 @@ GenerateSpiningDropLoot()
 		else if (luck >= 70) { retval.rarity = 2; item = PickRareItem(); }
 		else if (luck >= 40) { retval.rarity = 1; item = PickUncommonItem(); }
 	} else {
-		item = PickCommonGrenade();
-		if (luck >= 75) { retval.rarity = 2; item = PickRareGrenade(); }
-		else if (luck >= 40) { retval.rarity = 1; item = PickUncommonGrenade(); }
+		if (level.snipershootout) {
+			retval.rarity = 1;
+			item = "saritch_mp+dualclip";
+		} else {
+			item = PickCommonGrenade();
+			if (luck >= 75) { retval.rarity = 2; item = PickRareGrenade(); }
+			else if (luck >= 40) { retval.rarity = 1; item = PickUncommonGrenade(); }
+		}
 	}
 	if (level.flyexplosives) {
 		item = "Jet Pack";
@@ -123,6 +134,12 @@ GenerateChestLoot(onlylegn) {
 				retval.rarity = 2;
 			}
 		}
+		if (level.snipershootout) {
+			if (retval.rarity == 0) {
+				retval.rarity = 1;
+			}
+			item = SSWeapon(retval.rarity);
+		}
 	} else if (pool < 90) {
 		item = PickCommonItem();
 		if (luck >= 95) { retval.rarity = 4; item = PickLegendaryItem(); }
@@ -130,9 +147,14 @@ GenerateChestLoot(onlylegn) {
 		else if (luck >= 70) { retval.rarity = 2; item = PickRareItem(); }
 		else if (luck >= 40) { retval.rarity = 1; item = PickUncommonItem(); }
 	} else {
-		item = PickCommonGrenade();
-		if (luck >= 75) { retval.rarity = 2; item = PickRareGrenade(); }
-		else if (luck >= 40) { retval.rarity = 1; item = PickUncommonGrenade(); }
+		if (level.snipershootout) {
+			retval.rarity = 1;
+			item = "saritch_mp+dualclip";
+		} else {
+			item = PickCommonGrenade();
+			if (luck >= 75) { retval.rarity = 2; item = PickRareGrenade(); }
+			else if (luck >= 40) { retval.rarity = 1; item = PickUncommonGrenade(); }
+		}
 	}
 	retval.weapon = item;
 	retval.isweapon = isAWeapon(item);
@@ -156,6 +178,9 @@ GenerateSupplyDropLoot() {
 	if (level.flyexplosives) {
 		item = FEWeapon();
 	}
+	if (level.snipershootout) {
+		item = SSWeapon(4);
+	}
 	retval.weapon = item;
 	retval.isweapon = isAWeapon(item);
 	retval.slotfilled = true;
@@ -176,11 +201,23 @@ FEWeapon() {
 	if (c == 0) { return "m32_wager_mp"; }
 	else { return "smaw_mp"; }
 }
+SSWeapon(teir) {
+	c = 0;
+	if (teir >= 3) {
+		c = RandomIntRange(1, 4);
+	} else if (teir == 2) {
+		c = RandomIntRange(0, 2);
+	}
+	if (c == 0) { return "saritch_mp+dualclip"; }
+	else if (c == 1) { return "ballista_mp+dualclip"; }
+	else if (c == 2) { return "dsr50_mp+vzoom"; }
+	else if (c == 3) { return "as50_mp+extclip"; }
+}
 DebugItemSpawn() {
 	return "Jet Pack";
 }
 PickAnyWeapon() {
-	c = RandomIntRange(0, 23);
+	c = RandomIntRange(0, 24);
 	if (c == 0) { return "scar_mp"; }
 	else if (c == 1) { return "sig556_mp"; }
 	else if (c == 2) { return "mp7_mp+silencer"; }
@@ -204,6 +241,7 @@ PickAnyWeapon() {
 	else if (c == 20) { return "fnp45_mp+dualclip+fmj"; }
 	else if (c == 21) { return "saiga12_mp+extbarrel"; }
 	else if (c == 22) { return "saritch_mp+dualclip"; }
+	else if (c == 23) { return "as50_mp+extclip"; }
 }
 PickCommonWeapon() {
 	c = RandomIntRange(0, 6);
@@ -313,6 +351,11 @@ PickLegendaryItem() {
 	}
 	return "Chug Jug";
 }
+
+
+
+
+
 
 
 

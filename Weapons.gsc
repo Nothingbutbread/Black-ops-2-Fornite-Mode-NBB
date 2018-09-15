@@ -9,8 +9,7 @@ getRawWeapon(str)
 	return retval;
 }
 
-DefineWeapondataarray()
-{
+DefineWeapondataarray() {
 	level.AttachmentArray = [];
 	level.AttachmentArray[0] = "dualoptic"; //Hybrid Optic
 	level.AttachmentArray[1] = "extbarrel"; //Long Barrel  
@@ -200,6 +199,11 @@ WeaponMod_RefreshStock() {
 		wait .1;
 	}
 }
+
+
+
+
+
 
 
 
