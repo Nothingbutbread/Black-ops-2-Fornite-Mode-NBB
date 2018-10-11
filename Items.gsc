@@ -1,9 +1,11 @@
 getDefaultItemSpawnCount(item)
 {
-	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice" || item == "Jet Pack") {
+	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice") {
 		return 1;
 	} else if (item == "Bandage") {
 		return 5;
+	} else if (item == "Jet Pack") {
+		return 250;
 	}
 	return 3;
 }
@@ -420,53 +422,46 @@ SlurpJuice_Effect() {
 		wait .3;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ShadowStoneConsumeable() {
+	self endon("end_shadow_stone");
+	self endon("death");
+	self endon("disconnect");
+	wait 1;
+	self disableWeapons();
+	iprintln(self.name + " used a shadow stone");
+	self iprintlnbold("Hold [{+usereload}] to end the shadow stone effect!");
+	self hide();
+	for(x = 0; x < 120; x++) {
+		if (self usebuttonpressed()) {
+			break;
+		} else if (x == 270) {
+			self iprintln("Shadow Stone expiring in 3 seconds!");
+		}
+		wait .1;
+	}
+	self iprintln("Shadow Stone effect lifting!");
+	self show();
+	wait 1;
+	self enableWeapons();
+}
+PopRockConsumeable() {
+	self endon("end_pop_rock");
+	self endon("death");
+	self endon("disconnect");
+	for(x = 0; x < 300; x++) {
+		if (self jumpbuttonpressed() && self DisToGround() < 10) {
+			self thread PopRockComsumeable_Jolt();
+			wait .3;
+		} else if (x == 270) {
+			self iprintln("Pop Rock expiring in 3 seconds!");
+		}
+		wait .1;
+	}
+	self iprintln("Pop Rock effect ended!");
+}
+PopRockComsumeable_Jolt() {
+	for(x = 0; x < 10; x++) {
+		self setvelocity((self getvelocity()[0] , self getvelocity()[1] ,self getvelocity()[2] + 10000));
+		wait .05;
+	}
+}

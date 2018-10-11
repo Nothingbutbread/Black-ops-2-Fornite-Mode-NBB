@@ -4,11 +4,10 @@ CreatePlayerHUDS()
 	self.menuselectorpos = 0;
 	self.curmenu = 0;
 	self.menuopen = false;
-	self.updateHealthBars = false;
 	//self.menutext = "Utility Menu:\nBuild Wall\nBuild Ramp\nGet Unstuck\nAdjust Menu Controls\nDelete All Ramps/Walls\nDelete Last Placed Item";
 	self.menutext = "Utility Menu:\nBuild Wall\nBuild Ramp\nBuild Platform\nGet Unstuck\nDelete All Ramps/Walls\nDelete Last Placed Item";
 	self.controlsText = "";
-	self.healthHUDText = "" + self.fortshield + "| 100\n" + self.forthealth + " | 100";
+	self.healthHUDText = "^1Health: " + self.forthealth + "\n^5Sheild: " + self.fortshield;
 	self.ItemUseText = "";
 	self.fortHUDS = [];
 	// Inventory
@@ -29,8 +28,8 @@ CreatePlayerHUDS()
 	self.fortHUDS[11] = self SpawnShader("white", 210, 165, 220, 25, (0,.5,0), 0, 10);
 	self.fortHUDS[12] = self SpawnText(self.menutext, 2, 470,140, (1,1,1), 0, 20, true, false, true, true);
 	
-	// Health / Sheild SpawnText(item, fontScale, x, y, color, alpha, sort, text, allpeeps, foreground, normal)
-	self.fortHUDS[13] = self SpawnText(self.healthHUDText, 1, 310,300, (1,1,1), 1, 20, true, false, true, true);
+	// Health / Sheild
+	self.fortHUDS[13] = self SpawnText(self.healthHUDText, 2, 200,300, (1,1,1), 1, 20, true, false, true, true);
 	
 	// Selector Shader
 	self.fortHUDS[14] = self SpawnShader("white", 120, 310, 40, 60, (1,1,1), 0, 3);
@@ -47,53 +46,13 @@ CreatePlayerHUDS()
 	
 	self thread OpenInventoryGUIBind();
 	self thread ConstantHUDUpdate();
-	self destroyPlayerUtilityMenu();
-	self createPlayerStatusBars();
-}
-createPlayerStatusBars() {
-	self destroyPlayerStatusBars();
-	// CreateProgressBar(x, y, alpha, bgcolor, barcolor)
-	self.fortHUDS[19] = self CreateProgressBar(0, 102, 1, (0.1,0.1,0.1), (0.1511,0.4706,0.88235)); // Shield
-	self.fortHUDS[20] = self CreateProgressBar(0, 114, 1, (0.1,0.1,0.1), (0.2509,0.8705,0.06274)); // Health
-	self.updateHealthBars = true;
-}
-createPlayerUtilityMenu() {
-	self.fortHUDS[10] = self SpawnShader("white", 210, 140, 220, 170, (0,0,0), 1, 2);
-	self.fortHUDS[11] = self SpawnShader("white", 210, 165, 220, 25, (0,.5,0), .9, 10);
-	self.fortHUDS[12] = self SpawnText(self.menutext, 2, 470,140, (1,1,1), 1, 20, true, false, true, true);
-	self.updateHealthBars = false;
-}
-destroyPlayerUtilityMenu() {
-	self.fortHUDS[10] delete();
-	self.fortHUDS[11] delete();
-	self.fortHUDS[12] destroy();
-}
-destroyPlayerStatusBars() {
-	self.fortHUDS[19].bar delete();
-	self.fortHUDS[20].bar delete();
-	self.fortHUDS[19] delete();
-	self.fortHUDS[20] delete();
 }
 ConstantHUDUpdate() {
 	self endon("disconnect");
-	while(self.forthealth > 0) {
-		if (self.updateHealthBars) {
-			if (self.forthealth > 100) {
-				self.forthealth = 100;
-			} else if (self.forthealth < 0) {
-				self.forthealth = 0;
-			}
-			if (self.fortshield > 100) {
-				self.fortshield = 100;
-			} else if (self.fortshield < 0) {
-				self.fortshield = 0;
-			}
-			self.fortHUDS[19] updateBar(self.fortshield / 100);
-			self.fortHUDS[20] updateBar(self.forthealth / 100);
-			self.healthHUDText = "" + self.fortshield + "| 100\n" + self.forthealth + " | 100";
-			self.fortHUDS[13] setSafeText(self.healthHUDText);
-		}
-		wait .25;
+	while(true) {
+		self.healthHUDText = "^5Shield: " + self.fortshield + "\n^1Health: " + self.forthealth;
+		self.fortHUDS[13] setSafeText(self.healthHUDText);
+		wait .1;
 	}
 }
 updateControlsInfo(str) {
@@ -101,9 +60,7 @@ updateControlsInfo(str) {
 	self.fortHUDS[18] setSafeText(self.controlsText);
 }
 RebuildHUDS() {
-	if (isDefined(self.fortHUDS[12])) {
-		self.fortHUDS[12] setSafeText(self.menutext);
-	}
+	self.fortHUDS[12] setSafeText(self.menutext);
 	self.fortHUDS[13] setSafeText(self.healthHUDText);
 	self.fortHUDS[15] setSafeText(self.ItemUseText);
 	self.fortHUDS[17] setSafeText(level.gamestatestr);
@@ -150,30 +107,6 @@ updateHUDRemoveItemFromInv(index)
 	self.fortHUDS[index].color = teirIDToColor(0);
 	self.fortHUDS[index + 5] setshader("white", 40, 40);
 	self.fortHUDS[index + 5].alpha = 0;
-}
-CreateWaypoint(shader, origin, width, height, alpha, allplayers) {
-	if (allplayers) { 
-		createwaypoint = NewHudElem(); 
-	} else { 
-    	createwaypoint = NewClientHudElem(self); 
-    }
-    createwaypoint SetShader(shader, width, height);
-	createwaypoint SetWayPoint(true);   
-	createwaypoint.x = origin[0];
-	createwaypoint.y = origin[1];
-	createwaypoint.z = origin[2]; 
-	createwaypoint.alpha = alpha;
-	createwaypoint.archived = false;
-	return createwaypoint;
-}
-CreateProgressBar(x, y, alpha, bgcolor, barcolor) {
- 	hudele = createPrimaryProgressBar();
-	hudele updateBar(0);
-	hudele setPoint("CENTER","CENTER",x,y);
-	hudele.color = bgcolor;
-	hudele.bar.color = barcolor;
-	hudele.alpha = alpha;
-	return hudele;
 }
 SpawnText(item, fontScale, x, y, color, alpha, sort, text, allpeeps, foreground, normal)
 {
@@ -287,14 +220,13 @@ OpenChestGUI(data, type)
 {
 	// type 0 = Chest, type 1 = Supply Drop, type 2 = Player drop
 	self endon("disconnect");
-	self destroyPlayerStatusBars();
-	self createPlayerUtilityMenu();
 	self.menuopen = true;
 	self.curmenu = 1;
 	self.fortHUDS[10].alpha = 1;
 	self.fortHUDS[11].alpha = .8;
 	self.fortHUDS[12].alpha = 1;
 	self.fortHUDS[14].alpha = .9;
+	//self thread DEBUG_PRINTITEMS(data);
 	self.menutext = "Chest:";
 	if (type == 0) {
 		self iprintln("^2Opened the chest!");
@@ -338,8 +270,9 @@ OpenChestGUI(data, type)
 				self iprintln("^1Closed the player inventory!");
 			}
 			self.curmenu = 0;
-			self destroyPlayerUtilityMenu();
-			self createPlayerStatusBars();
+			self.fortHUDS[10].alpha = 0;
+			self.fortHUDS[11].alpha = 0;
+			self.fortHUDS[12].alpha = 0;
 			self.fortHUDS[14].alpha = 0;
 			self.menuopen = false;
 			self updateControlsInfo("[{+actionslot 1}] Open Menu");
@@ -349,13 +282,15 @@ OpenChestGUI(data, type)
 		else if (self actionslotonebuttonpressed() && self.curmenu == 0) {
 			self updateControlsInfo("[{+actionslot 3}] / [{+actionslot 4}] Open Inventory Menu\n[{+actionslot 1}] / [{+actionslot 2}] Move Selector\n[{+usereload}] Swap item to Inventory\n[{+melee}] Close Container");
 			self.curmenu = 1;
-			self destroyPlayerStatusBars();
-			self createPlayerUtilityMenu();
+			self.fortHUDS[10].alpha = 1;
+			self.fortHUDS[11].alpha = .8;
+			self.fortHUDS[12].alpha = 1;
 		} else if ((self actionslotthreebuttonpressed() || self actionslotfourbuttonpressed()) && self.curmenu == 1) {
 			self updateControlsInfo("[{+actionslot 1}] Open Container Inventory\n[{+actionslot 3}] / [{+actionslot 4}] Move Inventory Selector\n[{+melee}] Close Container");
 			self.curmenu = 0;
-			self destroyPlayerUtilityMenu();
-			self createPlayerStatusBars();
+			self.fortHUDS[10].alpha = 0;
+			self.fortHUDS[11].alpha = 0;
+			self.fortHUDS[12].alpha = 0;
 		} 
 		// Build Menu controls y = 165 at index 0
 		else if (self actionslotonebuttonpressed() && self.curmenu == 1) {
@@ -403,8 +338,9 @@ OpenChestGUI(data, type)
 						self iprintln("^1Closed the player inventory!");
 					}
 					self.curmenu = 0;
-					self destroyPlayerUtilityMenu();
-					self createPlayerStatusBars();
+					self.fortHUDS[10].alpha = 0;
+					self.fortHUDS[11].alpha = 0;
+					self.fortHUDS[12].alpha = 0;
 					self.fortHUDS[14].alpha = 0;
 					self.menuopen = false;
 					self updateControlsInfo("[{+actionslot 1}] Open Menu");
@@ -418,8 +354,9 @@ OpenChestGUI(data, type)
 }
 closeInventory(bind) {
 	self.curmenu = 0;
-	self destroyPlayerUtilityMenu();
-	self createPlayerStatusBars();
+	self.fortHUDS[10].alpha = 0;
+	self.fortHUDS[11].alpha = 0;
+	self.fortHUDS[12].alpha = 0;
 	self.fortHUDS[14].alpha = 0;
 	self updateControlsInfo("[{+actionslot 1}] Open Menu");
 	self.menuopen = false;
@@ -432,13 +369,11 @@ hostBinds() {
 	self endon("disconnect");
 	self.menuopen = true;
 	self iprintln("^2Opened the Host Menu!");
-	self destroyPlayerStatusBars();
-	self createPlayerUtilityMenu();
 	self.fortHUDS[10].alpha = 1;
 	self.fortHUDS[11].alpha = .8;
 	self.fortHUDS[12].alpha = 1;
 	self.fortHUDS[14].alpha = 0;
-	self.menutext = "Host Menu:\nSet ^1Blitz^7\nSet ^3Solid Gold^7\nSet ^4All Teirs^7\nSet ^6Fly Explosives^7\nSet ^2Sniper Shootout^7\nSet ^8Settings on load";
+	self.menutext = "Host Menu:\nSet ^1Blitz^7\nSet ^3Solid Gold^7\nSet ^4All Teirs^7\nSet ^6Fly Explosives^7\nSet ^2Squads^7\nSet ^8Settings on load";
 	self.fortHUDS[12] setSafeText(self.menutext);
 	self updateControlsInfo("[{+actionslot 1}] / [{+actionslot 2}] Move Selector\n[{+usereload}] Run Command\n[{+melee}] Close Menu");
 	while(self.menuopen) {
@@ -480,24 +415,7 @@ hostBinds() {
 					self iprintln("Fly Explosives ^1Disabled!");
 				} else {
 					level.flyexplosives = true;
-					if (level.snipershootout) {
-						level.snipershootout = false;
-						self iprintln("Sniper shootout ^1Disabled!");
-					}
 					self iprintln("Fly Explosives ^2Enabled!");
-				}
-				wait .5;
-			} else if (self.menuselectorpos == 4) {
-				if (level.snipershootout) {
-					level.snipershootout = false;
-					self iprintln("Sniper shootout ^1Disabled!");
-				} else {
-					level.snipershootout = true;
-					if (level.flyexplosives) {
-						level.flyexplosives = false;
-						self iprintln("Fly Explosives ^1Disabled!");
-					}
-					self iprintln("Sniper shootout ^2Enabled!");
 				}
 				wait .5;
 			} else {
@@ -613,13 +531,15 @@ keyBinds()
 		else if (self actionslotonebuttonpressed() && self.curmenu == 0 && fullaccess) {
 			self updateControlsInfo("[{+actionslot 3}] / [{+actionslot 4}] Open Inventory Menu\n[{+actionslot 1}] / [{+actionslot 2}] Move Selector\n[{+usereload}] Run Command\n[{+melee}] Close Menu");
 			self.curmenu = 1;
-			self destroyPlayerStatusBars();
-			self createPlayerUtilityMenu();
+			self.fortHUDS[10].alpha = 1;
+			self.fortHUDS[11].alpha = .8;
+			self.fortHUDS[12].alpha = 1;
 		} else if ((self actionslotthreebuttonpressed() || self actionslotfourbuttonpressed()) && self.curmenu == 1) {
 			self updateControlsInfo("[{+actionslot 3}] / [{+actionslot 4}] Move Selector and Select\n[{+actionslot 1}] Open Utility Menu\n[{+melee}] / [{+usereload}] Close Menu");		
 			self.curmenu = 0;
-			self createPlayerStatusBars();
-			self destroyPlayerUtilityMenu();
+			self.fortHUDS[10].alpha = 0;
+			self.fortHUDS[11].alpha = 0;
+			self.fortHUDS[12].alpha = 0;
 		} 
 		// Build Menu controls
 		else if (self actionslotonebuttonpressed() && self.curmenu == 1) {
@@ -700,17 +620,46 @@ HUD_GTR(size, x)
 StormHUD() {
 	level endon("game_ended");
 	m0 = level CreateWaypoint("perk_awareness", level.stormcenterpoint + (level.stormstartingradius,0,0) , 6, 6, .6, true);
-	//m1 = level CreateWaypoint("perk_awareness", level.stormcenterpoint + (0,level.stormstartingradius,0) , 6, 6, .6, true);
+	m1 = level CreateWaypoint("perk_awareness", level.stormcenterpoint + (0,level.stormstartingradius,0) , 6, 6, .6, true);
 	wait .1;
 	while(true) {
 		m0 moveOverTime(1);
-		//m1 moveOverTime(1);
+		m1 moveOverTime(1);
 		m0.x = level.stormcenterpoint[0] + level.stormstartingradius;
 		m0.y = level.stormcenterpoint[1];
 		m0.z = level.stormcenterpoint[2];
-		//m1.x = level.stormcenterpoint[0];
-		//m1.y = level.stormcenterpoint[1] + level.stormstartingradius;
-		//m1.z = level.stormcenterpoint[2];
+		m1.x = level.stormcenterpoint[0];
+		m1.y = level.stormcenterpoint[1] + level.stormstartingradius;
+		m1.z = level.stormcenterpoint[2];
 		wait 1;
 	}
 }
+CreateWaypoint(shader, origin, width, height, alpha, allplayers) {
+	if (allplayers) { 
+		createwaypoint = NewHudElem(); 
+	} else { 
+    	createwaypoint = NewClientHudElem(self); 
+    }
+    createwaypoint SetShader(shader, width, height);
+	createwaypoint SetWayPoint(true);   
+	createwaypoint.x = origin[0];
+	createwaypoint.y = origin[1];
+	createwaypoint.z = origin[2]; 
+	createwaypoint.alpha = alpha;
+	createwaypoint.archived = false;
+	return createwaypoint;
+}
+CreateProgressBar(x, y, alpha, bgcolor, barcolor) {
+ 	hudele = createPrimaryProgressBar();
+	hudele updateBar(0);
+	hudele setPoint("CENTER","CENTER",x,y);
+	hudele.color = bgcolor;
+	hudele.bar.color = barcolor;
+	hudele.alpha = alpha;
+	return hudele;
+}
+
+
+
+
+

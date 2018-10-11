@@ -45,24 +45,14 @@ DamageMonitor()
     			self appHit(10, attacker, "knife_held_mp");
     		} else if (type == "MOD_HEAD_SHOT") { 
     			dam = dammageMap(weaponname);
-    			d = Distance(attacker.origin, self.origin);
-    			i = 0;
-    			if (d > dam[1]) {
-    				i = 2;
-    			}
-		    	da = bonusDammageApp(int(dam[i]), attacker.activerarity);
+		    	da = bonusDammageApp(dam, attacker.activerarity);
 		    	da *= 2;
 		    	attacker iprintlnbold("^3Headshot!");
 		    	self appHit(int(da), attacker, weaponname);
     		}
 		    else {
 		    	dam = dammageMap(weaponname);
-		    	d = Distance(attacker.origin, self.origin);
-    			i = 0;
-    			if (d > dam[1]) {
-    				i = 2;
-    			}
-		    	da = bonusDammageApp(int(dam[i]), attacker.activerarity);
+		    	da = bonusDammageApp(dam, attacker.activerarity);
 		    	self appHit(da, attacker, weaponname);
 		    }
 	    }
@@ -108,16 +98,10 @@ appHit(damage, attacker, weapon) {
 		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weapon);
 	}
 }
-// Vector format:
-// ( <Base Max Damage>, <Max Distance of Max Damage>, <Base Min damage> )
 dammageMap(weap) {
     // Burst rifle
     if (weap == "sig556_mp" || weap == "sig556_mp+stalker") {
         return (27, 1250, 19);
-    }
-    // Drum Gun / Tommy Gun
-    else if (weap == "pdw57_mp+fastads") {
-        return (23, 750, 18);
     }
     // Scoped Thermal AR
     else if (weap == "svu_mp+ir") {
@@ -126,7 +110,10 @@ dammageMap(weap) {
     }
     // Auto rifle
     else if (weap == "scar_mp" || weap == "scar_mp+extclip") {
-        return (20, 1150, 15);
+        return (22, 1250, 15);
+    }
+    else if (weap == "scar_mp+silencer") {
+    	return (25, 1350, 12);
     }
     // Scoped rifle
     else if (weap == "sa58_mp+acog") {
@@ -143,9 +130,9 @@ dammageMap(weap) {
     else if (weap == "mp7_mp+silencer") {
         return (17, 850, 11);
     }
-    // Revolver
+    // Dual Weild Pistols 
     else if (weap == "fnp45_mp+dualclip") {
-        return (54, 1250, 40);
+        return (38, 1050, 25);
     }
     // Hand Canon
     else if (weap == "fnp45_mp+dualclip+fmj") {
@@ -176,7 +163,7 @@ dammageMap(weap) {
     }
     // Semi-auto sniper
     else if (weap == "as50_mp+extclip") {
-        return (55, 10000, 50);
+        return (63, 10000, 60);
     }
     // Bolt action sniper
     else if (weap == "ballista_mp+dualclip") {
@@ -208,7 +195,7 @@ dammageMap(weap) {
     }
     // Remote Explosives
     else if (weap == "satchel_charge_mp") {
-        return (85, 1000, 125);
+        return (80, 1000, 115);
     }
     // Melee
     else if (weap == "knife_mp" || weap == "knife_held_mp") {
@@ -216,10 +203,12 @@ dammageMap(weap) {
     }
     return (0, 1000, 0);
 }
-bonusDammageApp(damage, teir) {
+bonusDammageApp(damage, teir)
+{
 	if (damage < 1) {
 		return 0;
-	} else if (teir == 1) {
+	}
+	if (teir == 1) {
 		n = int(damage * 1.05);
 		if (n == damage) { 
 			n++; 
@@ -248,56 +237,6 @@ bonusDammageApp(damage, teir) {
 	}
 	return damage;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

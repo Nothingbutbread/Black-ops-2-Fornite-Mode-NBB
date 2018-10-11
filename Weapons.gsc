@@ -9,7 +9,8 @@ getRawWeapon(str)
 	return retval;
 }
 
-DefineWeapondataarray() {
+DefineWeapondataarray()
+{
 	level.AttachmentArray = [];
 	level.AttachmentArray[0] = "dualoptic"; //Hybrid Optic
 	level.AttachmentArray[1] = "extbarrel"; //Long Barrel  
@@ -113,7 +114,7 @@ DefineWeapondataarray() {
 }
 isSingleShot(weap) {
 	// Hand Cannon
-	if (weap == "fnp45_mp+dualclip" || weap == "fnp45_mp+dualclip+fmj") {
+	if (weap == "fnp45_mp+dualclip+fmj") {
 		return true;
 	}
 	// Heavy Sniper
@@ -166,6 +167,28 @@ WeaponMod_DoubleBarrelShotgun(weap, index) {
 		}
 	}
 }
+/*
+WeaponMod_DualWeildPistols(weap, index) {
+	self endon("death");
+	self endon("disconnect");
+	self endon("new_item_at_" + index);
+	while(weap == self.activeweapon) {
+		self waittill("weapon_fired");
+		if (weap != self.activeweapon) {
+			break;
+		}
+		if (self getweaponammoclip(self.activeweapon) < 2) {
+			self setPerk("specialty_fastreload");
+			self.ammotypes[self.activetype] += self getweaponammoclip(self.activeweapon - 1);
+			wait .1;
+			MagicBullet("fnp45_mp+dualclip",self getEye(), self ModTraceShots(),self);
+		} else {
+			self.ammotypes[self.activetype] += self getweaponammoclip(self.activeweapon);
+		}
+		self setWeaponAmmoClip(self.activeweapon, 0);
+	}
+}
+*/
 WeaponMod_Scoped(weap, index) {
 	// self setclientthirdperson(1);
 	self endon("death");
@@ -199,7 +222,6 @@ WeaponMod_RefreshStock() {
 		wait .1;
 	}
 }
-
 
 
 

@@ -1,3 +1,8 @@
+///////////////////////////////////////////////
+//    Fortnite V1.5.0                        //
+///////////////////////////////////////////////
+//   Created by Nothingbutbread              //
+///////////////////////////////////////////////
 #include maps/mp/gametypes/_globallogic_score;
 #include maps/mp/gametypes/_globallogic_utils;
 #include maps/mp/_scoreevents;
@@ -29,13 +34,12 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.4.2 Public Beta";
+	level.versionID = "^11.5.0 Public Beta";
 	level.debugger = true;
 	level.solidgold = false;
 	level.blitz = false;
 	level.fantasy = false;
 	level.flyexplosives = false;
-	level.snipershootout = false;
 	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
 	level.allowteams = false;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
@@ -94,7 +98,7 @@ onPlayerSpawned()
         	self thread PatchThread();
         	//self thread VarPrinter();
         	//self GiveTestInventory();
-        	self thread printOrigin();
+        	//self thread printOrigin();
         }
         self AdjustLoadout(0);
         self EnableInvulnerability();
@@ -130,9 +134,6 @@ printIntro() {
 	iprintln("^5www.youtube.com/channel/4Nothingbutbread4");
 	wait 3;
 	iprintln("^3Thank you, and have a awesome match!");
-	wait 4;
-	iprintln("^1Note to host: ^3If this download was obtained via an adfly link");
-	iprintln("^3Please report the person who provided it to ^6Nothingbutbread");
 }
 gameManager() {
 	level endon("game_ended");
@@ -145,7 +146,7 @@ gameManager() {
 	level StormCenterIcon();
 	if (level.debugger) {
 		//level thread DammageTestBotSpawn();
-		//level thread LootSpawnerGeneator();
+		level thread LootSpawnerGeneator();
 		level.entitiesperplayer = 200;
 		level.hostinHostMenu = -1;
 		//level thread printIntro();
@@ -160,8 +161,8 @@ gameManager() {
 			}
 		}
 		if (level.debugger) {
-			//return;
-			break;
+			return;
+			//break;
 		}
 		wait 1;
 	}
@@ -291,7 +292,7 @@ init_player_vars()
 	self.lastplacedramp = false;
 	self.lastdammagedby = self;
 	self.hasjetpack = false;
-	//V1.2 Update
+	
 	self.teamtag = "";
 	self.isonteam = false;
 	self.downed = false;
@@ -307,6 +308,7 @@ PublicMatchVerification() {
 		if (getDvar("g_gametype") != "dm") {
         	//thread maps/mp/gametypes/_globallogic::endgame("tie", "The Fortnite Gamemode must be used in ^1Free For All");
         	iprintln("^1Warning: ^7This Gamemode is not surported, ^3This may cause unwanted issues!");
+        	iprintln("^1Warning: ^7Continue playing at your own risk!");
         }
         if (getDvar("mapname") == "mp_dockside") {
 			return;
@@ -318,12 +320,10 @@ PublicMatchVerification() {
 			return;
 		} else if (getDvar("mapname") == "mp_nuketown_2020") {
 			return;
-		} else if (getDvar("mapname") == "mp_nightclub") {
-			return;
 		}
 		// If we haven't returned at this point, then we have an invalid map but valid gamemode.
 		// Randomly selecting and changing to a valid map.
-		n = RandomIntRange(0,6);
+		n = RandomIntRange(0,5);
 		if (n == 0) {
 			changemap("mp_dockside");
 		} else if(n == 1) {
@@ -334,8 +334,6 @@ PublicMatchVerification() {
 			changemap("mp_socotra");
 		} else if(n == 4) {
 			changemap("mp_nuketown_2020");
-		} else if (n == 5) {
-			changemap("mp_nightclub");
 		}
 	}
 }
@@ -351,7 +349,6 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
-
 
 
 

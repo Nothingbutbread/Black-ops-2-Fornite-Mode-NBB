@@ -28,6 +28,30 @@ deepCopyInvStruct(struct) {
 	retval.slotfilled = struct.slotfilled;
 	return retval;
 }
+useInstantConsumeable(str) {
+	if (str == "Mushroom") {
+		self.fortshield += 10;
+		if (self.fortshield > 100) {
+			self.fortshield = 100;
+		}
+		return true;
+	} else if (str == "Apple") {
+		self.forthealth += 10;
+		if (self.forthealth > 100) {
+			self.forthealth = 100;
+		}
+		return true;
+	} else if (str == "Shadow Stone") {
+		self notify("end_shadow_stone");
+		self thread ShadowStoneConsumeable();
+		return true;
+	} else if (str == "Pop Rock") {
+		self notify("end_pop_rock");
+		self thread PopRockConsumeable();
+		return true;
+	}
+	return false;
+}
 // Adds an item to a players inventory.
 // The index is in int between and including 0 - 4. This location is forced if the inventory is full.
 // item is an item struct, the item to be added. 
@@ -46,6 +70,11 @@ addItemToInventory(index, item) {
 		//self iprintln("AITI: Added Ammo!");
 		self addAmmo(item.ammotype, item.clip);
 		return olditem;
+	} else { // Well try to use it as a consumeable, if I can, then I will not adjust the inventory.
+		used = self thread useInstantConsumeable(item.weapon);
+		if (used)  {
+			return olditem;
+		}
 	}
 	// Now I need to figure out exactly the item will go in the inventory.
 	replace = false;
@@ -259,7 +288,6 @@ ChangeToNextItemInInvetory() {
 	}
 	self AdjustLoadout(self.selectorpos);
 }
-
 
 
 

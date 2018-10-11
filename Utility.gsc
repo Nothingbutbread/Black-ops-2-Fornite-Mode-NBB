@@ -136,16 +136,12 @@ getItemShader(weap)
 	if (weap == "sig556_mp" || weap == "sig556_mp+stalker") {
 		return "menu_mp_weapons_sig556";
 	}
-	// Drum Gun
-	else if (weap == "pdw57_mp+fastads") {
-		return "menu_mp_weapons_ar57";
-	}
 	// Thermal AR
 	else if (weap == "svu_mp+ir") {
 		return "menu_mp_weapons_svu";
 	}
 	// Auto rifle
-	else if (weap == "scar_mp" || weap == "scar_mp+extclip") {
+	else if (weap == "scar_mp" || weap == "scar_mp+extclip" || weap == "scar_mp+silencer") {
 		return "menu_mp_weapons_scar";
 	}
 	// Scoped rifle
@@ -159,8 +155,8 @@ getItemShader(weap)
 	else if (weap == "mp7_mp+silencer") {
 		return "menu_mp_weapons_mp7";
 	}
-	// Revolver / Hand Canon
-	else if (weap == "fnp45_mp+dualclip" || weap == "fnp45_mp+dualclip+fmj") {
+	// Hand Canon
+	else if (weap == "fnp45_mp+dualclip+fmj") {
 		return "menu_mp_weapons_fnp45";
 	}
 	// pistol
@@ -257,9 +253,6 @@ getDisplayName(weap)
 	if (weap == "sig556_mp") {
 		return "Burst Assult Rifle";
 	}
-	else if (weap == "pdw57_mp+fastads") {
-		return "Drum Gun";
-	}
 	else if (weap == "svu_mp+ir") {
 		return "Thermal Scoped Assult Riffle";
 	}
@@ -272,6 +265,9 @@ getDisplayName(weap)
 	}
 	else if (weap == "scar_mp+extclip") {
 		return "Scar";
+	}
+	else if (weap == "scar_mp+silencer") {
+		return "Surpressed Scar";
 	}
 	// Scoped rifle
 	else if (weap == "sa58_mp+acog") {
@@ -288,10 +284,7 @@ getDisplayName(weap)
 	else if (weap == "mp7_mp+silencer") {
 		return "Silenced Submachine Gun";
 	}
-	// Revolver / Hand Canon
-	else if (weap == "fnp45_mp+dualclip") {
-		return "Revolver";
-	}
+	// Revolver / Hand Cano
 	else if (weap == "fnp45_mp+dualclip+fmj") {
 		return "Hand Cannon";
 	}
@@ -375,14 +368,11 @@ getAmmoType(weap)
 	if (weap == "sig556_mp" || weap == "sig556_mp+stalker") {
 		return 1;
 	}
-	else if (weap == "pdw57_mp+fastads") {
-		return 1;
-	}
 	else if (weap == "svu_mp+ir") {
 		return 1;
 	}
 	// Auto rifle
-	else if (weap == "scar_mp" || weap == "scar_mp+extclip") {
+	else if (weap == "scar_mp" || weap == "scar_mp+extclip" || weap == "scar_mp+silencer") {
 		return 1;
 	}
 	// Scoped rifle
@@ -464,7 +454,7 @@ getAmmoType(weap)
 
 PrecacheAll()
 {
-	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,ar57,svu,pm,saiga12,saritch",",");
+	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,svu,pm,saiga12,saritch",",");
 	foreach(shader in shaders) { Precacheshader("menu_mp_weapons_" + shader); }
 	Precacheshader("hud_icon_minigun");
 	Precacheshader("hud_grenadeicon");
@@ -478,6 +468,7 @@ PrecacheAll()
 	Precacheshader("perk_hardline");
 	Precacheshader("perk_warrior");
 	Precacheshader("hud_remote_missile_target");
+	//Precacheshader("menu_mp_drone_map_select_final");
 	PrecacheItem("minigun_wager_mp");
 	PrecacheItem("m32_wager_mp");
 	PrecacheItem("an94_mp");
@@ -700,7 +691,7 @@ doXOR(a,b)  {
 	}
 	return true;
 }
-// This runs on start of game and applies any saved xp lobby settings.
+// This stores the xp lobby settings to dvars
 setSettingsOnGameStart() {
     setDvar("fortniteSavedSettings", "yes");
     a = "";
@@ -726,7 +717,7 @@ setSettingsOnGameStart() {
     }
     if (level.snipershootout) {
         a += "t";
-        } else {
+    } else {
         a += "f";
     }
     setDvar("fortniteSavedData", a);
@@ -766,12 +757,38 @@ UnpackageAndSetSettings() {
         } 
     }
 }
-
-
-
-
-
-
+ModTraceShots()
+{
+	angle = self getPlayerAngles();
+	adjustx = RandomIntRange(-1, 1);
+	adjusty = RandomIntRange(-1, 1);
+	temp = angle[0] + adjustx;
+	if (temp < 0)
+	{
+		temp = NoN(temp);
+		temp = 360 - temp;
+	}
+	else if (temp >= 360)
+		temp -= 360;
+	adjustx = temp;
+	temp = angle[1] + adjusty;
+	if (temp < 0)
+	{
+		temp = NoN(temp);
+		temp = 360 - temp;
+	}
+	else if (temp >= 360)
+		temp -= 360;
+	adjusty = temp;
+	angle = (adjustx, adjusty, angle[2]);
+	return bulletTrace(self getEye(), self getEye()+vectorScale(anglesToForward(angle), 1000000), false, self)["position"];
+}
+NoN(in) {
+	if (in < 0) {
+		in *= -1;
+	}
+	return in;
+}
 
 
 
