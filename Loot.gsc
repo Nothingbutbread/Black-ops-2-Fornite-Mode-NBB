@@ -82,8 +82,8 @@ GenerateSpiningDropLoot()
 		retval.rarity = 4;
 	}
 	if (level.debugger) {
-		item = DebugItemSpawn();
-		retval.rarity = 3;
+		//item = DebugItemSpawn();
+		//retval.rarity = 3;
 	}
 	retval.weapon = item;
 	retval.isweapon = isAWeapon(item);
@@ -134,10 +134,6 @@ GenerateChestLoot(onlylegn) {
 		if (luck >= 75) { retval.rarity = 3; item = PickEpicGrenade(); }
 		else if (luck >= 40) { retval.rarity = 1; item = PickUncommonGrenade(); }
 	} else {
-		item = PickConsumeableItem();
-		retval.rarity = 1;
-	}
-	if (level.debugger) {
 		item = PickConsumeableItem();
 		retval.rarity = 1;
 	}
@@ -360,4 +356,5 @@ PickConsumeableItem() {
 	}
 	return "Pop Rock";
 }
+
 

@@ -34,8 +34,8 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.4.9 Public Beta";
-	level.debugger = true;
+	level.versionID = "^11.5.0 Public Beta [Test Version]";
+	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
 	level.fantasy = false;
@@ -145,7 +145,7 @@ gameManager() {
 	level thread init_MapEdit();
 	level StormCenterIcon();
 	if (level.debugger) {
-		//level thread DammageTestBotSpawn();
+		level thread DammageTestBotSpawn();
 		level thread LootSpawnerGeneator();
 		level.entitiesperplayer = 200;
 		level.hostinHostMenu = -1;
@@ -161,8 +161,8 @@ gameManager() {
 			}
 		}
 		if (level.debugger) {
-			//return;
-			break;
+			return;
+			//break;
 		}
 		wait 1;
 	}
@@ -349,6 +349,7 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
 
 

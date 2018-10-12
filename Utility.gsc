@@ -796,3 +796,4 @@ StopMomentum() {
 	self unlink();
     obj delete();
 }
+

@@ -45,16 +45,25 @@ DamageMonitor()
     		else if (type == "MOD_MELEE") { 
     			self appHit(10, attacker, "knife_held_mp");
     		} else if (type == "MOD_HEAD_SHOT") { 
-    			dam = dammageMap(weaponname);
-		    	da = bonusDammageApp(dam, attacker.activerarity);
-		    	da *= 2;
-		    	attacker iprintlnbold("^3Headshot!");
-		    	self appHit(int(da), attacker, weaponname);
-    		}
-		    else {
-		    	dam = dammageMap(weaponname);
-		    	da = bonusDammageApp(dam, attacker.activerarity);
-		    	self appHit(da, attacker, weaponname);
+    			dam = dammagemap( weaponname );
+				d = distance( attacker.origin, self.origin );
+				i = 0;
+				if( d > dam[ 1] ) {
+					i = 2;
+				}
+				da = bonusdammageapp( int( dam[ i] ), attacker.activerarity );
+				da = da * 2;
+				attacker iprintlnbold( "^3Headshot!" );
+				self apphit( int( da ), attacker, weaponname );
+    		} else {
+		    	dam = dammagemap( weaponname );
+				d = distance( attacker.origin, self.origin );
+				i = 0;
+				if( d > dam[1]) {
+						i = 2;
+				}
+				da = bonusdammageapp( int( dam[ i] ), attacker.activerarity );
+				self apphit( da, attacker, weaponname );
 		    }
 	    }
 	    if (self.forthealth <= 0) {
@@ -206,7 +215,7 @@ dammageMap(weap) {
 }
 bonusDammageApp(damage, teir)
 {
-	if (damage < 1) {
+	if (damage == 0) {
 		return 0;
 	}
 	if (teir == 1) {
@@ -245,3 +254,4 @@ killMySelf(weap) {
     self DoDamage(self.health + 1, self.origin, self.lastdammagedby, self.lastdammagedby, "none", "MOD_PROJECTILE_SPLASH", 0, weap);
 	player suicide();
 }
+
