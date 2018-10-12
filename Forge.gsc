@@ -244,7 +244,7 @@ SpawnPlayerDeathDropLevelThread(name, ammo, data, origin) {
 			player iprintlnbold("^1Your inventory must be closed to use this!");
 		} else if (player useButtonPressed() && isAlive(player) && player.menuopen && !openinv) {
 			for(x = 0; x < 5; x++) {
-				if (ammo[x] != 0) {
+				if (ammo[x] > 0) {
 					player addAmmo(x, ammo[x]);
 				}
 			}
@@ -345,21 +345,21 @@ MoveBattleBus() {
 FlyToMap() {
     self endon("disconnect");
     self endon("death");
-    time = 590;
+    time = 1500;
     tick = 0;
     self fadeInItemToolTip("Hold [{+usereload}] to Skydive");
     gliderdeployed = true;
     self setperk("specialty_fallheight");
     z = self.origin[2];
     while(self DisToGround() > 15 && time > 0) {
-    	if (self usebuttonpressed() && tick > 10) {
+    	if (self usebuttonpressed() && tick > 14) {
     		tick = 0;
     		if (gliderdeployed) {
     			gliderdeployed = false;
     			self setItemToolTip("Hold [{+usereload}] to Glide");
-    			self setvelocity(self getvelocity() + (0,0,350));
     		} else {
     			gliderdeployed = true;
+    			self StopMomentum();
     			self setItemToolTip("Hold [{+usereload}] to Skydive");
     		}
     	}
@@ -381,6 +381,7 @@ FlyToMap() {
     self updateControlsInfo("[{+actionslot 1}] Open Menu");
     self enableWeapons();
     self.status = 3;
+    self.canteleport = true;
     wait 2;
     self thread PatchThread();
     wait 8;
@@ -717,6 +718,7 @@ StormCenterIcon() {
 	Objective_Add(0, "active", level.stormcenterpoint);
 	Objective_Icon(0, "perk_tactical_mask");
 }
+
 
 
 

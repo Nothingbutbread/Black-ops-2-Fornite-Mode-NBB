@@ -271,6 +271,8 @@ ActivateItem(index) {
 		self thread SlurpJuiceItem(index);
 	} else if (self.inv[index].weapon == "Jet Pack" && !self.hasjetpack) {
 		self thread JetPackitem(index);
+	} else if (self.inv[index].weapon == "Port-a-Rift") {
+		self thread PortaRiftItem(index);
 	}
 }
 ChangeToNextItemInInvetory() {
@@ -288,6 +290,7 @@ ChangeToNextItemInInvetory() {
 	}
 	self AdjustLoadout(self.selectorpos);
 }
+
 
 
 

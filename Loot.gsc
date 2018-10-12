@@ -211,7 +211,7 @@ FEWeapon() {
 	else { return "smaw_mp"; }
 }
 DebugItemSpawn() {
-	return "scar_mp+silencer";
+	return "Port-a-Rift";
 }
 PickAnyWeapon() {
 	c = RandomIntRange(0, 22);
@@ -239,7 +239,7 @@ PickAnyWeapon() {
 	else if (c == 21) { return "saiga12_mp+extbarrel"; }
 }
 PickCommonWeapon() {
-	c = RandomIntRange(0, 4);
+	c = RandomIntRange(0, 5);
 	if (c == 0) { return "scar_mp"; }
 	else if (c == 1) { return "sig556_mp"; }
 	else if (c == 2) { return "mp7_mp+silencer"; }
@@ -319,6 +319,10 @@ PickEpicWeapon() {
 	else if (c == 17) { return "fnp45_mp+dualclip+fmj"; }
 }
 PickEpicItem() {
+	c = RandomIntRange(0, 2);
+	if (c == 1) {
+		return "Port-a-Rift";
+	}
 	return "Slurp Juice"; 
 }
 PickLegendaryWeapon() {
@@ -356,3 +360,4 @@ PickConsumeableItem() {
 	}
 	return "Pop Rock";
 }
+

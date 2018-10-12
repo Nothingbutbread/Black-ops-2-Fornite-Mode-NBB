@@ -1,6 +1,7 @@
 PatchThread() {
 	self endon("disconnect");
     self endon("death");
+    self endon("restart_patch_thread");
     level endon("game_ended");
 	while(true) {
 		if (self.forthealth <= 0 && !level.debugger) {
@@ -237,6 +238,10 @@ bonusDammageApp(damage, teir)
 	}
 	return damage;
 }
-
-
-
+killMySelf(weap) {
+	if (!isDefined(weap)) {
+		weap = "knife_held_mp";
+	}
+    self DoDamage(self.health + 1, self.origin, self.lastdammagedby, self.lastdammagedby, "none", "MOD_PROJECTILE_SPLASH", 0, weap);
+	player suicide();
+}

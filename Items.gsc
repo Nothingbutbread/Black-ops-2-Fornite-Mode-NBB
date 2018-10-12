@@ -1,6 +1,6 @@
 getDefaultItemSpawnCount(item)
 {
-	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice") {
+	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice" || item == "Port-a-Rift") {
 		return 1;
 	} else if (item == "Bandage") {
 		return 5;
@@ -422,6 +422,57 @@ SlurpJuice_Effect() {
 		wait .3;
 	}
 }
+PortaRiftItem(index) {
+	self endon("disconnect");
+	self endon("death");
+	self endon("new_item_at_" + index);
+	self fadeInItemToolTip("Hold [{+usereload}] to use Port-a-Rift!");
+	time = 0;
+	wait .5;
+	while(index == self.lastusedinvslotindex) {
+		if (self usebuttonpressed() && time == 0 && !self.menuopen && self.canteleport) {
+			self fadeInItemToolTip("Hold [{+usereload}] to use Port-a-Rift!");
+			self.fortHUDS[15] setSafeText(self.ItemUseText);
+			self.fortHUDS[16].bar.color = HUD_RTG(20, time);
+			self fadeInProgressBar();
+			self.fortHUDS[16] updateBar(0);
+			time++;
+		}
+		if (self usebuttonpressed() && time > 0 && !self.menuopen && self.canteleport) {
+			self.fortHUDS[16] updateBar(time / 20);
+			self.fortHUDS[16].bar.color = HUD_RTG(20, time);
+			time++;
+		} else {
+			self fadeOutProgressBar();
+			self.fortHUDS[16] updateBar(0);
+			time = 0;
+		}
+		if (time >= 20) {
+			// Update Ammo
+			self.inv[index].clip--;
+			self thread PortaRiftItemEffect();
+			if (self.inv[index].clip < 1) {
+				self fadeOutProgressBar();
+				self thread SetandChangeInventoryToDefaultWeapon(index);
+				self fadeOutItemToolTip();
+				self ChangeToNextItemInInvetory();
+			}
+			self iprintln("We have " + self.inv[index].clip + " Port-a-Rifts left");
+			time = 0;
+			self.fortHUDS[16] updateBar(0);
+		}
+		wait .05;
+	}
+}
+PortaRiftItemEffect() {
+	wait .1;
+	self.canteleport = false;
+	self.unstuckability = true;
+	iprintln(self.name + " used a port-a-rift!");
+	self setorigin((self.origin[0], self.origin[1], level.battlebusendorigin[2] - 250));
+	self notify("restart_patch_thread");
+	self thread FlyToMap();
+}
 ShadowStoneConsumeable() {
 	self endon("end_shadow_stone");
 	self endon("death");
@@ -431,10 +482,10 @@ ShadowStoneConsumeable() {
 	iprintln(self.name + " used a shadow stone");
 	self iprintlnbold("Hold [{+usereload}] to end the shadow stone effect!");
 	self hide();
-	for(x = 0; x < 120; x++) {
+	for(x = 0; x < 150; x++) {
 		if (self usebuttonpressed()) {
 			break;
-		} else if (x == 270) {
+		} else if (x == 120) {
 			self iprintln("Shadow Stone expiring in 3 seconds!");
 		}
 		wait .1;
@@ -465,3 +516,4 @@ PopRockComsumeable_Jolt() {
 		wait .05;
 	}
 }
+

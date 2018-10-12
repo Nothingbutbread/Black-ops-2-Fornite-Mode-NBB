@@ -34,7 +34,7 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.5.0 Public Beta";
+	level.versionID = "^11.4.9 Public Beta";
 	level.debugger = true;
 	level.solidgold = false;
 	level.blitz = false;
@@ -161,8 +161,8 @@ gameManager() {
 			}
 		}
 		if (level.debugger) {
-			return;
-			//break;
+			//return;
+			break;
 		}
 		wait 1;
 	}
@@ -281,8 +281,8 @@ init_player_vars()
 	self.menuopen = false;
 	
 	self.status = 0;
-	self.canteleport = true;
 	self.spawnorigin = (0,0,0);
+	self.canteleport = true;
 	self.unstuckability = true;
 	
 	self.buildentites = [];
@@ -349,6 +349,7 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
 
 

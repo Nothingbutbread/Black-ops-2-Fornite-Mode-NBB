@@ -245,6 +245,8 @@ getItemShader(weap)
 	}
 	else if (weap == "Jet Pack") {
 		return "hud_remote_missile_target";
+	} else if (weap == "Port-a-Rift") {
+		return "rank_prvt";
 	}
 	return "white";
 }
@@ -468,6 +470,7 @@ PrecacheAll()
 	Precacheshader("perk_hardline");
 	Precacheshader("perk_warrior");
 	Precacheshader("hud_remote_missile_target");
+	Precacheshader("rank_prvt");
 	//Precacheshader("menu_mp_drone_map_select_final");
 	PrecacheItem("minigun_wager_mp");
 	PrecacheItem("m32_wager_mp");
@@ -620,29 +623,23 @@ kickAFKPlayers() {
 		kick(self GetEntityNumber());
 	}
 }
-killMySelf(weap) {
-	if (!isDefined(weap)) {
-		weap = "knife_held_mp";
-	}
-    self DoDamage(self.health + 1, self.origin, self.lastdammagedby, self.lastdammagedby, "none", "MOD_PROJECTILE_SPLASH", 0, weap);
-}
 stormDelayAmmout(id) {
 	if (level.blitz) {
 		if (id == 0) {
-			return 25;
+			return 20;
 		} else if (id == 1) {
-			return 35;
+			return 30;
 		} else if (id == 2) {
-			return 25;
+			return 20;
 		}
 		return 20;
 	} else {
 		if (id == 0) {
-			return 30;
+			return 25;
 		} else if (id == 1) {
-			return 45;
-		} else if (id == 2) {
 			return 40;
+		} else if (id == 2) {
+			return 35;
 		}
 		return 25;
 	}
@@ -789,6 +786,13 @@ NoN(in) {
 	}
 	return in;
 }
-
-
-
+StopMomentum() {
+	obj = spawn("script_origin", self.origin);
+	obj.angles = self.angles;
+	self PlayerLinkTo(obj, undefined);
+	wait .05;
+	obj moveTo(obj.origin + (0,0,10), .05);
+	wait .05;
+	self unlink();
+    obj delete();
+}
