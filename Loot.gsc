@@ -270,12 +270,12 @@ PickUncommonItem()
 	else { return "Small Shield"; }
 }
 PickRareWeapon() {
-	c = RandomIntRange(0, 15);
+	c = RandomIntRange(0, 14);
 	if (c == 0) { return "scar_mp"; }
 	else if (c == 1) { return "sig556_mp"; }
 	else if (c == 2) { return "mp7_mp+silencer"; }
 	else if (c == 3) { return "fiveseven_mp+silencer"; }
-	else if (c == 4) { return "fnp45_mp+dualclip"; }
+	else if (c == 4) { return "as50_mp+extclip"; }
 	else if (c == 5) { return "870mcs_mp+extbarrel"; }
 	else if (c == 6) { return "ksg_mp"; }
 	else if (c == 7) { return "ballista_mp+dualclip"; }
@@ -285,7 +285,6 @@ PickRareWeapon() {
 	else if (c == 11) { return "smaw_mp"; }
 	else if (c == 12) { return "m32_wager_mp"; }
 	else if (c == 13) { return "peacekeeper_mp+rf"; }
-	else if (c == 14) { return "as50_mp+extclip"; }
 }
 PickEpicGrenade() {
 	return "satchel_charge_mp";
@@ -356,5 +355,6 @@ PickConsumeableItem() {
 	}
 	return "Pop Rock";
 }
+
 
 

@@ -255,3 +255,4 @@ killMySelf(weap) {
 	player suicide();
 }
 
+
