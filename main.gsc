@@ -320,10 +320,12 @@ PublicMatchVerification() {
 			return;
 		} else if (getDvar("mapname") == "mp_nuketown_2020") {
 			return;
+		} else if (getDvar("mapname") == "mp_socotra") {
+			return;
 		}
 		// If we haven't returned at this point, then we have an invalid map but valid gamemode.
 		// Randomly selecting and changing to a valid map.
-		n = RandomIntRange(0,5);
+		n = RandomIntRange(0,6);
 		if (n == 0) {
 			changemap("mp_dockside");
 		} else if(n == 1) {
@@ -334,6 +336,8 @@ PublicMatchVerification() {
 			changemap("mp_socotra");
 		} else if(n == 4) {
 			changemap("mp_nuketown_2020");
+		} else if(n == 5) {
+			changemap("mp_socotra");
 		}
 	}
 }
@@ -349,6 +353,7 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
 
 
