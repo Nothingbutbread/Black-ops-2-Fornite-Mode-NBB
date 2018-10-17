@@ -7,6 +7,7 @@ CreatePlayerHUDS()
 	//self.menutext = "Utility Menu:\nBuild Wall\nBuild Ramp\nGet Unstuck\nAdjust Menu Controls\nDelete All Ramps/Walls\nDelete Last Placed Item";
 	self.menutext = "Utility Menu:\nBuild Wall\nBuild Ramp\nBuild Platform\nGet Unstuck\nDelete All Ramps/Walls\nDelete Last Placed Item";
 	self.controlsText = "";
+	self.infobarstr = "Eliminations: 0\nPlayers Left: 2";
 	self.healthHUDText = "^1Health: " + self.forthealth + "\n^5Sheild: " + self.fortshield;
 	self.ItemUseText = "";
 	self.fortHUDS = [];
@@ -43,6 +44,8 @@ CreatePlayerHUDS()
 	self.fortHUDS[17] = self SpawnText(level.gamestatestr, 2, 100,25, (1,1,1), 1, 20, true, false, true, true);
 	
 	self.fortHUDS[18] = self SpawnText(self.controlsText, 2, 0,150, (1,1,1), 1, 20, true, false, true, true);
+	// Data HUD {Patch V1.5}
+	self.fortHUDS[19] = self SpawnText(self.infobarstr, 2, 0,150, (1,1,1), 1, 20, true, false, true, true);
 	
 	self thread OpenInventoryGUIBind();
 	self thread ConstantHUDUpdate();
@@ -373,7 +376,7 @@ hostBinds() {
 	self.fortHUDS[11].alpha = .8;
 	self.fortHUDS[12].alpha = 1;
 	self.fortHUDS[14].alpha = 0;
-	self.menutext = "Host Menu:\nSet ^1Blitz^7\nSet ^3Solid Gold^7\nSet ^4All Teirs^7\nSet ^6Fly Explosives^7\nSet ^2Squads^7\nSet ^8Settings on load";
+	self.menutext = "Host Menu:\nSet ^1Blitz^7\nSet ^3Solid Gold^7\nSet ^4All Teirs^7\nSet ^6Fly Explosives^7\nSet ^2Sniper Shootout^7\nSet ^8Settings on load";
 	self.fortHUDS[12] setSafeText(self.menutext);
 	self updateControlsInfo("[{+actionslot 1}] / [{+actionslot 2}] Move Selector\n[{+usereload}] Run Command\n[{+melee}] Close Menu");
 	while(self.menuopen) {
@@ -658,6 +661,7 @@ CreateProgressBar(x, y, alpha, bgcolor, barcolor) {
 	hudele.alpha = alpha;
 	return hudele;
 }
+
 
 
 

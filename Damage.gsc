@@ -67,7 +67,8 @@ DamageMonitor()
 		    }
 	    }
 	    if (self.forthealth <= 0) {
-        	self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weaponname);
+	    	self.forthealth = 0;
+        	self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, self.lastdammagedbyWeapon);
         }
 	}
 }
@@ -84,7 +85,8 @@ appHit(damage, attacker, weapon) {
 	if (level.allowteams && !self shouldDealDamage(attacker)) {
 		return;
 	}
-	self iprintln("^1You took ^3" + damage + " ^1from ^5" + attacker.name + " ^1bymeans of ^5" + weapon);
+	self.lastdammagedbyWeapon = weapon;
+	self iprintln("^1You took ^3" + damage + " ^1damage ^7from ^5" + attacker.name);
 	if (self.fortshield > 0) {
 		r = damage - self.fortshield;
 		if (r <= 0) {
@@ -102,10 +104,12 @@ appHit(damage, attacker, weapon) {
 	}
 	if (level.allowteams && !self.downed && self.forthealth <= 0) {
 		iprintln(self.name + " was knocked out by " + attacker.name + " bymeans of " + weapon);
-		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weapon);
+		self.forthealth = 0;
+		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, self.lastdammagedbyWeapon);
 		//self thread OnPlayerDowned(attacker, weapon);
-	} else if (self.forthealth <= 0) { 
-		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, weapon);
+	} else if (self.forthealth <= 0) {
+		self.forthealth = 0;
+		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, self.lastdammagedbyWeapon);
 	}
 }
 dammageMap(weap) {
@@ -251,9 +255,11 @@ killMySelf(weap) {
 	if (!isDefined(weap)) {
 		weap = "knife_held_mp";
 	}
-    self DoDamage(self.health + 1, self.origin, self.lastdammagedby, self.lastdammagedby, "none", "MOD_PROJECTILE_SPLASH", 0, weap);
-	player suicide();
+    self DoDamage(self.health + 10, self.origin, self.lastdammagedby, self.lastdammagedby, "none", "MOD_PROJECTILE_SPLASH", 0, self.lastdammagedbyWeapon);
+	wait .1;
+	self suicide();
 }
+
 
 
 

@@ -291,6 +291,7 @@ init_player_vars()
 	self.canbuild = false;
 	self.lastplacedramp = false;
 	self.lastdammagedby = self;
+	self.lastdammagedbyWeapon = "knife_mp";
 	self.hasjetpack = false;
 	
 	self.teamtag = "";
@@ -353,6 +354,7 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
 
 

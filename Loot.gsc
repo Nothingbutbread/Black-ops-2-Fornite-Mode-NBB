@@ -74,7 +74,7 @@ GenerateSpiningDropLoot()
 		else if (luck >= 40) { retval.rarity = 1; item = PickUncommonItem(); }
 	} else {
 		item = PickCommonGrenade();
-		if (luck >= 75) { retval.rarity = 2; item = PickEpicGrenade(); }
+		if (luck >= 75) { retval.rarity = 3; item = PickEpicGrenade(); }
 		else if (luck >= 40) { retval.rarity = 1; item = PickUncommonGrenade(); }
 	}
 	if (level.flyexplosives) {
@@ -355,6 +355,7 @@ PickConsumeableItem() {
 	}
 	return "Pop Rock";
 }
+
 
 
 
