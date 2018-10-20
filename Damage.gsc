@@ -162,14 +162,14 @@ dammageMap(weap) {
     }
     // Assuming 8 pelets, Tatical Shotgun
     else if (weap == "870mcs_mp+extbarrel"){
-        return (50, 450, 10); // 8 may be more accurate but 9 to keep the dammage consitant.
+        return (70, 450, 40); // 8 may be more accurate but 9 to keep the dammage consitant.
     }
     else if (weap == "saiga12_mp+extbarrel") {
         return (91, 400, 30);
     }
     // Assuming 8 pelets, heavy shotgun .. Dammage at Gold end is VERY high
     else if (weap == "srm1216_mp") {
-        return (35, 600, 13); //6
+        return (38, 600, 17); //6
     }
     // Heavy Sniper
     else if (weap == "dsr50_mp+vzoom") {
@@ -259,6 +259,7 @@ killMySelf(weap) {
 	wait .1;
 	self suicide();
 }
+
 
 
 

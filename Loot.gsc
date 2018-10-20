@@ -66,6 +66,12 @@ GenerateSpiningDropLoot()
 		if (level.fantasy) { 
 			item = PickAnyWeapon();
 		}
+		if(level.snipershootout) {
+			if (retval.rarity == 0) {
+				retval.rarity = 1;
+			}
+			item = SSweapon(retval.rarity);
+		}
 	} else if (pool < 85) {
 		item = PickCommonItem();
 		if (luck >= 95) { retval.rarity = 4; item = PickLegendaryItem(); }
@@ -122,6 +128,12 @@ GenerateChestLoot(onlylegn) {
 			if (retval.rarity < 2) {
 				retval.rarity = 2;
 			}
+		}
+		if(level.snipershootout) {
+			if (retval.rarity == 0) {
+				retval.rarity = 1;
+			}
+			item = SSweapon(retval.rarity);
 		}
 	} else if (pool < 79) {
 		item = PickCommonItem();
@@ -186,6 +198,9 @@ GenerateSupplyDropLoot() {
 	if (level.flyexplosives) {
 		item = FEWeapon();
 	}
+	if(level.snipershootout) {
+		item = SSweapon(4);
+	}
 	retval.weapon = item;
 	retval.isweapon = isAWeapon(item);
 	retval.slotfilled = true;
@@ -205,6 +220,25 @@ FEWeapon() {
 	c = RandomIntRange(0, 2);
 	if (c == 0) { return "m32_wager_mp"; }
 	else { return "smaw_mp"; }
+}
+SSweapon(teir) {
+	c = 0;
+	if( teir == 1) {
+		c = randomintrange(0, 2);
+	} else if ( teir == 2 ) {
+		c = randomintrange(0, 3);
+	} else {
+		c = randomintrange(2, 4);
+	}
+	if (c == 0) {
+		return "saritch_mp+dualclip";
+	} else if(c == 1) {
+		return "as50_mp+extclip";
+	} else if (c == 2) {
+		return "ballista_mp+dualclip";
+	} else {
+		return "dsr50_mp+vzoom";
+	}
 }
 DebugItemSpawn() {
 	return "Port-a-Rift";
@@ -345,16 +379,19 @@ PickLegendaryItem() {
 	return "Chug Jug";
 }
 PickConsumeableItem() {
-	c = RandomIntRange(0, 21);
-	if (c < 6) {
+	c = RandomIntRange(0, 100);
+	if (c < 20) {
 		return "Mushroom";
-	} else if (c < 14) {
+	} else if (c < 50) {
 		return "Apple";
-	} else if (c < 17) {
+	} else if (c < 65) {
+		return "Birthday Cake";
+	} else if (c < 80) {
 		return "Shadow Stone";
 	}
 	return "Pop Rock";
 }
+
 
 
 

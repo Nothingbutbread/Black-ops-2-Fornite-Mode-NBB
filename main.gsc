@@ -35,18 +35,18 @@ init()
 	level.playersalive = 2;
 	// You Can Change these:
 	level.versionID = "^11.5.0 Public Beta [Test Version]";
-	level.debugger = false;
+	level.debugger = true;
 	level.solidgold = false;
 	level.blitz = false;
 	level.fantasy = false;
 	level.flyexplosives = false;
+	level.snipershootout = true;
 	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
 	level.allowteams = false;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
 	// Do not change anything else ...
 	level.mapcustomentitylimit = 440;
 	level.entitiesperplayer = 30;
-	level.gamestatestr = "Players Alive: Unknown\nStorm Width: 25000";
 	level.hostinHostMenu = 0; // Must be 0 or lower for the game to finish initing. 
 	// When the host is in menu, is set to greater than 1, then set back to 0 when he is out.
 	level PrecacheAll();
@@ -183,7 +183,17 @@ gameManager() {
 		} 
 	}
 	level.entitiesperplayer = int(level.mapcustomentitylimit / initcount);
-	wait 6;
+	level.playersalive = initcount;
+	wait 1;
+	foreach(player in level.players) { 
+		if (IsAlive(player)) { 
+			player DisableInvulnerability(); 
+			player AdjustLoadout(0);
+			player.forthealth = 100;
+			player.fortshield = 0;
+		} 
+	}
+	wait 3;
 	level thread LootSpawnerGeneator();
 	if (level.debugger) {
 		return;
@@ -195,10 +205,10 @@ gameManager() {
 	stormdamage = stormDammageAmmout(0);
 	level thread StormHUD();
 	while(true) {
-		level.playersalive = 0;
+		playersalivee = 0;
 		foreach(player in level.players) {
 			if (player.inthisgame) {
-				level.playersalive++;
+				playersalivee++;
 				d = Distance(player.origin, level.stormcenterpoint);
 				if (d >= level.stormstartingradius) {
 					player ApplyStormDammage(stormdamage);
@@ -212,19 +222,16 @@ gameManager() {
 					} else {
 						iprintln(player.name + " fell out of the map!");
 						player killMySelf();
+						playersalivee--;
 					}
 				}
 				if (player.forthealth <= 0) {
 					player killMySelf();
+					playersalivee--;
 				}
 			}
 		}
-		level.gamestatestr = "Players Alive: " + level.playersalive + "\nStorm Width: " + level.stormstartingradius;
-		foreach(player in level.players) {
-			if (player.inthisgame) {
-				player.fortHUDS[17] setSafeText(level.gamestatestr);
-			}
-		}
+		level.playersalive = playersalivee;
 		///////////////////////////////////
 		if (stormmove) {
 			if (level.blitz) {
@@ -354,6 +361,7 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
 
 
 

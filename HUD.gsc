@@ -40,22 +40,32 @@ CreatePlayerHUDS()
 	
 	// Progress bar
 	self.fortHUDS[16] = self CreateProgressBar(0, 60, 0, (0,0,0), (1,1,1));
-	
-	self.fortHUDS[17] = self SpawnText(level.gamestatestr, 2, 100,25, (1,1,1), 1, 20, true, false, true, true);
+	// Data HUD {Patch V1.5}
+	self.fortHUDS[17] = self SpawnText(self.infobarstr, 2, 100,25, (1,1,1), 1, 20, true, false, true, true);
 	
 	self.fortHUDS[18] = self SpawnText(self.controlsText, 2, 0,150, (1,1,1), 1, 20, true, false, true, true);
-	// Data HUD {Patch V1.5}
-	self.fortHUDS[19] = self SpawnText(self.infobarstr, 2, 0,150, (1,1,1), 1, 20, true, false, true, true);
 	
 	self thread OpenInventoryGUIBind();
 	self thread ConstantHUDUpdate();
 }
 ConstantHUDUpdate() {
 	self endon("disconnect");
+	if (!level.debugger) {
+		self endon("death");
+	}
+	count = 0;
 	while(true) {
+		if (count >= 10) {
+			count = 0;
+			dis = Distance(self.origin, level.stormcenterpoint);
+			distostorm = int(level.stormstartingradius - dis);
+			self.infobarstr = "Eliminations: " + self.pers["kills"] + " Players Left: " + level.playersalive + "\nDistance to Storm Edge: " + distostorm;
+			self.fortHUDS[17] setSafeText(self.infobarstr);
+		}
 		self.healthHUDText = "^5Shield: " + self.fortshield + "\n^1Health: " + self.forthealth;
 		self.fortHUDS[13] setSafeText(self.healthHUDText);
 		wait .1;
+		count++;
 	}
 }
 updateControlsInfo(str) {
@@ -421,6 +431,14 @@ hostBinds() {
 					self iprintln("Fly Explosives ^2Enabled!");
 				}
 				wait .5;
+			} else if (self.menuselectorpos == 4) {
+				if (level.snipershootout) {
+					level.snipershootout = false;
+					self iprintln("Sniper Shootout ^1Disabled!");
+				} else {
+					level.snipershootout = true;
+					self iprintln("Sniper Shootout ^2Enabled!");
+				}
 			} else {
 				self iprintln("^1Not available yet :/");
 				wait .5;
@@ -661,6 +679,7 @@ CreateProgressBar(x, y, alpha, bgcolor, barcolor) {
 	hudele.alpha = alpha;
 	return hudele;
 }
+
 
 
 

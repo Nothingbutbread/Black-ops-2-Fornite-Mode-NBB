@@ -56,6 +56,19 @@ SpawnSupplyDrop(sorigin, eorigin, dur) {
 	ammotype3 = RandomIntRange(0, 5);
 	ammotype4 = RandomIntRange(0, 5);
 	ammotype5 = RandomIntRange(0, 5);
+	if(level.snipershootout) {
+		ammotype1 = 2;
+		ammotype2 = 2;
+		ammotype3 = 2;
+		ammotype4 = 2;
+		ammotype5 = 2;
+	} else if (level.flyexplosives) {
+		ammotype1 = 4;
+		ammotype2 = 4;
+		ammotype3 = 4;
+		ammotype4 = 4;
+		ammotype5 = 4;
+	}
 	refpoint = spawn("script_origin", sorigin);
 	
 	m = spawnEntity("t6_wpn_supply_drop_trap", sorigin, (0,0,90));
@@ -106,6 +119,9 @@ SpawnChest(origin, angle)
 	if (level.flyexplosives) {
 		ammotype1 = 4;
 		ammotype2 = 4;
+	} else if (level.snipershootout) {
+		ammotype1 = 2;
+		ammotype2 = 2;
 	}
 	totalitems = RandomIntRange(2, 6);
 	for(x = 0; x < totalitems; x++) {
@@ -142,6 +158,9 @@ SpawnAmmoCrate(origin, angle)
 	if (level.flyexplosives) {
 		ammotype1 = 4;
 		ammotype2 = 4;
+	} else if (level.snipershootout) {
+		ammotype1 = 2;
+		ammotype2 = 2;
 	}
 	m = spawnEntity("t6_wpn_supply_drop_trap", origin, angle);
 	trig = spawn("trigger_radius", origin, 1, 60, 60);
@@ -718,6 +737,7 @@ StormCenterIcon() {
 	Objective_Add(0, "active", level.stormcenterpoint);
 	Objective_Icon(0, "perk_tactical_mask");
 }
+
 
 
 

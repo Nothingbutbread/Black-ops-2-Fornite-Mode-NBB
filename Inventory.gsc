@@ -41,6 +41,16 @@ useInstantConsumeable(str) {
 			self.forthealth = 100;
 		}
 		return true;
+	} else if (str == "Birthday Cake") {
+		self.forthealth += 10;
+		if (self.forthealth > 100) {
+			self.forthealth = 100;
+		} 
+		self.fortshield += 10;
+		if (self.fortshield > 100) {
+			self.fortshield = 100;
+		}
+		return true;
 	} else if (str == "Shadow Stone") {
 		self notify("end_shadow_stone");
 		self thread ShadowStoneConsumeable();
@@ -290,6 +300,7 @@ ChangeToNextItemInInvetory() {
 	}
 	self AdjustLoadout(self.selectorpos);
 }
+
 
 
 

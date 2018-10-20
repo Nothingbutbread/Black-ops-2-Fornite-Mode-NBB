@@ -118,15 +118,15 @@ GetRandomAmmoAmmout(type) {
 	// Type: 4 Explosive Shells (RPG/War Machine) 
 	ammo = 2;
 	if (type == 0) {
-		ammo = RandomIntRange(30, 80);
+		ammo = RandomIntRange(18, 45);
 	} else if (type == 1) {
-		ammo = RandomIntRange(25, 65);
+		ammo = RandomIntRange(10, 28);
 	} else if (type == 2) {
-		ammo = RandomIntRange(6, 20);
+		ammo = RandomIntRange(4, 14);
 	} else if (type == 3) {
-		ammo = RandomIntRange(6, 30);
+		ammo = RandomIntRange(3, 11);
 	} else if (type == 4) {
-		ammo = RandomIntRange(2, 6);
+		ammo = RandomIntRange(2, 4);
 	}
 	return ammo;
 }
@@ -796,6 +796,7 @@ StopMomentum() {
 	self unlink();
     obj delete();
 }
+
 
 
 
