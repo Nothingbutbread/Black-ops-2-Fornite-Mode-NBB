@@ -45,6 +45,10 @@ CreatePlayerHUDS()
 	
 	self.fortHUDS[18] = self SpawnText(self.controlsText, 2, 0,150, (1,1,1), 1, 20, true, false, true, true);
 	
+	// Background shader, used as the new Storm HUD
+	self.fortHUDS[19] = self SpawnShader("compass_emp", 0, 0, 870, 480, (0,0,0), 0, 1);
+	self.fortHUDS[19] setpoint("","",0,0);
+	
 	self thread OpenInventoryGUIBind();
 	self thread ConstantHUDUpdate();
 }
@@ -55,10 +59,19 @@ ConstantHUDUpdate() {
 	}
 	count = 0;
 	while(true) {
-		if (count >= 10) {
+		dis = Distance(self.origin, level.stormcenterpoint);
+		distostorm = int(level.stormstartingradius - dis);
+		if (distostorm < 500 && distostorm > 0) {
+			self.fortHUDS[19].alpha = .3;
+			self.fortHUDS[19].color = (1,1,0);
+		} else if (distostorm <= 0) {
+			self.fortHUDS[19].alpha = .5;
+			self.fortHUDS[19].color = (1,0,0);
+		} else {
+			self.fortHUDS[19].alpha = 0;
+		}
+		if (count >= 9) {
 			count = 0;
-			dis = Distance(self.origin, level.stormcenterpoint);
-			distostorm = int(level.stormstartingradius - dis);
 			self.infobarstr = "Eliminations: " + self.pers["kills"] + " Players Left: " + level.playersalive + "\nDistance to Storm Edge: " + distostorm;
 			self.fortHUDS[17] setSafeText(self.infobarstr);
 		}
@@ -76,7 +89,7 @@ RebuildHUDS() {
 	self.fortHUDS[12] setSafeText(self.menutext);
 	self.fortHUDS[13] setSafeText(self.healthHUDText);
 	self.fortHUDS[15] setSafeText(self.ItemUseText);
-	self.fortHUDS[17] setSafeText(level.gamestatestr);
+	self.fortHUDS[17] setSafeText(self.infobarstr);
 	self.fortHUDS[18] setSafeText(self.controlsText);
 }
 fadeInProgressBar() {
@@ -104,8 +117,7 @@ setItemToolTip(text) {
 	self.ItemUseText = text;
 	self.fortHUDS[15] setSafeText(self.ItemUseText);
 }
-updateInvHudShader(index, item)
-{
+updateInvHudShader(index, item) {
 	self.fortHUDS[index].color = teirIDToColor(item.rarity);
 	shad = getItemShader(item.weapon);
 	self.fortHUDS[index + 5] setshader(shad, 40, 40);
@@ -115,8 +127,7 @@ updateInvHudShader(index, item)
 		self.fortHUDS[index + 5].alpha = .8;
 	}
 }
-updateHUDRemoveItemFromInv(index)
-{
+updateHUDRemoveItemFromInv(index) {
 	self.fortHUDS[index].color = teirIDToColor(0);
 	self.fortHUDS[index + 5] setshader("white", 40, 40);
 	self.fortHUDS[index + 5].alpha = 0;
@@ -637,23 +648,6 @@ HUD_GTR(size, x)
 	}
 	colorgreen += move;	
 	return (colorgreen, colorred,0);
-}
-StormHUD() {
-	level endon("game_ended");
-	m0 = level CreateWaypoint("perk_awareness", level.stormcenterpoint + (level.stormstartingradius,0,0) , 6, 6, .6, true);
-	m1 = level CreateWaypoint("perk_awareness", level.stormcenterpoint + (0,level.stormstartingradius,0) , 6, 6, .6, true);
-	wait .1;
-	while(true) {
-		m0 moveOverTime(1);
-		m1 moveOverTime(1);
-		m0.x = level.stormcenterpoint[0] + level.stormstartingradius;
-		m0.y = level.stormcenterpoint[1];
-		m0.z = level.stormcenterpoint[2];
-		m1.x = level.stormcenterpoint[0];
-		m1.y = level.stormcenterpoint[1] + level.stormstartingradius;
-		m1.z = level.stormcenterpoint[2];
-		wait 1;
-	}
 }
 CreateWaypoint(shader, origin, width, height, alpha, allplayers) {
 	if (allplayers) { 

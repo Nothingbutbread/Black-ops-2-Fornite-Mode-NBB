@@ -40,7 +40,7 @@ init()
 	level.blitz = false;
 	level.fantasy = false;
 	level.flyexplosives = false;
-	level.snipershootout = true;
+	level.snipershootout = false;
 	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
 	level.allowteams = false;
 	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
@@ -137,6 +137,9 @@ printIntro() {
 }
 gameManager() {
 	level endon("game_ended");
+	if (level.debugger) {
+		level thread testStorm();
+	}
 	level waittill("prematch_over");
 	level UnpackageAndSetSettings();
 	wait .5;
@@ -153,6 +156,7 @@ gameManager() {
 		//return;
 	}
 	level thread prepForTeamBasedFortnite();
+	level thread onGameEnded();
 	for(x = 20; x > 0; x--) {
 		iprintln("Fortnite Battle Royal Starting in " + x + " seconds!");
 		foreach(player in level.players) { 
@@ -198,12 +202,10 @@ gameManager() {
 	if (level.debugger) {
 		return;
 	}
-	warnrad = level.stormstartingradius - 500;
 	stormid = -1;
 	stormmove = false;
 	stormdelay = stormDelayAmmout(0);
 	stormdamage = stormDammageAmmout(0);
-	level thread StormHUD();
 	while(true) {
 		playersalivee = 0;
 		foreach(player in level.players) {
@@ -212,8 +214,6 @@ gameManager() {
 				d = Distance(player.origin, level.stormcenterpoint);
 				if (d >= level.stormstartingradius) {
 					player ApplyStormDammage(stormdamage);
-				} else if (d >= warnrad) {
-					player iprintlnbold("^3Get closer to the center of the eye or you will start to take damage!");
 				}
 				if (player.origin[2] < level.belowmapdeathbarrier) {
 					if (player.unstuckability) {
@@ -262,7 +262,21 @@ gameManager() {
 		}
 	
 		wait 1;
-		warnrad = level.stormstartingradius - 750;
+	}
+}
+onGameEnded() {
+	level waittill("game_ended"); 
+	playersalivee = 0;
+	nameofwinner = "";
+	foreach(player in level.players) {
+		if (player.inthisgame) {
+			playersalivee++;
+			nameofwinner = player.name;
+		}
+	}
+	if (playersalivee == 1) {
+		// SpawnText(item, fontScale, x, y, color, alpha, sort, text, allpeeps, foreground, normal)
+		tmp = level SpawnText("^5" + nameofwinner + " ^2Victory Royal!", 3, 260,150, (1,1,1), 1, 100, true, true, true, true);
 	}
 }
 init_player_vars()

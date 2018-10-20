@@ -454,10 +454,11 @@ getAmmoType(weap)
 	return -1;
 }
 
-PrecacheAll()
-{
+PrecacheAll() {
 	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,svu,pm,saiga12,saritch",",");
-	foreach(shader in shaders) { Precacheshader("menu_mp_weapons_" + shader); }
+	foreach(shader in shaders) { 
+		Precacheshader("menu_mp_weapons_" + shader); 
+	}
 	Precacheshader("hud_icon_minigun");
 	Precacheshader("hud_grenadeicon");
 	Precacheshader("hud_icon_c4");
@@ -471,6 +472,7 @@ PrecacheAll()
 	Precacheshader("perk_warrior");
 	Precacheshader("hud_remote_missile_target");
 	Precacheshader("rank_prvt");
+	Precacheshader("compass_emp");
 	//Precacheshader("menu_mp_drone_map_select_final");
 	PrecacheItem("minigun_wager_mp");
 	PrecacheItem("m32_wager_mp");

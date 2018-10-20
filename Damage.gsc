@@ -45,22 +45,22 @@ DamageMonitor()
     		else if (type == "MOD_MELEE") { 
     			self appHit(10, attacker, "knife_held_mp");
     		} else if (type == "MOD_HEAD_SHOT") { 
-    			dam = dammagemap( weaponname );
+    			dam = dammagemap(weaponname);
 				d = distance( attacker.origin, self.origin );
 				i = 0;
-				if( d > dam[ 1] ) {
+				if(d > dam[1]) {
 					i = 2;
 				}
-				da = bonusdammageapp( int( dam[ i] ), attacker.activerarity );
+				da = bonusdammageapp(int(dam[i]), attacker.activerarity);
 				da = da * 2;
 				attacker iprintlnbold( "^3Headshot!" );
-				self apphit( int( da ), attacker, weaponname );
+				self apphit(int(da), attacker, weaponname );
     		} else {
 		    	dam = dammagemap( weaponname );
 				d = distance( attacker.origin, self.origin );
 				i = 0;
-				if( d > dam[1]) {
-						i = 2;
+				if (d > dam[1]) {
+					i = 2;
 				}
 				da = bonusdammageapp( int( dam[ i] ), attacker.activerarity );
 				self apphit( da, attacker, weaponname );
@@ -252,9 +252,13 @@ bonusDammageApp(damage, teir)
 	return damage;
 }
 killMySelf(weap) {
+	self endon("death");
+	self endon("disconnect");
 	if (!isDefined(weap)) {
 		weap = "knife_held_mp";
 	}
+	self.forthealth = 0;
+	self.fortshield = 0;
     self DoDamage(self.health + 10, self.origin, self.lastdammagedby, self.lastdammagedby, "none", "MOD_PROJECTILE_SPLASH", 0, self.lastdammagedbyWeapon);
 	wait .1;
 	self suicide();

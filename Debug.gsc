@@ -133,33 +133,33 @@ DEBUG_PRINTITEMS(data) {
 		wait 1;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+testStorm() {
+	level endon("game_ended");
+	level waittill("prematch_over");
+	wait 15;
+	level.stormstartingradius = 3000;
+	while(true) {
+		foreach(player in level.players) {
+			if (player.inthisgame) {
+				d = Distance(player.origin, level.stormcenterpoint);
+				if (d >= level.stormstartingradius) {
+					player ApplyStormDammage(stormdamage);
+				}
+				if (player.origin[2] < level.belowmapdeathbarrier) {
+					if (player.unstuckability) {
+						player setorigin(player.spawnorigin);
+						player.unstuckability = false;
+					} else {
+						iprintln(player.name + " fell out of the map!");
+						player killMySelf();
+						playersalivee--;
+					}
+				}
+				if (player.forthealth <= 0) {
+					player killMySelf();
+				}
+			}
+		}
+		wait 1;
+	}
+}
