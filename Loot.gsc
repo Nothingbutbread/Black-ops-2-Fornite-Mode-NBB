@@ -372,7 +372,7 @@ PickLegendaryWeapon() {
 	else if (c == 14) { return "ballista_mp+dualclip"; }
 }
 PickLegendaryItem() {
-	c = RandomIntRange(0, 2);
+	c = RandomIntRange(0, 3);
 	if (c == 0) {
 		return "Jet Pack";
 	}
@@ -391,6 +391,9 @@ PickConsumeableItem() {
 	}
 	return "Pop Rock";
 }
+
+
+
 
 
 

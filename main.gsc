@@ -34,8 +34,8 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.5.0 Public Beta [Test Version]";
-	level.debugger = true;
+	level.versionID = "^11.5.0 Public Beta";
+	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
 	level.fantasy = false;
@@ -206,7 +206,14 @@ gameManager() {
 	stormmove = false;
 	stormdelay = stormDelayAmmout(0);
 	stormdamage = stormDammageAmmout(0);
+	tick = 0;
 	while(true) {
+		if (tick == 20) {
+			iprintln("^5[Anoucement] ^3Stuck on top of the map? Open the menu and use the unstuck command");
+		} else if (tick == 50) {
+			tick = 0;
+			iprintln("^5[Anoucement] ^3Guns glitched out? \n^2Press Aim, jump and Melee at the same time to reset your menu.");
+		}
 		playersalivee = 0;
 		foreach(player in level.players) {
 			if (player.inthisgame) {
@@ -260,7 +267,7 @@ gameManager() {
 				stormmove = true;
 			}
 		}
-	
+		tick++;
 		wait 1;
 	}
 }
@@ -344,10 +351,12 @@ PublicMatchVerification() {
 			return;
 		} else if (getDvar("mapname") == "mp_socotra") {
 			return;
+		} else if (getDvar("mapname") == "mp_nightclub") {
+			return;
 		}
 		// If we haven't returned at this point, then we have an invalid map but valid gamemode.
 		// Randomly selecting and changing to a valid map.
-		n = RandomIntRange(0,6);
+		n = RandomIntRange(0,7);
 		if (n == 0) {
 			changemap("mp_dockside");
 		} else if(n == 1) {
@@ -360,6 +369,8 @@ PublicMatchVerification() {
 			changemap("mp_nuketown_2020");
 		} else if(n == 5) {
 			changemap("mp_socotra");
+		} else if(n == 6) {
+			changemap("mp_nightclub");
 		}
 	}
 }
@@ -375,6 +386,9 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
+
+
 
 
 

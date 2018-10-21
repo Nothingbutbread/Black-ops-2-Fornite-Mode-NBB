@@ -469,8 +469,10 @@ PortaRiftItemEffect() {
 	self.canteleport = false;
 	self.unstuckability = true;
 	iprintln(self.name + " used a port-a-rift!");
-	self setorigin((self.origin[0], self.origin[1], level.battlebusendorigin[2] - 250));
+	self setorigin((self.origin[0], self.origin[1], level.battlebusendorigin[2] - 350));
 	self notify("restart_patch_thread");
+	self.status = 2;
+	self ResetMenu();
 	self thread FlyToMap();
 }
 ShadowStoneConsumeable() {
@@ -516,6 +518,9 @@ PopRockComsumeable_Jolt() {
 		wait .05;
 	}
 }
+
+
+
 
 
 

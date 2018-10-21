@@ -3,6 +3,7 @@ PatchThread() {
     self endon("death");
     self endon("restart_patch_thread");
     level endon("game_ended");
+    tick = 0;
 	while(true) {
 		if (self.forthealth <= 0 && !level.debugger) {
 			self killMySelf();
@@ -19,6 +20,17 @@ PatchThread() {
 			if (r > 0) {
 				self.ammotypes[self.activetype] -= r;
 			}
+		}
+		if (self getcurrentweapon() == "knife_mp") {
+			tick++;
+		} else {
+			tick = 0;
+		}
+		
+		if (tick >= 30) {
+			self iprintlnbold("^5Glitch out detected, reseting menu.");
+			self ResetMenu();
+			tick = -50;
 		}
 		wait .1;
 	}
@@ -263,6 +275,9 @@ killMySelf(weap) {
 	wait .1;
 	self suicide();
 }
+
+
+
 
 
 

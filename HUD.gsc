@@ -450,6 +450,7 @@ hostBinds() {
 					level.snipershootout = true;
 					self iprintln("Sniper Shootout ^2Enabled!");
 				}
+				wait .5;
 			} else {
 				self iprintln("^1Not available yet :/");
 				wait .5;
@@ -673,6 +674,9 @@ CreateProgressBar(x, y, alpha, bgcolor, barcolor) {
 	hudele.alpha = alpha;
 	return hudele;
 }
+
+
+
 
 
 
