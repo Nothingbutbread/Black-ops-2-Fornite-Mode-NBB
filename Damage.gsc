@@ -205,7 +205,7 @@ dammageMap(weap) {
     }
     // LMG
     else if (weap == "lsat_mp+steadyaim") {
-        return (23, 4000, 12);
+        return (23, 500, 11);
     }
     // Rocket Launcher
     else if (weap == "smaw_mp") {
@@ -275,6 +275,7 @@ killMySelf(weap) {
 	wait .1;
 	self suicide();
 }
+
 
 
 
