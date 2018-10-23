@@ -5,7 +5,7 @@ getDefaultItemSpawnCount(item)
 	} else if (item == "Bandage") {
 		return 5;
 	} else if (item == "Jet Pack") {
-		return 250;
+		return 150;
 	}
 	return 3;
 }
@@ -37,8 +37,8 @@ JetPackitem(index) {
 	self endon("new_jet_pack");
 	self.hasjetpack = true;
 	//self iprintln("[DEBUG]: ^2Jet pack started!");
-	if (self.inv[index].clip > 250) {
-		self.inv[index].clip = 250;
+	if (self.inv[index].clip > 150) {
+		self.inv[index].clip = 150;
 	}
 	while(true) {
 		if (self jumpbuttonpressed()){
@@ -49,7 +49,7 @@ JetPackitem(index) {
 				self iprintln("^1Jet pack overheated!");
 				wait 1;
 			}
-		} else if (self.inv[index].clip < 250) {
+		} else if (self.inv[index].clip < 150) {
 			self.inv[index].clip++; 
 		}
 		wait .05;
@@ -237,7 +237,7 @@ LargeShielditem(index) {
 	if (self.fortshield >= 100) {
 		self fadeInItemToolTip("Your Shield is already fully charged!");
 	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use Shield");
+		self fadeInItemToolTip("Hold [{+usereload}] to use Large Shield");
 	}
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
@@ -479,15 +479,15 @@ ShadowStoneConsumeable() {
 	self endon("end_shadow_stone");
 	self endon("death");
 	self endon("disconnect");
-	wait 1;
+	wait 2;
 	self disableWeapons();
 	iprintln(self.name + " used a shadow stone");
 	self iprintlnbold("Hold [{+usereload}] to end the shadow stone effect!");
 	self hide();
-	for(x = 0; x < 150; x++) {
+	for(x = 0; x < 250; x++) {
 		if (self usebuttonpressed()) {
 			break;
-		} else if (x == 120) {
+		} else if (x == 220) {
 			self iprintln("Shadow Stone expiring in 3 seconds!");
 		}
 		wait .1;
@@ -501,11 +501,11 @@ PopRockConsumeable() {
 	self endon("end_pop_rock");
 	self endon("death");
 	self endon("disconnect");
-	for(x = 0; x < 300; x++) {
+	for(x = 0; x < 350; x++) {
 		if (self jumpbuttonpressed() && self DisToGround() < 10) {
 			self thread PopRockComsumeable_Jolt();
 			wait .3;
-		} else if (x == 270) {
+		} else if (x == 320) {
 			self iprintln("Pop Rock expiring in 3 seconds!");
 		}
 		wait .1;
@@ -518,6 +518,8 @@ PopRockComsumeable_Jolt() {
 		wait .05;
 	}
 }
+
+
 
 
 

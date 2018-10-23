@@ -798,12 +798,8 @@ StopMomentum() {
 	self unlink();
     obj delete();
 }
-
-
-
-
-
-
-
+DistanceToStormCol(player) {
+	return Distance((player.origin[0], player.origin[1], level.stormcenterpoint[2]) , level.stormcenterpoint);
+}
 
 

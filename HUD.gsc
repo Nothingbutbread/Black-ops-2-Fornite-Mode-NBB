@@ -59,9 +59,9 @@ ConstantHUDUpdate() {
 	}
 	count = 0;
 	while(true) {
-		dis = Distance(self.origin, level.stormcenterpoint);
+		dis = DistanceToStormCol(self);
 		distostorm = int(level.stormstartingradius - dis);
-		if (distostorm < 500 && distostorm > 0) {
+		if (distostorm < 800 && distostorm > 0) {
 			self.fortHUDS[19].alpha = .3;
 			self.fortHUDS[19].color = (1,1,0);
 		} else if (distostorm <= 0) {
@@ -72,7 +72,7 @@ ConstantHUDUpdate() {
 		}
 		if (count >= 9) {
 			count = 0;
-			self.infobarstr = "Eliminations: " + self.pers["kills"] + " Players Left: " + level.playersalive + "\nDistance to Storm Edge: " + distostorm;
+			self.infobarstr = "Eliminations: ^2" + self.pers["pointstowin"] + " ^7Players Left: ^1" + level.playersalive + "\n^7Distance to Storm Edge: " + distostorm;
 			self.fortHUDS[17] setSafeText(self.infobarstr);
 		}
 		self.healthHUDText = "^5Shield: " + self.fortshield + "\n^1Health: " + self.forthealth;
@@ -674,6 +674,8 @@ CreateProgressBar(x, y, alpha, bgcolor, barcolor) {
 	hudele.alpha = alpha;
 	return hudele;
 }
+
+
 
 
 

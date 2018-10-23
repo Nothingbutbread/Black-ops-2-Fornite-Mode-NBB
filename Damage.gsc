@@ -201,7 +201,7 @@ dammageMap(weap) {
     }
     // Minigun
     else if (weap == "minigun_wager_mp") {
-        return (11, 800, 9); // Due to rate of fire and accuracy differnces, Minigun has been nerfed
+        return (14, 550, 5); // Due to rate of fire and accuracy differnces, Minigun has been nerfed
     }
     // LMG
     else if (weap == "lsat_mp+steadyaim") {
@@ -213,7 +213,7 @@ dammageMap(weap) {
     }
     // Grenade Launcher
     else if (weap == "m32_wager_mp") {
-        return (30, 1250, 35); //Applied a large nerf due the explode on inpact nature of the weapon
+        return (26, 1000, 40); //Applied a large nerf due the explode on inpact nature of the weapon
     }
     // Grenade / Clinger
     else if (weap == "frag_grenade_mp" || weap == "sticky_grenade_mp") {
@@ -275,6 +275,8 @@ killMySelf(weap) {
 	wait .1;
 	self suicide();
 }
+
+
 
 
 

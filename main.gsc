@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////
-//    Fortnite V1.5.0                        //
+//    Fortnite V1.6.0                        //
 ///////////////////////////////////////////////
 //   Created by Nothingbutbread              //
 ///////////////////////////////////////////////
@@ -34,7 +34,7 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.5.0 Public Beta";
+	level.versionID = "^11.5.1 Public Beta";
 	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
@@ -218,7 +218,7 @@ gameManager() {
 		foreach(player in level.players) {
 			if (player.inthisgame) {
 				playersalivee++;
-				d = Distance(player.origin, level.stormcenterpoint);
+				d = DistanceToStormCol(player);
 				if (d >= level.stormstartingradius) {
 					player ApplyStormDammage(stormdamage);
 				}
@@ -386,6 +386,8 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
+
 
 
 
