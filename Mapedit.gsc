@@ -65,7 +65,24 @@ init_MapEdit()
 }
 Yemen() { 
 	level thread DeleteDeathBarriers();	
-	level.stormcenterpoint = (273,-885,200);
+	st = RandomIntRange(0, 7);
+	if (st == 0) {
+		level.stormcenterpoint = (273,-885,200);
+	} else if (st == 1) {
+		level.stormcenterpoint = (-711,-321,142);
+	} else if (st == 2) {
+		level.stormcenterpoint = (-444,-1588,204);
+	} else if (st == 3) {
+		level.stormcenterpoint = (815,156,26);
+	} else if (st == 4) {
+		level.stormcenterpoint = (-27,682,112);
+	} else if (st == 5) {
+		level.stormcenterpoint = (639,1843,279);
+	} else if (st == 6) {
+		level.stormcenterpoint = (-48,-164,184);
+	}
+	
+	
 	level.stormcircles = (10000,3500,1250);
 	level.belowmapdeathbarrier = -1080;
 	level.mapcustomentitylimit = 500;
@@ -223,7 +240,23 @@ Drone() {
 	level thread DeleteDeathBarriers();
 	level.belowmapdeathbarrier = -325;
 	level.stormcircles = (8000,2500,1000);
-	level.stormcenterpoint = (-210,-320,76);
+	st = RandomIntRange(0, 7);
+	if (st == 0) {
+		level.stormcenterpoint = (-210,-320,76);
+	} else if (st == 1) {
+		level.stormcenterpoint = (-2096,-1602,80);
+	} else if (st == 2) {
+		level.stormcenterpoint = (-870,-1476,45);
+	} else if (st == 3) {
+		level.stormcenterpoint = (692,-316,27);
+	} else if (st == 4) {
+		level.stormcenterpoint = (606,1635,120);
+	} else if (st == 5) {
+		level.stormcenterpoint = (-109,2448,151);
+	} else if (st == 6) {
+		level.stormcenterpoint = (-1245,162,96);
+	}
+	
 	level.battlebusendorigin = (-11267,-12396,3000);
 	level.stormstartingradius = 22000;
 	level.mapcustomentitylimit = 500;
@@ -383,9 +416,25 @@ Standoff()
 	level.belowmapdeathbarrier = -3000;
 	level.battlebusendorigin = (-11290,-7950,6000);
 	level.battlebustimetotarget = 15;
-	level.stormcenterpoint = (-169,-160,50);
 	level.stormstartingradius = 25000;
-	level.stormcircles = (8000,2500,1000);
+	level.stormcircles = (6000,2000,900);
+	st = RandomIntRange(0, 7);
+	if (st == 0) {
+		level.stormcenterpoint = (-169,-160,50);
+	} else if (st == 1) {
+		level.stormcenterpoint = (-1050,-1487,8);
+	} else if (st == 2) {
+		level.stormcenterpoint = (-728,550,0);
+	} else if (st == 3) {
+		level.stormcenterpoint = (737,1275,2);
+	} else if (st == 4) {
+		level.stormcenterpoint = (914,-450,4);
+	} else if (st == 5) {
+		level.stormcenterpoint = (-112,-1158,-28);
+	} else if (st == 6) {
+		level.stormcenterpoint = (-1525, 239,8);
+	}
+	
 	level.mapcustomentitylimit = 426; // Note to mapediters, The higher you set this, the more objects players can have at once, If you set it too high you will get an entity overflow.
 	level thread spawnObject("collision_clip_wall_256x256x10", (594,-1615, -5), (0,0,90)); // Patches an exploitable hole in the map.
 	ACL((-1584,1226,10));
@@ -518,7 +567,23 @@ Nuketown()
 	level.belowmapdeathbarrier = -100;
 	level.battlebusendorigin = (-2201,-2411,300);
 	level.battlebustimetotarget = 15;
-	level.stormcenterpoint = (108,344,-37);
+	if (st == 0) {
+		level.stormcenterpoint = (108,344,-37);
+	} else if (st == 1) {
+		level.stormcenterpoint = (-913,111,-56);
+	} else if (st == 2) {
+		level.stormcenterpoint = (-1873,416,-63);
+	} else if (st == 3) {
+		level.stormcenterpoint = (-617,1071,-62);
+	} else if (st == 4) {
+		level.stormcenterpoint = (1035,852,-63);
+	} else if (st == 5) {
+		level.stormcenterpoint = (699,186,79);
+	} else if (st == 6) {
+		level.stormcenterpoint = (35,-766,-66);
+	}
+	
+	
 	level.stormstartingradius = 13000;
 	level.stormcircles = (5000,2250,1000);
 	level.mapcustomentitylimit = 400;
@@ -1087,6 +1152,8 @@ Detour()
 
 Uplink()
 { }
+
+
 
 
 

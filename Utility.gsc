@@ -29,7 +29,13 @@ getFullDisplayName(item) {
 	} else if (item.weapon == "Ammo") {
 		return "" + ammoTypeToString(item.ammotype, item.clip);
 	} else {
-		return "" + teirIDToStringColor(item.rarity) + "" + getDisplayName(item.weapon);
+		tmp = "" + teirIDToStringColor(item.rarity) + "" + getDisplayName(item.weapon);
+		if (isAGun(item.weapon)) {
+			tmp += " ^7Mag: " + item.clip;
+		} else {
+			tmp += " ^7x" + item.clip;
+		}
+		return tmp;
 	}
 }
 getDisStrItemInv(items) {
@@ -144,6 +150,9 @@ getItemShader(weap)
 	else if (weap == "scar_mp" || weap == "scar_mp+extclip" || weap == "scar_mp+silencer") {
 		return "menu_mp_weapons_scar";
 	}
+	else if (weap == "an94_mp") {
+		return "menu_mp_weapons_an94";
+	}
 	// Scoped rifle
 	else if (weap == "sa58_mp+acog") {
 		return "menu_mp_weapons_sa58";
@@ -247,6 +256,10 @@ getItemShader(weap)
 		return "hud_remote_missile_target";
 	} else if (weap == "Port-a-Rift") {
 		return "rank_prvt";
+	} else if (weap == "crossbow_mp") {
+		return "menu_mp_weapons_crossbow";
+	} else if (weap == "Unstable Item") {
+		return "compass_emp";
 	}
 	return "white";
 }
@@ -255,21 +268,27 @@ getDisplayName(weap)
 	if (weap == "sig556_mp") {
 		return "Burst Assult Rifle";
 	}
+	else if (weap == "crossbow_mp") {
+		return "Cross Bow";
+	}
 	else if (weap == "svu_mp+ir") {
-		return "Thermal Scoped Assult Riffle";
+		return "Thermal Assult Riffle";
 	}
 	else if (weap == "sig556_mp+stalker") {
 		return "Famas";
 	}
 	// Auto rifle
 	else if (weap == "scar_mp") {
-		return "Automatic Assult Rifle";
+		return "Auto Assult Rifle";
 	}
 	else if (weap == "scar_mp+extclip") {
 		return "Scar";
 	}
 	else if (weap == "scar_mp+silencer") {
 		return "Surpressed Scar";
+	}
+	else if (weap == "an94_mp") {
+		return "Heavy Assult Rifle";
 	}
 	// Scoped rifle
 	else if (weap == "sa58_mp+acog") {
@@ -284,7 +303,7 @@ getDisplayName(weap)
 	}
 	// Silenced SMG
 	else if (weap == "mp7_mp+silencer") {
-		return "Silenced Submachine Gun";
+		return "Silenced SMG";
 	}
 	// Revolver / Hand Cano
 	else if (weap == "fnp45_mp+dualclip+fmj") {
@@ -335,7 +354,7 @@ getDisplayName(weap)
 	}
 	// LMG
 	else if (weap == "lsat_mp+steadyaim") {
-		return "Light Machine Gun";
+		return "LMG";
 	}
 	// Rocket Launcher
 	else if (weap == "smaw_mp") {
@@ -371,6 +390,9 @@ getAmmoType(weap)
 		return 1;
 	}
 	else if (weap == "svu_mp+ir") {
+		return 1;
+	}
+	else if (weap == "an94_mp") {
 		return 1;
 	}
 	// Auto rifle
@@ -451,11 +473,14 @@ getAmmoType(weap)
 	else if (weap == "m32_wager_mp") {
 		return 4;
 	}
+	else if (weap == "crossbow_mp") {
+		return 1;
+	}
 	return -1;
 }
 
 PrecacheAll() {
-	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,svu,pm,saiga12,saritch",",");
+	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,svu,pm,saiga12,saritch,crossbow,an94",",");
 	foreach(shader in shaders) { 
 		Precacheshader("menu_mp_weapons_" + shader); 
 	}
@@ -533,6 +558,7 @@ ammoTypeToString(type, ammout)
 	} else if (type == 4) {
 		return ammout + " explosive ammo!";
 	}
+	return ammout + " undefined ammo type!";
 }
 // Takes a string and returns the number that is within in. 
 // If no number is present, returns 0. Also returns if returned number is an int.
@@ -575,8 +601,7 @@ CanuseAddShieldAndHealthPotions() {
 	}
 	return false;
 }
-FlyToGroundMoreAgreesiveSideways()
-{
+FlyToGroundMoreAgreesiveSideways() {
 	return bulletTrace(self.origin, self.origin+vectorScale(anglesToForward(self.angles), 50), false, self)["position"];
 }
 DisToGround()
@@ -584,8 +609,7 @@ DisToGround()
 	target = bulletTrace(self.origin, self.origin+vectorScale(anglesToForward((90,0,0)), 1000000), false, self)["position"];
 	return int(Distance(self.origin, target));
 }
-playerAnglesToForward(player, distance)
-{
+playerAnglesToForward(player, distance) {
 	return player.origin + VectorScale(AnglesToForward(player getPlayerAngles(), distance));
 }
 
@@ -801,5 +825,3 @@ StopMomentum() {
 DistanceToStormCol(player) {
 	return Distance((player.origin[0], player.origin[1], level.stormcenterpoint[2]) , level.stormcenterpoint);
 }
-
-

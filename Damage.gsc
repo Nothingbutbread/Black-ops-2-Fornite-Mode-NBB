@@ -94,9 +94,6 @@ ApplyStormDammage(dam) {
 	}
 }
 appHit(damage, attacker, weapon) {
-	if (level.allowteams && !self shouldDealDamage(attacker)) {
-		return;
-	}
 	self.lastdammagedbyWeapon = weapon;
 	self iprintln("^1You took ^3" + damage + " ^1damage ^7from ^5" + attacker.name);
 	if (self.fortshield > 0) {
@@ -114,12 +111,7 @@ appHit(damage, attacker, weapon) {
 		self.forthealth -= damage;
 		attacker iprintln("^2" + self.name + " took a net damage of " + damage);
 	}
-	if (level.allowteams && !self.downed && self.forthealth <= 0) {
-		iprintln(self.name + " was knocked out by " + attacker.name + " bymeans of " + weapon);
-		self.forthealth = 0;
-		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, self.lastdammagedbyWeapon);
-		//self thread OnPlayerDowned(attacker, weapon);
-	} else if (self.forthealth <= 0) {
+	if (self.forthealth <= 0) {
 		self.forthealth = 0;
 		self DoDamage(self.health + 1, self.origin, attacker, attacker, "none", "MOD_PROJECTILE_SPLASH", 0, self.lastdammagedbyWeapon);
 	}
@@ -133,6 +125,9 @@ dammageMap(weap) {
     else if (weap == "svu_mp+ir") {
         return (31, 2500, 30);
         // 36 / 37 {Epic / Legendary}
+    }
+    else if (weap == "an94_mp") {
+    	return (32, 1150, 8);
     }
     // Auto rifle
     else if (weap == "scar_mp" || weap == "scar_mp+extclip") {
@@ -223,9 +218,13 @@ dammageMap(weap) {
     else if (weap == "satchel_charge_mp") {
         return (80, 1000, 115);
     }
+    // Cross bow
+    else if (weap == "crossbow_mp") {
+    	return (35, 1300, 45);
+    }
     // Melee
     else if (weap == "knife_mp" || weap == "knife_held_mp") {
-        return (10, 1000, 9);
+        return (20, 1000, 1);
     }
     return (0, 1000, 0);
 }
@@ -275,6 +274,8 @@ killMySelf(weap) {
 	wait .1;
 	self suicide();
 }
+
+
 
 
 

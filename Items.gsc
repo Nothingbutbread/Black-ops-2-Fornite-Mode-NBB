@@ -63,23 +63,23 @@ Bandageitem(index) {
 	if (self.forthealth >= 75) {
 		self fadeInItemToolTip("You have too much health to use the Bandage");
 	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use Bandage");
+		self fadeInItemToolTip("Hold [{+gostand}] to use Bandage");
 	}
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
-		if (self usebuttonpressed() && self.forthealth < 75 && time == 0 && !self.menuopen) {
-			self.ItemUseText = "Hold [{+usereload}] to use Bandage";
+		if (self jumpbuttonpressed() && self.forthealth < 75 && time == 0 && !self.menuopen) {
+			self.ItemUseText = "Hold [{+gostand}] to use Bandage";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
 			self.fortHUDS[16].bar.color = HUD_RTG(80, time);
 			self fadeInProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time++;
 		}
-		if (self usebuttonpressed() && self.forthealth < 75 && time > 0 && !self.menuopen) {
+		if (self jumpbuttonpressed() && self.forthealth < 75 && time > 0 && !self.menuopen) {
 			self.fortHUDS[16] updateBar(time / 80);
 			self.fortHUDS[16].bar.color = HUD_RTG(80, time);
 			time++;
-		} else if (self usebuttonpressed() && self.forthealth >= 75) {
+		} else if (self jumpbuttonpressed() && self.forthealth >= 75) {
 			time = 0;
 			self.ItemUseText = "You have too much health to use the Bandage";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
@@ -93,9 +93,7 @@ Bandageitem(index) {
 			time = 0;
 		}
 		if (time >= 80) {
-			if (self.forthealth >= 75) {
-				continue;
-			} else {
+			if (self.forthealth < 75) {
 				self.forthealth += 15;
 				if (self.forthealth > 75) {
 					self.forthealth = 75;
@@ -124,23 +122,23 @@ Medkititem(index) {
 	if (self.forthealth >= 100) {
 		self fadeInItemToolTip("You have too much health to use the Medkit");
 	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use Medkit");
+		self fadeInItemToolTip("Hold [{+gostand}] to use Medkit");
 	}
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
-		if (self usebuttonpressed() && self.forthealth < 100 && time == 0 && !self.menuopen) {
-			self.ItemUseText = "Hold [{+usereload}] to use Medkit";
+		if (self jumpbuttonpressed() && self.forthealth < 100 && time == 0 && !self.menuopen) {
+			self.ItemUseText = "Hold [{+gostand}] to use Medkit";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
 			self.fortHUDS[16].bar.color = HUD_RTG(200, time);
 			self fadeInProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time++;
 		}
-		if (self usebuttonpressed() && self.forthealth < 100 && time > 0 && !self.menuopen) {
+		if (self jumpbuttonpressed() && self.forthealth < 100 && time > 0 && !self.menuopen) {
 			self.fortHUDS[16] updateBar(time / 200);
 			self.fortHUDS[16].bar.color = HUD_RTG(200, time);
 			time++;
-		} else if (self usebuttonpressed() && self.forthealth >= 100) {
+		} else if (self jumpbuttonpressed() && self.forthealth >= 100) {
 			time = 0;
 			self.ItemUseText = "You have too much health to use the Medkit";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
@@ -176,23 +174,23 @@ SmallShielditem(index) {
 	if (self.fortshield >= 50) {
 		self fadeInItemToolTip("Your Shield is above 50 percent!");
 	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use Small Shield");
+		self fadeInItemToolTip("Hold [{+gostand}] to use Small Shield");
 	}
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
-		if (self usebuttonpressed() && self.fortshield < 50 && time == 0 && !self.menuopen) {
-			self.ItemUseText = "Hold [{+usereload}] to use Small Shield";
+		if (self jumpbuttonpressed() && self.fortshield < 50 && time == 0 && !self.menuopen) {
+			self.ItemUseText = "Hold [{+gostand}] to use Small Shield";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
 			self.fortHUDS[16].bar.color = HUD_RTG(40, time);
 			self fadeInProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time++;
 		}
-		if (self usebuttonpressed() && self.fortshield < 50 && time > 0 && !self.menuopen) {
+		if (self jumpbuttonpressed() && self.fortshield < 50 && time > 0 && !self.menuopen) {
 			self.fortHUDS[16] updateBar(time / 40);
 			self.fortHUDS[16].bar.color = HUD_RTG(40, time);
 			time++;
-		} else if (self usebuttonpressed() && self.fortshield >= 50) {
+		} else if (self jumpbuttonpressed() && self.fortshield >= 50) {
 			time = 0;
 			self.ItemUseText = "Your Shield is already halfway or more charged!";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
@@ -206,9 +204,7 @@ SmallShielditem(index) {
 			time = 0;
 		}
 		if (time >= 40) {
-			if (self.fortshield >= 50) {
-				return;
-			} else {
+			if (self.fortshield < 50) {
 				self.fortshield += 25;
 				if (self.fortshield > 50) {
 					self.fortshield = 50;
@@ -237,23 +233,23 @@ LargeShielditem(index) {
 	if (self.fortshield >= 100) {
 		self fadeInItemToolTip("Your Shield is already fully charged!");
 	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use Large Shield");
+		self fadeInItemToolTip("Hold [{+gostand}] to use Large Shield");
 	}
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
-		if (self usebuttonpressed() && self.fortshield < 100 && time == 0 && !self.menuopen) {
-			self.ItemUseText = "Hold [{+usereload}] to use Shield";
+		if (self jumpbuttonpressed() && self.fortshield < 100 && time == 0 && !self.menuopen) {
+			self.ItemUseText = "Hold [{+gostand}] to use Shield";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
 			self.fortHUDS[16].bar.color = HUD_RTG(100, time);
 			self fadeInProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time++;
 		}
-		if (self usebuttonpressed() && self.fortshield < 100 && time > 0 && !self.menuopen) {
+		if (self jumpbuttonpressed() && self.fortshield < 100 && time > 0 && !self.menuopen) {
 			self.fortHUDS[16] updateBar(time / 100);
 			self.fortHUDS[16].bar.color = HUD_RTG(100, time);
 			time++;
-		} else if (self usebuttonpressed() && self.fortshield >= 100) {
+		} else if (self jumpbuttonpressed() && self.fortshield >= 100) {
 			time = 0;
 			self.ItemUseText = "Your shield is already fully charged!";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
@@ -267,9 +263,7 @@ LargeShielditem(index) {
 			time = 0;
 		}
 		if (time >= 100) {
-			if (self.fortshield >= 100) {
-				return;
-			} else {
+			if (self.fortshield < 100) {
 				self.fortshield += 50;
 				if (self.fortshield > 100) {
 					self.fortshield = 100;
@@ -298,23 +292,23 @@ ChugJugItem(index) {
 	if (self.fortshield >= 100 && self.forthealth >= 100) {
 		self fadeInItemToolTip("Your Health and Shield is already maxed out");
 	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use Chug Jug");
+		self fadeInItemToolTip("Hold [{+gostand}] to use Chug Jug");
 	}
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
-		if (self usebuttonpressed() && CanuseAddShieldAndHealthPotions() && time == 0 && !self.menuopen) {
-			self fadeInItemToolTip("Hold [{+usereload}] to use Chug Jug");
+		if (self jumpbuttonpressed() && CanuseAddShieldAndHealthPotions() && time == 0 && !self.menuopen) {
+			self fadeInItemToolTip("Hold [{+gostand}] to use Chug Jug");
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
 			self.fortHUDS[16].bar.color = HUD_RTG(300, time);
 			self fadeInProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time++;
 		}
-		if (self usebuttonpressed() && CanuseAddShieldAndHealthPotions() && time > 0 && !self.menuopen) {
+		if (self jumpbuttonpressed() && CanuseAddShieldAndHealthPotions() && time > 0 && !self.menuopen) {
 			self.fortHUDS[16] updateBar(time / 300);
 			self.fortHUDS[16].bar.color = HUD_RTG(300, time);
 			time++;
-		} else if (self usebuttonpressed() && self.fortshield >= 100 && self.forthealth >= 100) {
+		} else if (self jumpbuttonpressed() && self.fortshield >= 100 && self.forthealth >= 100) {
 			time = 0;
 			self.ItemUseText = "Your health and shield is already maxed out";
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
@@ -328,9 +322,7 @@ ChugJugItem(index) {
 			time = 0;
 		}
 		if (time >= 300) {
-			if (self.fortshield >= 100) {
-				return;
-			} else {
+			if (self.fortshield < 100) {
 				self.fortshield = 100;
 				self.forthealth = 100;
 				// Update Ammo
@@ -354,55 +346,39 @@ SlurpJuiceItem(index) {
 	self endon("death");
 	self endon("new_item_at_" + index);
 	time = 0;
-	if (self.fortshield >= 100 && self.forthealth >= 100) {
-		self fadeInItemToolTip("Your Health and Shield is already maxed out");
-	} else {
-		self fadeInItemToolTip("Hold [{+usereload}] to use Slurp Juice");
-	}
+	self fadeInItemToolTip("Hold [{+gostand}] to use Slurp Juice");
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
-		if (self usebuttonpressed() && CanuseAddShieldAndHealthPotions() && time == 0 && !self.menuopen) {
-			self fadeInItemToolTip("Hold [{+usereload}] to use Slurp Juice");
+		if (self jumpbuttonpressed() && time == 0 && !self.menuopen) {
+			self fadeInItemToolTip("Hold [{+gostand}] to use Slurp Juice");
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
 			self.fortHUDS[16].bar.color = HUD_RTG(40, time);
 			self fadeInProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time++;
 		}
-		if (self usebuttonpressed() && CanuseAddShieldAndHealthPotions() && time > 0 && !self.menuopen) {
+		if (self jumpbuttonpressed() && time > 0 && !self.menuopen) {
 			self.fortHUDS[16] updateBar(time / 40);
 			self.fortHUDS[16].bar.color = HUD_RTG(40, time);
 			time++;
-		} else if (self usebuttonpressed() && self.fortshield >= 100 && self.forthealth >= 100) {
-			time = 0;
-			self.ItemUseText = "Your health and shield is already maxed out";
-			self.fortHUDS[15] setSafeText(self.ItemUseText);
-			self fadeOutProgressBar();
-			
-			self.fortHUDS[16] updateBar(0);
-			wait .5;
 		} else {
 			self fadeOutProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time = 0;
 		}
 		if (time >= 40) {
-			if (self.fortshield >= 100 && self.forthealth >= 100) {
-				return;
-			} else {
-				self thread SlurpJuice_Effect();
-				// Update Ammo
-				self.inv[index].clip--;
-				if (self.inv[index].clip < 1) {
-					self fadeOutProgressBar();
-					self thread SetandChangeInventoryToDefaultWeapon(index);
-					self fadeOutItemToolTip();
-					self ChangeToNextItemInInvetory();
-				}
-				self iprintln("We have " + self.inv[index].clip + " Slurp Juices left");
-				time = 0;
-				self.fortHUDS[16] updateBar(0);
+			self thread SlurpJuice_Effect();
+			// Update Ammo
+			self.inv[index].clip--;
+			if (self.inv[index].clip < 1) {
+				self fadeOutProgressBar();
+				self thread SetandChangeInventoryToDefaultWeapon(index);
+				self fadeOutItemToolTip();
+				self ChangeToNextItemInInvetory();
 			}
+			self iprintln("We have " + self.inv[index].clip + " Slurp Juices left");
+			time = 0;
+			self.fortHUDS[16] updateBar(0);
 		}
 		wait .05;
 	}
@@ -426,19 +402,19 @@ PortaRiftItem(index) {
 	self endon("disconnect");
 	self endon("death");
 	self endon("new_item_at_" + index);
-	self fadeInItemToolTip("Hold [{+usereload}] to use Port-a-Rift!");
+	self fadeInItemToolTip("Hold [{+gostand}] to use Port-a-Rift!");
 	time = 0;
 	wait .5;
 	while(index == self.lastusedinvslotindex) {
-		if (self usebuttonpressed() && time == 0 && !self.menuopen && self.canteleport) {
-			self fadeInItemToolTip("Hold [{+usereload}] to use Port-a-Rift!");
+		if (self jumpbuttonpressed() && time == 0 && !self.menuopen && self.canteleport) {
+			self fadeInItemToolTip("Hold [{+gostand}] to use Port-a-Rift!");
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
 			self.fortHUDS[16].bar.color = HUD_RTG(20, time);
 			self fadeInProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time++;
 		}
-		if (self usebuttonpressed() && time > 0 && !self.menuopen && self.canteleport) {
+		if (self jumpbuttonpressed() && time > 0 && !self.menuopen && self.canteleport) {
 			self.fortHUDS[16] updateBar(time / 20);
 			self.fortHUDS[16].bar.color = HUD_RTG(20, time);
 			time++;
@@ -474,6 +450,130 @@ PortaRiftItemEffect() {
 	self.status = 2;
 	self ResetMenu();
 	self thread FlyToMap();
+}
+UnstableItem(index) {
+	self endon("disconnect");
+	self endon("death");
+	self endon("new_item_at_" + index);
+	time = 0;
+	self fadeInItemToolTip("Hold [{+gostand}] to use Unstable Item");
+	wait .5;
+	while(index == self.lastusedinvslotindex) {
+		if (self jumpbuttonpressed() && time == 0 && !self.menuopen) {
+			self fadeInItemToolTip("Hold [{+gostand}] to use Unstable Item");
+			self.fortHUDS[15] setSafeText(self.ItemUseText);
+			self.fortHUDS[16].bar.color = HUD_RTG(60, time);
+			self fadeInProgressBar();
+			self.fortHUDS[16] updateBar(0);
+			time++;
+		} else if (self jumpbuttonpressed() && time > 0 && !self.menuopen) {
+			self.fortHUDS[16] updateBar(time / 60);
+			self.fortHUDS[16].bar.color = HUD_RTG(60, time);
+			time++;
+		} else {
+			self fadeOutProgressBar();
+			self.fortHUDS[16] updateBar(0);
+			time = 0;
+		}
+		if (time >= 30) {
+			// Update Ammo
+			self.inv[index].clip--;
+			self thread UnstableItemEffect(self.inv[index].rarity);
+			if (self.inv[index].clip < 1) {
+				self fadeOutProgressBar();
+				self thread SetandChangeInventoryToDefaultWeapon(index);
+				self fadeOutItemToolTip();
+				self ChangeToNextItemInInvetory();
+			}
+			self iprintln("We have " + self.inv[index].clip + " Unstable Items left");
+			time = 0;
+			self.fortHUDS[16] updateBar(0);
+		}
+		wait .05;
+	}
+}
+UnstableItemEffect(teir) {
+	if (teir == 0) { // Common
+		luck = randomintrange(0, 100);
+		if (luck > 80) {
+			self.forthealth += 15;
+			if (self.forthealth >= 100) {
+				self.forthealth = 100;
+			}
+		} else if (luck > 68) {
+			self.fortshield += 10;
+			if (self.fortshield >= 100) {
+				self.fortshield = 100;
+			}
+		}
+		item = GenerateChestLoot(false, true, 0);
+		self addItemToInventory(self.lastusedinvslotindex, item);
+		if (item.isweapon) {
+			self addAmmo(getAmmoType(item.weapon), GetRandomAmmoAmmout(item.ammotype));
+		}
+	} else if (teir == 1) {
+		luck = randomintrange(0, 100);
+		if (luck > 75) {
+			self.forthealth += 30;
+			if (self.forthealth >= 100) {
+				self.forthealth = 100;
+			}
+		} else if (luck > 55) {
+			self.fortshield += 15;
+			if (self.fortshield >= 100) {
+				self.fortshield = 100;
+			}
+		}
+		item = GenerateChestLoot(false, true, 1);
+		self addItemToInventory(self.lastusedinvslotindex, item);
+		if (item.isweapon) {
+			self addAmmo(getAmmoType(item.weapon), GetRandomAmmoAmmout(item.ammotype));
+		}
+	} else if (teir == 2) {
+		luck = randomintrange(0, 100);
+		if (luck > 75) {
+			self.forthealth += 45;
+			if (self.forthealth >= 100) {
+				self.forthealth = 100;
+			}
+		} else if (luck > 55) {
+			self.fortshield += 25;
+			if (self.fortshield >= 100) {
+				self.fortshield = 100;
+			}
+		}
+		item = GenerateChestLoot(false, true, 2);
+		self addItemToInventory(self.lastusedinvslotindex, item);
+		if (item.isweapon) {
+			self addAmmo(getAmmoType(item.weapon), GetRandomAmmoAmmout(item.ammotype));
+		}
+	} else if (teir == 3) {
+		luck = randomintrange(0, 100);
+		if (luck > 75) {
+			self.forthealth = 100;
+		} else if (luck > 60) {
+			self.fortshield += 50;
+			if (self.fortshield >= 100) {
+				self.fortshield = 100;
+			}
+		}
+		item = GenerateChestLoot(false, true, 3);
+		self addItemToInventory(self.lastusedinvslotindex, item);
+		if (item.isweapon) {
+			self addAmmo(getAmmoType(item.weapon), GetRandomAmmoAmmout(item.ammotype));
+		}
+	} else {
+		luck = randomintrange(0, 100);
+		if (luck > 65) {
+			self.forthealth = 100;
+			self.fortshield = 100;
+		}
+		item = GenerateChestLoot(false, true, 4);
+		self addItemToInventory(self.lastusedinvslotindex, item);
+		if (item.isweapon) {
+			self addAmmo(getAmmoType(item.weapon), GetRandomAmmoAmmout(item.ammotype));
+		}
+	}
 }
 ShadowStoneConsumeable() {
 	self endon("end_shadow_stone");
@@ -514,10 +614,12 @@ PopRockConsumeable() {
 }
 PopRockComsumeable_Jolt() {
 	for(x = 0; x < 10; x++) {
-		self setvelocity((self getvelocity()[0] , self getvelocity()[1] ,self getvelocity()[2] + 10000));
+		self setvelocity((self getvelocity()[0] , self getvelocity()[1] ,self getvelocity()[2] + 15000));
 		wait .05;
 	}
 }
+
+
 
 
 

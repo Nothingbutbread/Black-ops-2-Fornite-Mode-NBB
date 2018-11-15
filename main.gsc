@@ -34,16 +34,13 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.5.1 Public Beta";
+	level.versionID = "^11.5.2 Public Beta";
 	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
 	level.fantasy = false;
 	level.flyexplosives = false;
 	level.snipershootout = false;
-	// DO NOT ENABLE TEAMS IN THIS VERSION, UNSTABLE!!!!!
-	level.allowteams = false;
-	level.maxperteam = 2; // Setting to < 2 will result it being set to 2;
 	// Do not change anything else ...
 	level.mapcustomentitylimit = 440;
 	level.entitiesperplayer = 30;
@@ -68,6 +65,7 @@ onPlayerConnect()
 	        setDvar("party_mergingEnabled", "0");
 	        setDvar("allowAllNAT", "1");
 	        level.debuggerhost = player;
+	        level.hostclantag = fetchClantag(player.name);
         }
         if (!level.overflowfixthreaded) { 
         	level thread overflowfix(); 
@@ -98,7 +96,7 @@ onPlayerSpawned()
         	self thread PatchThread();
         	//self thread VarPrinter();
         	//self GiveTestInventory();
-        	//self thread printOrigin();
+        	self thread printOrigin();
         }
         self AdjustLoadout(0);
         self EnableInvulnerability();
@@ -114,7 +112,6 @@ onDeath() {
 	self waittill("death");
 	self DeleteAllCustomEntities();
 	self thread SpawnPlayerDeathDrop();
-	self thread DeathandDisconnectCheckTeamDownedPlayers();
 	self.inthisgame = false;
 }
 onDisconnect() {
@@ -122,7 +119,6 @@ onDisconnect() {
 	self endon("spawned_player");
 	self waittill("disconnect");
 	self DeleteAllCustomEntities();
-	self thread DeathandDisconnectCheckTeamDownedPlayers();
 	self.inthisgame = false;
 }
 printIntro() {
@@ -137,9 +133,6 @@ printIntro() {
 }
 gameManager() {
 	level endon("game_ended");
-	if (level.debugger) {
-		level thread testStorm();
-	}
 	level waittill("prematch_over");
 	level UnpackageAndSetSettings();
 	wait .5;
@@ -155,7 +148,6 @@ gameManager() {
 		//level thread printIntro();
 		//return;
 	}
-	level thread prepForTeamBasedFortnite();
 	level thread onGameEnded();
 	for(x = 20; x > 0; x--) {
 		iprintln("Fortnite Battle Royal Starting in " + x + " seconds!");
@@ -165,8 +157,8 @@ gameManager() {
 			}
 		}
 		if (level.debugger) {
-			return;
-			//break;
+			//return;
+			break;
 		}
 		wait 1;
 	}
@@ -175,6 +167,9 @@ gameManager() {
 		wait 1;
 	}
 	level.hostinHostMenu = -1;
+	if (level.debugger) {
+		return;
+	}
 	iprintln("^6All aboard the battle bus!");
 	wait 1;
 	level thread TeleportToBattleBus();
@@ -208,11 +203,13 @@ gameManager() {
 	stormdamage = stormDammageAmmout(0);
 	tick = 0;
 	while(true) {
-		if (tick == 20) {
-			iprintln("^5[Anoucement] ^3Stuck on top of the map? Open the menu and use the unstuck command");
-		} else if (tick == 50) {
+		if (tick == 30) {
+			iprintln("^5[Anoucement] ^3Stuck? Open the menu and use the unstuck command");
+		} else if (tick == 60) {
+			iprintln("^5[Anoucement] ^3This is Fortnite V" + level.versionID + " Developed by Nothingbutbread");
+		} else if (tick == 100) {
 			tick = 0;
-			iprintln("^5[Anoucement] ^3Guns glitched out? \n^2Press Aim, jump and Melee at the same time to reset your menu.");
+			iprintln("^5[Anoucement] ^3Lots of loot is often found inside the map and on outskirts of the out-of-map.");
 		}
 		playersalivee = 0;
 		foreach(player in level.players) {
@@ -321,15 +318,6 @@ init_player_vars()
 	self.lastdammagedby = self;
 	self.lastdammagedbyWeapon = "knife_mp";
 	self.hasjetpack = false;
-	
-	self.teamtag = "";
-	self.isonteam = false;
-	self.downed = false;
-	self.closestally = self;
-	self.isbeingrevived = false;
-	if (level.allowteams) {
-		self init_Teams_Client();
-	}
 }
 
 PublicMatchVerification() {
@@ -386,6 +374,8 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
+
 
 
 

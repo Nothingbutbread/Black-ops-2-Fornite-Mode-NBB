@@ -54,7 +54,6 @@ GenerateSpiningDropLoot()
 	retval = createInventorySlotStruct();
 	retval.rarity = 0; // 50% of common
 	pool = RandomIntRange(0, 100);
-	luck = RandomIntRange(0, 100);
 	retval = createInventorySlotStruct();
 	retval.rarity = 0;
 	if (pool < 75) {
@@ -88,8 +87,8 @@ GenerateSpiningDropLoot()
 		retval.rarity = 4;
 	}
 	if (level.debugger) {
-		//item = DebugItemSpawn();
-		//retval.rarity = 3;
+		item = DebugItemSpawn();
+		retval.rarity = 3;
 	}
 	retval.weapon = item;
 	retval.isweapon = isAWeapon(item);
@@ -106,14 +105,34 @@ GenerateSpiningDropLoot()
 	}
 	return retval;
 }
-GenerateChestLoot(onlylegn) {
+GenerateChestLoot(onlylegn, forceteir, custteir) {
 	if (!isDefined(onlylegn)) {
 		onlylegn = false;
+	}
+	if (!isDefined(forceteir)) {
+		forceteir = false;
+	}
+	if (!isDefined(custteir)) {
+		custteir = 0;
 	}
 	pool = RandomIntRange(0, 100);
 	luck = RandomIntRange(0, 100);
 	retval = createInventorySlotStruct();
 	retval.rarity = 0;
+	// Allows a bypass of the Guns.
+	if (forceteir) {
+		if (custteir == 0) {
+			luck = 1;
+		} else if (custteir == 1) {
+			luck = 50;
+		} else if (custteir == 2) {
+			luck = 70;
+		} else if (custteir == 3) {
+			luck = 90;
+		} else {
+			luck = 99;
+		}
+	}
 	if (pool < 60) {
 		item = PickCommonWeapon();
 		if (luck >= 94 || level.solidgold || onlylegn) { retval.rarity = 4; item = PickLegendaryWeapon(); }
@@ -241,10 +260,10 @@ SSweapon(teir) {
 	}
 }
 DebugItemSpawn() {
-	return "Port-a-Rift";
+	return "an94_mp";
 }
 PickAnyWeapon() {
-	c = RandomIntRange(0, 22);
+	c = RandomIntRange(0, 24);
 	if (c == 0) { return "scar_mp"; }
 	else if (c == 1) { return "sig556_mp"; }
 	else if (c == 2) { return "mp7_mp+silencer"; }
@@ -267,6 +286,8 @@ PickAnyWeapon() {
 	else if (c == 19) { return "fiveseven_mp+silencer"; }
 	else if (c == 20) { return "fnp45_mp+dualclip+fmj"; }
 	else if (c == 21) { return "saiga12_mp+extbarrel"; }
+	else if (c == 22) { return "crossbow_mp"; }
+	else if (c == 23) { return "an94_mp"; }
 }
 PickCommonWeapon() {
 	c = RandomIntRange(0, 5);
@@ -277,6 +298,10 @@ PickCommonWeapon() {
 	else if (c == 4) { return "peacekeeper_mp+rf"; }
 }
 PickCommonItem() {
+	c = RandomIntRange(0, 4);
+	if (c == 1) {
+		return "Unstable Item";
+	}
 	return "Bandage";
 }
 PickCommonGrenade() {
@@ -299,12 +324,13 @@ PickUncommonGrenade() {
 }
 PickUncommonItem()
 {
-	c = RandomIntRange(0, 4); // 75% chance of a Small sheild
+	c = RandomIntRange(0, 4); 
 	if (c == 0) { return "Medkit"; }
-	else { return "Small Shield"; }
+	else if (c == 1 || c == 2) { return "Small Shield"; }
+	else { return "Unstable Item"; }
 }
 PickRareWeapon() {
-	c = RandomIntRange(0, 14);
+	c = RandomIntRange(0, 15);
 	if (c == 0) { return "scar_mp"; }
 	else if (c == 1) { return "sig556_mp"; }
 	else if (c == 2) { return "mp7_mp+silencer"; }
@@ -319,20 +345,25 @@ PickRareWeapon() {
 	else if (c == 11) { return "smaw_mp"; }
 	else if (c == 12) { return "m32_wager_mp"; }
 	else if (c == 13) { return "peacekeeper_mp+rf"; }
+	else if (c == 14) { return "an94_mp"; }
 }
 PickEpicGrenade() {
 	return "satchel_charge_mp";
 }
 PickRareItem() {
+	c = RandomIntRange(0, 4);
+	if (c == 0) {
+		return "Unstable Item";
+	}
 	return "Large Shield";
 }
 PickEpicWeapon() {
-	c = RandomIntRange(0, 18);
+	c = RandomIntRange(0, 19);
 	if (c == 0) { return "scar_mp+extclip"; }
 	else if (c == 1) { return "sig556_mp+stalker"; }
 	else if (c == 2) { return "m32_wager_mp"; }
 	else if (c == 3) { return "fiveseven_mp+silencer"; }
-	else if (c == 4) { return "fnp45_mp+dualclip+fmj"; }
+	else if (c == 4) { return "crossbow_mp"; }
 	else if (c == 5) { return "srm1216_mp"; }
 	else if (c == 6) { return "evoskorpion_mp+extclip"; }
 	else if (c == 7) { return "as50_mp+extclip"; }
@@ -346,16 +377,19 @@ PickEpicWeapon() {
 	else if (c == 15) { return "ballista_mp+dualclip"; }
 	else if (c == 16) { return "scar_mp+silencer"; }
 	else if (c == 17) { return "fnp45_mp+dualclip+fmj"; }
+	else if (c == 18) { return "an94_mp"; }
 }
 PickEpicItem() {
-	c = RandomIntRange(0, 2);
-	if (c == 1) {
+	c = RandomIntRange(0, 5);
+	if (c == 1 || c == 0) {
 		return "Port-a-Rift";
-	}
-	return "Slurp Juice"; 
+	} else if (c == 2 || c == 3) {
+		return "Slurp Juice";
+	} 
+	return "Unstable Item";
 }
 PickLegendaryWeapon() {
-	c = RandomIntRange(0, 15); // Only weapons for now
+	c = RandomIntRange(0, 16); // Only weapons for now
 	if (c == 0) { return "scar_mp+extclip"; }
 	else if (c == 1) { return "sig556_mp+stalker"; }
 	else if (c == 2) { return "m32_wager_mp"; }
@@ -370,13 +404,16 @@ PickLegendaryWeapon() {
 	else if (c == 12) { return "evoskorpion_mp+extclip"; }
 	else if (c == 13) { return "saiga12_mp+extbarrel"; }
 	else if (c == 14) { return "ballista_mp+dualclip"; }
+	else if (c == 15) { return "an94_mp"; }
 }
 PickLegendaryItem() {
-	c = RandomIntRange(0, 3);
+	c = RandomIntRange(0, 4);
 	if (c == 0) {
 		return "Jet Pack";
+	} else if (c == 1 || c == 2) {
+		return "Chug Jug";
 	}
-	return "Chug Jug";
+	return "Unstable Item";
 }
 PickConsumeableItem() {
 	c = RandomIntRange(0, 100);
@@ -391,6 +428,8 @@ PickConsumeableItem() {
 	}
 	return "Pop Rock";
 }
+
+
 
 
 

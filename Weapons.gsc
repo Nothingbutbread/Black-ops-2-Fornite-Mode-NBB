@@ -8,7 +8,7 @@ getRawWeapon(str)
 	}
 	return retval;
 }
-
+/*
 DefineWeapondataarray()
 {
 	level.AttachmentArray = [];
@@ -112,6 +112,7 @@ DefineWeapondataarray()
 	
 	//level.WeaponArray[41] = "riotshield_mp";
 }
+*/
 isSingleShot(weap) {
 	// Hand Cannon
 	if (weap == "fnp45_mp+dualclip+fmj") {
@@ -189,21 +190,6 @@ WeaponMod_DualWeildPistols(weap, index) {
 	}
 }
 */
-WeaponMod_Scoped(weap, index) {
-	// self setclientthirdperson(1);
-	self endon("death");
-	self endon("disconnect");
-	self endon("new_item_at_" + index);
-	while(weap == self.activeweapon) {
-		if (self adsbuttonpressed())  {
-			self setclientthirdperson(0);
-			wait .1;
-		} else {
-			self setclientthirdperson(1);
-		}
-		wait .1;
-	}
-}
 WeaponMod_RefreshStock() {
 	self endon("death");
 	self endon("disconnect");
@@ -222,6 +208,8 @@ WeaponMod_RefreshStock() {
 		wait .1;
 	}
 }
+
+
 
 
 

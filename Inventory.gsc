@@ -213,10 +213,6 @@ SetLoadout(index) {
 		} else if (self.activeweapon == "saiga12_mp+extbarrel") {
 			self thread WeaponMod_DoubleBarrelShotgun(self.activeweapon, index);
 		}
-		/*
-		else if (isScropedNotSniper(self.activeweapon)) {
-			self thread WeaponMod_Scoped(self.activeweapon, index);
-		} */
 		self giveWeapon(self.activeweapon,0,true(teirIDtoCamo(self.inv[index].rarity),0,0,0,0));
 	} else {
 		self.amholdinggun = false;
@@ -283,6 +279,8 @@ ActivateItem(index) {
 		self thread JetPackitem(index);
 	} else if (self.inv[index].weapon == "Port-a-Rift") {
 		self thread PortaRiftItem(index);
+	} else if (self.inv[index].weapon == "Unstable Item") {
+		self thread UnstableItem(index);
 	}
 }
 ChangeToNextItemInInvetory() {
@@ -300,32 +298,3 @@ ChangeToNextItemInInvetory() {
 	}
 	self AdjustLoadout(self.selectorpos);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
