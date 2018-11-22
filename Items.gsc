@@ -1,6 +1,6 @@
 getDefaultItemSpawnCount(item)
 {
-	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice" || item == "Port-a-Rift") {
+	if (item == "Chug Jug" || "Large Shield" == item || item == "Medkit" || item == "Slurp Juice" || item == "Port-a-Rift" || item == "Unstable Item") {
 		return 1;
 	} else if (item == "Bandage") {
 		return 5;
@@ -462,20 +462,20 @@ UnstableItem(index) {
 		if (self jumpbuttonpressed() && time == 0 && !self.menuopen) {
 			self fadeInItemToolTip("Hold [{+gostand}] to use Unstable Item");
 			self.fortHUDS[15] setSafeText(self.ItemUseText);
-			self.fortHUDS[16].bar.color = HUD_RTG(60, time);
+			self.fortHUDS[16].bar.color = HUD_RTG(40, time);
 			self fadeInProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time++;
 		} else if (self jumpbuttonpressed() && time > 0 && !self.menuopen) {
-			self.fortHUDS[16] updateBar(time / 60);
-			self.fortHUDS[16].bar.color = HUD_RTG(60, time);
+			self.fortHUDS[16] updateBar(time / 40);
+			self.fortHUDS[16].bar.color = HUD_RTG(40, time);
 			time++;
 		} else {
 			self fadeOutProgressBar();
 			self.fortHUDS[16] updateBar(0);
 			time = 0;
 		}
-		if (time >= 30) {
+		if (time >= 40) {
 			// Update Ammo
 			self.inv[index].clip--;
 			self thread UnstableItemEffect(self.inv[index].rarity);
@@ -618,6 +618,8 @@ PopRockComsumeable_Jolt() {
 		wait .05;
 	}
 }
+
+
 
 
 

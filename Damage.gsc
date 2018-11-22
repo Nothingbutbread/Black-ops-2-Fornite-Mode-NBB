@@ -55,7 +55,7 @@ DamageMonitor()
     			self appHit(damage, self, "none");
     		}
     		else if (type == "MOD_MELEE") { 
-    			self appHit(10, attacker, "knife_held_mp");
+    			self appHit(20, attacker, "knife_held_mp");
     		} else if (type == "MOD_HEAD_SHOT") { 
     			dam = dammagemap(weaponname);
 				d = distance( attacker.origin, self.origin );
@@ -194,6 +194,19 @@ dammageMap(weap) {
     else if (weap == "saritch_mp+dualclip") {
         return (82, 10000, 75);
     }
+    else if (weap == "qcw05_mp+steadyaim") {
+    	luck = RandomIntRange(0, 100);
+    	if (luck < 70) {
+    		dam = RandomIntRange(6, 16);
+    		return (dam, 1000, int(dam / 2));
+    	} else if (luck < 95) {
+    		dam = RandomIntRange(12, 27);
+    		return (dam, 1250, int(dam / 2));
+    	} else {
+    		dam = RandomIntRange(20, 51);
+    		return (dam, 2500, int(dam / 2));
+    	}
+    }
     // Minigun
     else if (weap == "minigun_wager_mp") {
         return (14, 550, 5); // Due to rate of fire and accuracy differnces, Minigun has been nerfed
@@ -274,6 +287,8 @@ killMySelf(weap) {
 	wait .1;
 	self suicide();
 }
+
+
 
 
 

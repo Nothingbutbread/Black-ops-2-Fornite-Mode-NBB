@@ -153,6 +153,10 @@ getItemShader(weap)
 	else if (weap == "an94_mp") {
 		return "menu_mp_weapons_an94";
 	}
+	// Unstable Gun
+	else if (weap == "qcw05_mp+steadyaim") {
+		return "menu_mp_weapons_qcw";
+	}
 	// Scoped rifle
 	else if (weap == "sa58_mp+acog") {
 		return "menu_mp_weapons_sa58";
@@ -277,6 +281,9 @@ getDisplayName(weap)
 	else if (weap == "sig556_mp+stalker") {
 		return "Famas";
 	}
+	else if (weap == "qcw05_mp+steadyaim") {
+		return "Unstable Gun";
+	}
 	// Auto rifle
 	else if (weap == "scar_mp") {
 		return "Auto Assult Rifle";
@@ -395,6 +402,9 @@ getAmmoType(weap)
 	else if (weap == "an94_mp") {
 		return 1;
 	}
+	else if (weap == "qcw05_mp+steadyaim") {
+		return 1;
+	}
 	// Auto rifle
 	else if (weap == "scar_mp" || weap == "scar_mp+extclip" || weap == "scar_mp+silencer") {
 		return 1;
@@ -480,7 +490,7 @@ getAmmoType(weap)
 }
 
 PrecacheAll() {
-	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,svu,pm,saiga12,saritch,crossbow,an94",",");
+	shaders = strtok("870mcs,fnp45,rpg,scar,fnp45,rpg,sig556,sa58,evoskorpion,mp7,five_seven,ksg,srm,dsr1,as50,ballista,lsat,smaw,svu,pm,saiga12,saritch,crossbow,an94,qcw",",");
 	foreach(shader in shaders) { 
 		Precacheshader("menu_mp_weapons_" + shader); 
 	}
@@ -825,3 +835,5 @@ StopMomentum() {
 DistanceToStormCol(player) {
 	return Distance((player.origin[0], player.origin[1], level.stormcenterpoint[2]) , level.stormcenterpoint);
 }
+
+

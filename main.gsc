@@ -34,7 +34,7 @@ init()
 	level.belowmapdeathbarrier = -3000;
 	level.playersalive = 2;
 	// You Can Change these:
-	level.versionID = "^11.5.2 Public Beta";
+	level.versionID = "^11.6.0 Public Beta";
 	level.debugger = false;
 	level.solidgold = false;
 	level.blitz = false;
@@ -374,6 +374,8 @@ changemap( mapname ) {
 	setdvar( "ui_showmap", mapname );
 	map( mapname, 0 );
 }
+
+
 
 
 
