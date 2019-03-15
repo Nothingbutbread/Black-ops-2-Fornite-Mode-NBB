@@ -1,3 +1,5 @@
+# 2019 Update: Project is now active again
+
 # Fornite Battle Royal Mod for Call of Duty: Black ops 2
 Nothingbutbreads Implementation of Fortnite Battle Royal for Call of Duty: Black ops 2 targeting Jailbroken PS3's, Modded XBOX360's and PCs.
 
@@ -12,7 +14,6 @@ Public Beta V1.2.0: http://www.mediafire.com/file/1cxq1p1iryf31bh/FortnitePBV1.2
 Public Beta V1.1.0: http://www.mediafire.com/file/dn1t5t9gvhzg41c/FortnitePublicBetaV1.1.zip/file
 Public Beta V1.0.0: http://www.mediafire.com/file/rn9rs4htx9ahimm/FortnitePublicBetaV1.zip/file
 
-# Known major bugs as of 11/15/18 that haven't been patched yet.
+# Known major bugs as of 3/15/19 that haven't been patched yet.
 > Unopenable Chests/Player inventories that randomly spawn at times. 
 > Menu glitch out after using items under some circumstances. (Patrialy patched, Use AIM, MELEE and JUMP at the sametime to reset menu).
-  - V1.5.2 should have addressed this pending on testing.
